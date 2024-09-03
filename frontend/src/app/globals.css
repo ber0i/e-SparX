@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Light mode */
+  :root {
+    --color-primary: 63 161 241;
+    --color-secondary: 58 186 222;
+    --color-contrast: 39 47 61;
+    --color-canvas: 240 249 255;
+    --color-accent: 224 242 254;
+    --color-primary-shade: 58 148 222;
+    --color-secondary-shade: 57 170 204;
+  }
+
+  /* Dark mode */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-primary: 94 190 226;
+      --color-secondary: 52 122 204;
+      --color-contrast: 255 255 255;
+      --color-canvas: 34 41 54;
+      --color-accent: 45 55 72;
+      --color-primary-shade: 89 179 212;
+      --color-secondary-shade: 50 113 191;
+    }
+  }
+}
+@layer components {
+  html,
+  body {
+    @apply bg-canvas;
+    @apply text-contrast;
+    @apply font-sans;
+    @apply font-light;
+    @apply text-base;
+  }
+
+  h1 {
+    @apply text-title-lg;
+    @apply font-bold;
+    @apply mb-4 text-center;
+  }
+
+  h2 {
+    @apply text-title-md;
+    @apply font-semibold;
+    @apply mb-3;
+  }
+
+  h3 {
+    @apply text-2xl md:text-4xl;
+    @apply font-normal;
+    @apply mb-1 mt-2 md:mb-2 md:mt-4;
+  }
+
+  h4 {
+    @apply text-xl md:text-3xl;
+    @apply font-normal;
+    @apply mb-1 mt-2 md:mb-2 md:mt-4;
+  }
+
+  h5 {
+    @apply text-xl md:text-2xl;
+    @apply font-light;
+    @apply mb-0.5 mt-1 md:mb-1 md:mt-2;
+  }
+
+  h6 {
+    @apply text-lg md:text-xl;
+    @apply font-light;
+    @apply mb-0.5 mt-1 md:mb-1 md:mt-2;
+  }
+
+  p {
+    @apply text-sm md:text-base;
+    @apply font-light;
+    @apply mb-1;
+  }
+
+  input {
+    @apply rounded-md focus-visible:outline-none disabled:cursor-not-allowed m-0 focus-visible:ring-primary focus-visible:ring-1;
+    @apply bg-accent text-contrast p-1;
+  }
+}

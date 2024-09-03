@@ -1,0 +1,33 @@
+# This files specifiec the services that will be run in the docker container.
+# The configs are specified in the .env file at the project root.
+
+services:
+  documentdb:
+    container_name: edl-documentdb
+    image: mongo
+    restart: on-failure
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes: # maps directories from the host machine (where you run Docker) to the container (ensures that data stored by MongoDB is not lost when stopping the container)
+      - ./infrastructure/documentdb/data:/data/db # host_dir:container_dir
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017 --quiet # mongosh is the MongoDB shell to run the healthcheck command, --quiet flag suppresses the output
+      interval: 30s # time between healthchecks
+      timeout: 10s # time to wait for a response before considering the healthcheck failed
+      retries: 5 # number of retries before considering the container unhealthy
+      start_period: 20s # time to wait before starting the healthcheck
+
+  api:
+    container_name: edl-api
+    build:
+      context: ./
+      dockerfile: ./backend/dockerfile
+    restart: on-failure
+    environment: 
+      EDL_MONGO_DB_ENDPOINT: "${MONGO_USER}:${MONGO_PASSWORD}@edl-documentdb:27017"
+    ports:
+      - ${API_PORT:-8080}:80
+    depends_on:
+      documentdb:
+        condition: service_healthy

@@ -1,0 +1,21 @@
+"""This file enables accessing environment variables."""
+
+from pathlib import Path
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    # define variables which should be read from .env
+    EDL_DB_CONNECT_STRING: str
+    EDL_MONGO_DB_ENDPOINT: str
+
+    # define the path to the .env file
+    model_config = SettingsConfigDict(
+        env_file=Path(__file__).parent.parent / ".env",
+        case_sensitive=True,
+    )
+
+
+# instantiate the settings object, which will read the .env file
+settings = Settings()

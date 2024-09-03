@@ -1,0 +1,32 @@
+# IMPORTANT: Container must be build with the project root as build context
+# (e.g. the container must be build from the project root - `docker build -f backend/dockerfile .`)
+FROM python:3.11-alpine AS base
+
+ENV EDL_DB_CONNECT_STRING=""
+ENV EDL_MONGO_DB_ENDPOINT=""
+
+WORKDIR /app
+RUN pip install --upgrade pip
+ENV PATH="/app/.venv/bin:$PATH"
+
+# ------ install Stage ------ #
+FROM base AS install
+
+# Create virtual environment
+RUN python -m venv .venv
+
+# Install dependencies
+COPY backend/pyproject.toml backend/README.md ./
+RUN python -m pip install .
+RUN python -m pip install alembic
+
+# ------ final Stage ------ #
+FROM base AS final
+
+# copy venv and dependencies from "install" stage
+COPY --from=install /app/.venv ./.venv
+COPY backend/ .
+RUN python -m pip install .
+
+CMD ["edl-api", "--share", "--port", "80"]
+EXPOSE 80

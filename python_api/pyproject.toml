@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "energy-data-lab"
+version = "0.1"
+description = "An ML artifact registry for the energy transition."
+readme = "README.md"
+requires-python = ">=3.7"
+
+# Dependencies for your package
+dependencies = [
+    "requests",
+]
