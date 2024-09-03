@@ -6,7 +6,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from edl_api.routes import RegisterRouter
 
-app = FastAPI()
+app = FastAPI(
+    title="EDL Registry API",
+)
 
 app.add_middleware(
     CORSMiddleware,

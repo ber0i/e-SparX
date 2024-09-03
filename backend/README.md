@@ -1,10 +1,18 @@
-# EDL Backend
+# EDL Registry MVP - Backend
 
-This is the Backend for the Energy Data Lab based on [FastAPI](https://fastapi.tiangolo.com).
+This is the Backend for the Energy Data Lab Registry MVP based on [FastAPI](https://fastapi.tiangolo.com).
 
 ## Getting Started
 
-First, install all dependencies. For this, create a new virtual environment, activate the environment and then run:
+As first step, create a `.env` file in this directory of the following form:
+
+```bash
+EDL_MONGO_DB_ENDPOINT="<MONGO_USER>:<MONGO_PASSWORD>@localhost:27017"
+```
+
+Replace `MONGO_USER` and `MONGO_PASSWORD` with your credentials of choice you used in the `.env` file in the project's root directory.
+
+Next, install all dependencies. For this, create a new virtual environment, activate the environment and then run:
 
 ```bash
 pip install -e ".[dev]"

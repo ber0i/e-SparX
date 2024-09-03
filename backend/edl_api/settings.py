@@ -7,7 +7,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # define variables which should be read from .env
-    EDL_DB_CONNECT_STRING: str
     EDL_MONGO_DB_ENDPOINT: str
 
     # define the path to the .env file
@@ -18,4 +17,5 @@ class Settings(BaseSettings):
 
 
 # instantiate the settings object, which will read the .env file
+print(Path(__file__).parent.parent / ".env")
 settings = Settings()

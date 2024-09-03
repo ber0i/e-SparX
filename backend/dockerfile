@@ -2,7 +2,6 @@
 # (e.g. the container must be build from the project root - `docker build -f backend/dockerfile .`)
 FROM python:3.11-alpine AS base
 
-ENV EDL_DB_CONNECT_STRING=""
 ENV EDL_MONGO_DB_ENDPOINT=""
 
 WORKDIR /app

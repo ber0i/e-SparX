@@ -11,6 +11,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     volumes: # maps directories from the host machine (where you run Docker) to the container (ensures that data stored by MongoDB is not lost when stopping the container)
       - ./infrastructure/documentdb/data:/data/db # host_dir:container_dir
+    ports:
+      - "27017:27017" # Maps port 27017 on the host to port 27017 on the container to enable accessing to the MongoDB instance (e.g., via a GUI)
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017 --quiet # mongosh is the MongoDB shell to run the healthcheck command, --quiet flag suppresses the output
       interval: 30s # time between healthchecks
