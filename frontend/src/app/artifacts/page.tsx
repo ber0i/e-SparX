@@ -1,16 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { RegisterService } from "@/lib/api/services/RegisterService";
-import type { DataArtifact } from "@/lib/api/models/DataArtifact";
+import { useRouter } from "next/navigation";
+import { DataArtifactService } from "@/lib/api/services/DataArtifactService";
+import type { DataArtifactPandas } from "@/lib/api/models/DataArtifactPandas";
 
 export default function ArtifactsPage() {
-  const [Artifacts, setArtifacts] = useState<DataArtifact[]>([]);
+  const [Artifacts, setArtifacts] = useState<DataArtifactPandas[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchArtifacts = async () => {
       try {
-        const response = await RegisterService.viewArtifactsRegisterGet();
+        const response = await DataArtifactService.viewArtifactsDataArtifactGet();
         setArtifacts(response.entries);
       } catch (error) {
         console.error("Failed to fetch datasets", error);
@@ -19,6 +21,11 @@ export default function ArtifactsPage() {
 
     fetchArtifacts();
   }, []);
+
+  // Handler to navigate to the artifact details page
+  const handleRowClick = (name: string) => {
+    router.push(`/artifacts/${name}`);  // Navigate to /artifacts/[name]
+  };
 
   return (
     <div className="p-5 ">
@@ -35,11 +42,18 @@ export default function ArtifactsPage() {
                   <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
                     Description
                   </th>
+                  <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                    Dataset Type
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {Artifacts.map((artifact) => (
-                  <tr key={artifact.name}>
+                  <tr
+                    key={artifact.name}
+                    className="cursor-pointer"
+                    onClick={() => handleRowClick(artifact.name)}
+                  >
                     <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
                       <div className="text-contrast whitespace-no-wrap">
                         {artifact.name}
@@ -48,6 +62,11 @@ export default function ArtifactsPage() {
                     <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
                       <div className="text-contrast whitespace-no-wrap">
                         {artifact.description}
+                      </div>
+                    </td>
+                    <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
+                      <div className="text-contrast whitespace-no-wrap">
+                        {artifact.dataset_type}
                       </div>
                     </td>
                   </tr>

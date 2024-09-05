@@ -4,7 +4,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from edl_api.routes import RegisterRouter
+from edl_api.routes import DataArtifactRouter
 
 app = FastAPI(
     title="EDL Registry API",
@@ -16,7 +16,7 @@ app.add_middleware(
 )
 
 
-app.include_router(RegisterRouter, prefix="/register")
+app.include_router(DataArtifactRouter, prefix="/data-artifact")
 
 
 @app.get("/", tags=["Welcome"])  # tags are used to group the endpoints in the documentation

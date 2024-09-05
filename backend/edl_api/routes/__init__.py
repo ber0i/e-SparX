@@ -1,1 +1,1 @@
-from .register import RegisterRouter
+from .register import DataArtifactRouter

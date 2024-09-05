@@ -17,5 +17,4 @@ class Settings(BaseSettings):
 
 
 # instantiate the settings object, which will read the .env file
-print(Path(__file__).parent.parent / ".env")
 settings = Settings()

@@ -1,1 +1,1 @@
-from .artifacts import DataArtifact
+from .artifacts import DataArtifact, DataArtifactPandas
