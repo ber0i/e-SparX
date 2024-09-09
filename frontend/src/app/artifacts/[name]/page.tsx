@@ -11,6 +11,7 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
 
   useEffect(() => {
     const fetchArtifactDetails = async () => {
+      console.log(name)
       if (name) {
         try {
           // Assuming there is an API to fetch a single artifact by name
@@ -28,13 +29,40 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
     return <div>Loading...</div>;
   }
 
+  console.log(name)
+
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) {
+      return "N/A";  // Return fallback if dateString is undefined
+    }
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      timeZone: "Europe/Berlin",  // Use Germany's time zone
+    });
+  };
+
   return (
     <div className="p-5">
       <h1>Artifact Details: {artifact.name}</h1>
       <p>Description: {artifact.description}</p>
       <p>Dataset Type: {artifact.dataset_type}</p>
-      <p>Number of Rows: {artifact.num_rows}</p>
-      <p>Number of Columns: {artifact.num_columns}</p>
+      <p>Created At: {formatDate(artifact.created_at)}</p>
+      {artifact.num_rows ? (
+        <p>Number of Rows: {artifact.num_rows}</p>
+      ) : (
+        <p>Number of Rows: not available</p>
+      )}
+      {artifact.num_columns ? (
+        <p>Number of Columns: {artifact.num_columns}</p>
+      ) : (
+        <p>Number of Columns: not available</p>
+      )}
 
       {/* Schema Table */}
       <h2>Dataset Schema</h2>

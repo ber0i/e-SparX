@@ -1,1 +1,1 @@
-from .register import DataArtifactRouter
+from .data import DataArtifactRouter

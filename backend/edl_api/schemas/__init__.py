@@ -1,1 +1,1 @@
-from .artifacts import DataArtifact, DataArtifactPandas
+from .artifacts import DataArtifactFree, DataArtifactPandas

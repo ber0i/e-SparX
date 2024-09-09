@@ -2,33 +2,33 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { DataArtifact } from '../models/DataArtifact';
+import type { DataArtifactFree } from '../models/DataArtifactFree';
 import type { DataArtifactPandas } from '../models/DataArtifactPandas';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class DataArtifactService {
     /**
-     * View Artifacts
+     * Get Artifacts
      * Get all artifacts
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static viewArtifactsDataArtifactGet(): CancelablePromise<any> {
+    public static getArtifactsDataArtifactGet(): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/data-artifact/',
         });
     }
     /**
-     * Register Data Artifact
-     * Register a data artifact. Saves the artifact in the document database.
+     * Register Free Data Artifact
+     * Register a free-form data artifact. Saves the artifact in the document database.
      * @param requestBody
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static registerDataArtifactDataArtifactPost(
-        requestBody: DataArtifact,
+    public static registerFreeDataArtifactDataArtifactPost(
+        requestBody: DataArtifactFree,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
@@ -42,7 +42,7 @@ export class DataArtifactService {
     }
     /**
      * Register Pandas Data Artifact
-     * Register a Pandas data artifact. Saves the artifact in the document database.
+     * Register a pandas.DataFrame data artifact. Saves the artifact in the document database.
      * @param requestBody
      * @returns any Successful Response
      * @throws ApiError

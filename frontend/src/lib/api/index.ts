@@ -8,7 +8,7 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { ColSpec } from './models/ColSpec';
-export type { DataArtifact } from './models/DataArtifact';
+export type { DataArtifactFree } from './models/DataArtifactFree';
 export type { DataArtifactPandas } from './models/DataArtifactPandas';
 export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { ValidationError } from './models/ValidationError';

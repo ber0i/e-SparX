@@ -2,17 +2,41 @@ import glob
 import json
 import os
 import shutil
+from typing import Optional
 
 import mlflow
 import pandas as pd
 import requests
 import yaml
+from pydantic import HttpUrl
 
 
-def register(name: str, description: str):
+def register_data_free(name: str, description: str, url: Optional[HttpUrl] = None):
+    """
+    Register a free-form dataset artifact in the Energy Data Lab.
+
+    Parameters
+    ----------
+    name : str
+        The name of the dataset.
+    description : str
+        The description of the dataset.
+    url: [Optional] str
+        The URL on where to access the underlying file.
+    """
+    if url is None:
+        result = {"name": name, "description": description, "dataset_type": "free-form"}
+    else:
+        result = {
+            "name": name,
+            "description": description,
+            "dataset_type": "free-form",
+            "url": url,
+        }
+
     response = requests.post(
-        "http://localhost:8080/register",
-        json={"name": name, "description": description},
+        "http://localhost:8080/data-artifact",
+        json=result,
     )
     if response.status_code == 200:
         print("Entry registered successfully", response.json())
@@ -20,7 +44,9 @@ def register(name: str, description: str):
         print("Failed to register entry:", response.text)
 
 
-def register_pandas(name: str, description: str, df: pd.DataFrame):
+def register_data_pandas(
+    name: str, description: str, df: pd.DataFrame, url: Optional[HttpUrl] = None
+):
     """
     Register a pandas DataFrame as a dataset artifact in the Energy Data Lab.
 
@@ -32,6 +58,8 @@ def register_pandas(name: str, description: str, df: pd.DataFrame):
         The description of the dataset.
     df : pd.DataFrame
         The pandas DataFrame to register.
+    url: [Optional] str
+        The URL on where to access the underlying file.
     """
     dataset = mlflow.data.from_pandas(df, name=name)
     mlflow.log_input(dataset)
@@ -64,8 +92,10 @@ def register_pandas(name: str, description: str, df: pd.DataFrame):
                 "num_columns": num_columns,
                 "schema": schema_data["mlflow_colspec"],
             }
+            if url is not None:
+                result["url"] = url
             response = requests.post(
-                "http://localhost:8080/register/pandas",
+                "http://localhost:8080/data-artifact/pandas/",
                 json=result,
             )
             if response.status_code == 200:

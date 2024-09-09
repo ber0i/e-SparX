@@ -3,10 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Schema for an artifact of type data
+ * Schema for a free-form data artifact
  */
-export type DataArtifact = {
+export type DataArtifactFree = {
     name: string;
     description: string;
+    dataset_type: string;
+    created_at?: string;
+    url?: (string | null);
 };
 

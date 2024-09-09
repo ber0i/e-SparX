@@ -52,11 +52,6 @@ const Header = () => {
                 </a>
               </li>
             ))}
-            <li className="hover:bg-accent p-2">
-              <a href="/login" className="font-semibold text-primary">
-                Log in <span aria-hidden="true">&rarr;</span>
-              </a>
-            </li>
           </ul>
         </div>
         <div className="hidden focus-within:visible lg:flex lg:gap-x-12">

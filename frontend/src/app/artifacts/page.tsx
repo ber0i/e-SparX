@@ -12,7 +12,7 @@ export default function ArtifactsPage() {
   useEffect(() => {
     const fetchArtifacts = async () => {
       try {
-        const response = await DataArtifactService.viewArtifactsDataArtifactGet();
+        const response = await DataArtifactService.getArtifactsDataArtifactGet();
         setArtifacts(response.entries);
       } catch (error) {
         console.error("Failed to fetch datasets", error);
@@ -25,6 +25,19 @@ export default function ArtifactsPage() {
   // Handler to navigate to the artifact details page
   const handleRowClick = (name: string) => {
     router.push(`/artifacts/${name}`);  // Navigate to /artifacts/[name]
+  };
+
+  // Function to format the date
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) {
+      return "N/A";  // Return fallback if dateString is undefined
+    }
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
   return (
@@ -44,6 +57,9 @@ export default function ArtifactsPage() {
                   </th>
                   <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
                     Dataset Type
+                  </th>
+                  <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                    Created At
                   </th>
                 </tr>
               </thead>
@@ -67,6 +83,11 @@ export default function ArtifactsPage() {
                     <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
                       <div className="text-contrast whitespace-no-wrap">
                         {artifact.dataset_type}
+                      </div>
+                    </td>
+                    <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
+                      <div className="text-contrast whitespace-no-wrap">
+                        {formatDate(artifact.created_at)}
                       </div>
                     </td>
                   </tr>
