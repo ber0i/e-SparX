@@ -15,6 +15,7 @@ dependencies = [
   "uvicorn[standard]", # ASGI (asynchronous server gateway interface - standard API for Python web servers that run asynchronous code) web server
   "SQLAlchemy==2.0.28", # Python ORM toolkit for relational databases
   "psycopg==3.1.18", # postgresql database driver
+  "psycopg_binary==3.1.18",
   "pydantic-settings", # data validation
   "pymongo",
   "httpx>=0.20.0,<0.28.0", # http client

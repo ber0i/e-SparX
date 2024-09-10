@@ -2,7 +2,8 @@
 # (e.g. the container must be build from the project root - `docker build -f backend/dockerfile .`)
 FROM python:3.11-alpine AS base
 
-ENV EDL_MONGO_DB_ENDPOINT=""
+ENV ARTIFACTDB_ENDPOINT=""
+ENV DAGDB_CONNECTSTRING=""
 
 WORKDIR /app
 RUN pip install --upgrade pip

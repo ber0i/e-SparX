@@ -8,4 +8,4 @@ import pymongo
 
 from edl_api import settings
 
-DocumentDBClient = pymongo.MongoClient(f"mongodb://{settings.EDL_MONGO_DB_ENDPOINT}", tz_aware=True)
+DocumentDBClient = pymongo.MongoClient(f"mongodb://{settings.ARTIFACTDB_ENDPOINT}", tz_aware=True)

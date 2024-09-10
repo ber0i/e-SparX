@@ -7,10 +7,11 @@ This is the Backend for the Energy Data Lab Registry MVP based on [FastAPI](http
 As first step, create a `.env` file in this directory of the following form:
 
 ```bash
-EDL_MONGO_DB_ENDPOINT="<MONGO_USER>:<MONGO_PASSWORD>@localhost:27017"
+ARTIFACTDB_ENDPOINT="<MONGO_USER>:<MONGO_PASSWORD>@localhost:27017"
+DAGDB_CONNECTSTRING="postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@localhost:5432/dagdb"
 ```
 
-Replace `MONGO_USER` and `MONGO_PASSWORD` with your credentials of choice you used in the `.env` file in the project's root directory.
+Replace `MONGO/POSTGRES_USER` and `MONGO/POSTGRES_PASSWORD` with your credentials of choice you used in the `.env` file in the project's root directory.
 
 Next, install all dependencies. For this, create a new virtual environment, activate the environment and then run:
 

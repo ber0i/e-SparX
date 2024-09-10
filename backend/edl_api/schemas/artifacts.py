@@ -12,6 +12,8 @@ class DataArtifactFree(BaseModel):
     dataset_type: str
     created_at: datetime = datetime.now()
     url: Optional[HttpUrl] = None
+    pipeline_name: Optional[str] = None
+    parent_name: Optional[str] = None
 
 
 class ColSpec(BaseModel):

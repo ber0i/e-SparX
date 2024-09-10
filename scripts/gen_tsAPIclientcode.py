@@ -104,7 +104,7 @@ def adjust_openapi_ts_file(verbose: bool = False):
         # Set API Base URL
         if line.strip().startswith("BASE: ''"):
             lines[i] = (
-                '    BASE: process.env.NEXT_PUBLIC_EDL_API_ENDPOINT || "http://localhost:9000",\n'
+                '    BASE: process.env.API_ENDPOINT || "http://localhost:8080",\n'
             )
 
     # Write the modified content back to the file

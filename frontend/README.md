@@ -3,7 +3,7 @@
 As first step, create a `.env` file in this directory of the following form:
 
 ```bash
-NEXT_PUBLIC_EDL_API_ENDPOINT="http://127.0.0.1:8080"
+API_ENDPOINT="http://127.0.0.1:8080"
 ```
 
 If you're running the API individually (outside of the container), the endpoint could be different.

@@ -20,7 +20,7 @@ export type OpenAPIConfig = {
 };
 
 export const OpenAPI: OpenAPIConfig = {
-    BASE: process.env.NEXT_PUBLIC_EDL_API_ENDPOINT || "http://localhost:9000",
+    BASE: process.env.API_ENDPOINT || "http://localhost:8080",
     VERSION: '0.0.1',
     WITH_CREDENTIALS: false,
     CREDENTIALS: 'include',

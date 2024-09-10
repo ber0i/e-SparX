@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ArtifactResponse } from '../models/ArtifactResponse';
 import type { DataArtifactFree } from '../models/DataArtifactFree';
 import type { DataArtifactPandas } from '../models/DataArtifactPandas';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -52,7 +53,7 @@ export class DataArtifactService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/data-artifact/pandas/',
+            url: '/data-artifact/pandas',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -75,6 +76,27 @@ export class DataArtifactService {
             url: '/data-artifact/{name}',
             path: {
                 'name': name,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get Artifacts By Pipeline
+     * Get all artifacts in a pipeline
+     * @param pipelineName
+     * @returns ArtifactResponse Successful Response
+     * @throws ApiError
+     */
+    public static getArtifactsByPipelineDataArtifactPipelinePipelineNameGet(
+        pipelineName: string,
+    ): CancelablePromise<Array<ArtifactResponse>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/data-artifact/pipeline/{pipeline_name}',
+            path: {
+                'pipeline_name': pipelineName,
             },
             errors: {
                 422: `Validation Error`,

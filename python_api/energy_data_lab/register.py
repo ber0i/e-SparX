@@ -11,7 +11,13 @@ import yaml
 from pydantic import HttpUrl
 
 
-def register_data_free(name: str, description: str, url: Optional[HttpUrl] = None):
+def register_data_free(
+    name: str,
+    description: str,
+    url: Optional[HttpUrl] = None,
+    pipeline_name: Optional[str] = None,
+    parent_name: Optional[str] = None,
+):
     """
     Register a free-form dataset artifact in the Energy Data Lab.
 
@@ -23,16 +29,19 @@ def register_data_free(name: str, description: str, url: Optional[HttpUrl] = Non
         The description of the dataset.
     url: [Optional] str
         The URL on where to access the underlying file.
+    pipeline_name: [Optional] str
+        The name of the ML pipeline the dataset is used in.
+    parent_name: [Optional] str
+        The name of the parent artifact in the mentioned pipeline. If source node, set to None (default).
     """
-    if url is None:
-        result = {"name": name, "description": description, "dataset_type": "free-form"}
-    else:
-        result = {
-            "name": name,
-            "description": description,
-            "dataset_type": "free-form",
-            "url": url,
-        }
+    result = {
+        "name": name,
+        "description": description,
+        "dataset_type": "free-form",
+        "url": url,
+        "pipeline_name": pipeline_name,
+        "parent_name": parent_name,
+    }
 
     response = requests.post(
         "http://localhost:8080/data-artifact",

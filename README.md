@@ -7,11 +7,13 @@ This is the repository for the EDL Artifact Registry Project. For details on the
 As first step, create a `.env` file in this directory of the following form:
 
 ```bash
-MONGO_USER=some_username
-MONGO_PASSWORD=some_password
+MONGO_USER=some_mongo_username
+MONGO_PASSWORD=some_mongo_password
+POSTGRES_USER=some_postgres_username
+POSTGRES_PASSWORD=some_postgres_password
 ```
 
-Replace `some_username` and `some_password` with your credentials of choice.
+Replace `some_mongo/postgres_username` and `some_mongo/postgres_password` with your credentials of choice.
 
 To start the services, Docker and Docker Compose must be installed. Next, at the root of your project, run
 

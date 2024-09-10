@@ -7,6 +7,7 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { ArtifactResponse } from './models/ArtifactResponse';
 export type { ColSpec } from './models/ColSpec';
 export type { DataArtifactFree } from './models/DataArtifactFree';
 export type { DataArtifactPandas } from './models/DataArtifactPandas';

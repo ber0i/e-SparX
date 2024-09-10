@@ -4,7 +4,7 @@ import axios from "axios";
 
 /** API Endpoint */
 export const api_endpoint: string =
-  process.env.NEXT_PUBLIC_EDL_API_ENDPOINT || "http://localhost:9000";
+  process.env.API_ENDPOINT || "http://localhost:8080";
 
 /** Get version of the API */
 export async function status(): Promise<{
@@ -12,6 +12,7 @@ export async function status(): Promise<{
   status: "online" | "offline" | "error";
 }> {
   try {
+    console.log("API Endpoint: ", api_endpoint);
     const res = await axios.get(`${api_endpoint}`, { timeout: 1000 });
 
     if (res.status === 200) {

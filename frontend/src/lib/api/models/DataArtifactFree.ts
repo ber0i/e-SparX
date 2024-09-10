@@ -11,5 +11,7 @@ export type DataArtifactFree = {
     dataset_type: string;
     created_at?: string;
     url?: (string | null);
+    pipeline_name?: (string | null);
+    parent_name?: (string | null);
 };
 

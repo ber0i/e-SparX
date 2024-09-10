@@ -7,7 +7,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # define variables which should be read from .env
-    EDL_MONGO_DB_ENDPOINT: str
+    ARTIFACTDB_ENDPOINT: str
+    DAGDB_CONNECTSTRING: str
 
     # define the path to the .env file
     model_config = SettingsConfigDict(
