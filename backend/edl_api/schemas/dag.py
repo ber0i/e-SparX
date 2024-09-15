@@ -143,11 +143,11 @@ class Artifact(Base):
             artifact = Artifact(name=param.name)
             session.add(artifact)
             session.flush()
-            print(f"Artifact {artifact.name} created.")
-            response = f"Artifact {artifact.name} created."
+            print(f"Artifact '{artifact.name}' created.")
+            response = f"Artifact '{artifact.name}' created."
         else:
-            print(f"Artifact {artifact.name} already exists.")
-            response = f"Artifact {artifact.name} already exists."
+            print(f"Artifact '{artifact.name}' already exists.")
+            response = f"Artifact '{artifact.name}' already exists."
 
         if not param.pipeline:
             print("No pipeline linked.")
@@ -159,18 +159,18 @@ class Artifact(Base):
                 pipeline = Pipeline(name=param.pipeline, artifacts=[artifact])
                 session.add(pipeline)
                 session.flush()
-                print(f"Pipeline {pipeline.name} created and linked to artifact {artifact.name}.")
-                response += f" Pipeline {pipeline.name} created and linked to artifact {artifact.name}."
+                print(f"Pipeline '{pipeline.name}' created and linked to artifact '{artifact.name}'.")
+                response += f" Pipeline '{pipeline.name}' created and linked to artifact '{artifact.name}'."
 
             else:
                 if pipeline not in artifact.pipelines:
                     artifact.pipelines.append(pipeline)
-                    print(f"Pipeline {pipeline.name} found and linked to artifact {artifact.name}.")
-                    response += f" Pipeline {pipeline.name} found and linked to artifact {artifact.name}."
+                    print(f"Pipeline '{pipeline.name}' found and linked to artifact '{artifact.name}'.")
+                    response += f" Pipeline '{pipeline.name}' found and linked to artifact '{artifact.name}'."
                 else:
-                    print(f"Pipeline {pipeline.name} found, and it is already linked to artifact {artifact.name}.")
+                    print(f"Pipeline '{pipeline.name}' found, and it is already linked to artifact '{artifact.name}'.")
                     response += (
-                        f" Pipeline {pipeline.name} found, and it is already linked to artifact {artifact.name}."
+                        f" Pipeline '{pipeline.name}' found, and it is already linked to artifact '{artifact.name}'."
                     )
 
             if param.parent:
@@ -202,23 +202,21 @@ class Artifact(Base):
                     session.add(connection)
                     session.flush()
                     print(
-                        f"Connection between {param.parent} and {param.name} created within pipeline {param.pipeline}."
+                        f"Connection between '{param.parent}' and '{param.name}' created within pipeline '{param.pipeline}'."
                     )
-                    response += (
-                        f" Connection between {param.parent} and {param.name} created within pipeline {param.pipeline}."
-                    )
+                    response += f" Connection between '{param.parent}' and '{param.name}' created within pipeline '{param.pipeline}'."
                     # Check whether the connection parent is linked to the pipeline
                     if parent not in pipeline.artifacts:
                         parent.pipelines.append(pipeline)
                         print(
-                            f"For this, the parent artifact {parent.name} was linked to pipeline {pipeline.name}, as this connection had not been established yet."
+                            f"For this, the parent artifact '{parent.name}' was linked to pipeline '{pipeline.name}', as this connection had not been established yet."
                         )
-                        response += f" For this, the parent artifact {parent.name} was linked to pipeline {pipeline.name}, as this connection had not been established yet."
+                        response += f" For this, the parent artifact '{parent.name}' was linked to pipeline '{pipeline.name}', as this connection had not been established yet."
                 else:
                     print(
-                        f"Connection between {param.parent} and {param.name} already exists in pipeline {param.pipeline}."
+                        f"Connection between '{param.parent}' and '{param.name}' already exists in pipeline '{param.pipeline}'."
                     )
-                    response += f" Connection between {param.parent} and {param.name} already exists in pipeline {param.pipeline}."  # Done.
+                    response += f" Connection between '{param.parent}' and '{param.name}' already exists in pipeline {param.pipeline}."  # Done.
 
         return response
 

@@ -2,10 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ColSpec } from './ColSpec';
 /**
- * Schema for a free-form data artifact
+ * Schema for a data artifact
  */
-export type DataArtifactFree = {
+export type DataArtifact = {
     name: string;
     description: string;
     dataset_type: string;
@@ -13,5 +14,8 @@ export type DataArtifactFree = {
     url?: (string | null);
     pipeline_name?: (string | null);
     parent_name?: (string | null);
+    num_rows?: (number | null);
+    num_columns?: (number | null);
+    data_schema?: (Array<ColSpec> | null);
 };
 

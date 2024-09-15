@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { DataArtifactsService } from "@/lib/api/services/DataArtifactsService";
-import type { DataArtifactPandas } from "@/lib/api/models/DataArtifactPandas";
+import type { DataArtifact } from "@/lib/api/models/DataArtifact";
 
 export default function ArtifactDetailPage({ params }: { params: { name: string } }) {
   // Get the artifact name from the URL
   const name = params.name;
-  const [artifact, setArtifact] = useState<DataArtifactPandas | null>(null);
+  const [artifact, setArtifact] = useState<DataArtifact | null>(null);
 
   useEffect(() => {
     const fetchArtifactDetails = async () => {

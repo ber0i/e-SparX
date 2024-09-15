@@ -30,3 +30,14 @@ edl-api --reload
 The `--reload` flag is optional and is recommended during development.
 
 The API is now running on [http://localhost:8000](http://localhost:8000).
+
+## Database Migrations
+
+The PostgresSQL database requires migration scripts to be created and run. Whenever a change is made on the database structure, the corrsponding migration scripts can be created automatically via running
+```bash
+alembic revision --autogenerate -m "<migration message>"
+```
+Replace `<migration message>` with a short description of the changes you applied. Migrations are executed via
+```bash
+alembic upgrade head
+```

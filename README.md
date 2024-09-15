@@ -22,11 +22,3 @@ docker compose --env-file .env up
 ```
 
 If changes were made, we recommend using the flag `--build` to rebuild the images before starting the containers. If one wants to use the console after starting the containers, one should use the flag  `-d`.
-
-## DocumentDB
-
-To inspect the content of the MongoDB, where the JSON files are stored, one can install MongoDB Compass. To connect to the DB running inside the edl-documentb container, use the following connection string (you will be asked for this after opening MongoDB Compass):
-
-```bash
-mongodb://<MONGO_USER>:<MONGO_PASSWORD>@localhost:27017
-```

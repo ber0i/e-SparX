@@ -26,5 +26,4 @@ async def get_connections_by_pipeline(pipeline_name: str, session: Session = Ses
     with session.begin() as s:
         connections = Connection.get_connections_by_pipeline(s, pipeline_name)
         connection_dicts = [connection_to_dict(connection) for connection in connections]
-        print(connection_dicts)
         return connection_dicts

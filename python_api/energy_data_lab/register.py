@@ -48,7 +48,7 @@ def register_data_free(
     }
 
     response = requests.post(
-        "http://localhost:8080/data-artifact",
+        "http://localhost:8080/data-artifacts",
         json=result,
     )
     if response.status_code == 200:
@@ -60,7 +60,12 @@ def register_data_free(
 
 
 def register_data_pandas(
-    name: str, description: str, df: pd.DataFrame, url: Optional[HttpUrl] = None
+    name: str,
+    description: str,
+    df: pd.DataFrame,
+    url: Optional[HttpUrl] = None,
+    pipeline_name: Optional[str] = None,
+    parent_name: Optional[str] = None,
 ):
     """
     Register a pandas DataFrame as a dataset artifact in the Energy Data Lab.
@@ -75,7 +80,12 @@ def register_data_pandas(
         The pandas DataFrame to register.
     url: [Optional] str
         The URL on where to access the underlying file.
+    pipeline_name: [Optional] str
+        The name of the ML pipeline the dataset is used in.
+    parent_name: [Optional] str
+        The name of the parent artifact in the mentioned pipeline. If source node, set to None (default).
     """
+
     dataset = mlflow.data.from_pandas(df, name=name)
     mlflow.log_input(dataset)
     mlruns_path = mlflow.get_tracking_uri().replace("file:///", "")
@@ -105,16 +115,22 @@ def register_data_pandas(
                 "dataset_type": "pandas.DataFrame",
                 "num_rows": num_rows,
                 "num_columns": num_columns,
-                "schema": schema_data["mlflow_colspec"],
+                "data_schema": schema_data["mlflow_colspec"],
             }
             if url is not None:
                 result["url"] = url
+            if pipeline_name is not None:
+                result["pipeline_name"] = pipeline_name
+            if parent_name is not None:
+                result["parent_name"] = parent_name
             response = requests.post(
-                "http://localhost:8080/data-artifact/pandas/",
+                "http://localhost:8080/data-artifacts",
                 json=result,
             )
             if response.status_code == 200:
-                print("Entry registered successfully", response.json())
+                response_json = response.json()
+                message = response_json.get("message", "No message provided")
+                print(f"{message}")
             else:
                 print("Failed to register entry:", response.text)
         else:

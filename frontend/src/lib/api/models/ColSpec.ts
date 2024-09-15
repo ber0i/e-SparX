@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Schema for a column specification used in DataArtifactPandas
+ * Schema for a column specification used in pandas data artifacts.
  */
 export type ColSpec = {
     type: string;

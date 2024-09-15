@@ -3,8 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ArtifactResponse } from '../models/ArtifactResponse';
-import type { DataArtifactFree } from '../models/DataArtifactFree';
-import type { DataArtifactPandas } from '../models/DataArtifactPandas';
+import type { DataArtifact } from '../models/DataArtifact';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -22,38 +21,18 @@ export class DataArtifactsService {
         });
     }
     /**
-     * Register Free Data Artifact
-     * Register a free-form data artifact.
+     * Register Data Artifact
+     * Register a data artifact. Currently supported: Free-form and pd.DataFrame artifacts.
      * @param requestBody
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static registerFreeDataArtifactDataArtifactsPost(
-        requestBody: DataArtifactFree,
+    public static registerDataArtifactDataArtifactsPost(
+        requestBody: DataArtifact,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/data-artifacts/',
-            body: requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-    /**
-     * Register Pandas Data Artifact
-     * Register a pandas.DataFrame data artifact. Saves the artifact in the document database.
-     * @param requestBody
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static registerPandasDataArtifactDataArtifactsPandasPost(
-        requestBody: DataArtifactPandas,
-    ): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/data-artifacts/pandas',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

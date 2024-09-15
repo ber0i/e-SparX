@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DataArtifactsService } from "@/lib/api/services/DataArtifactsService";
-import type { DataArtifactPandas } from "@/lib/api/models/DataArtifactPandas";
+import type { DataArtifact } from "@/lib/api/models/DataArtifact";
 
 export default function ArtifactsPage() {
-  const [Artifacts, setArtifacts] = useState<DataArtifactPandas[]>([]);
+  const [Artifacts, setArtifacts] = useState<DataArtifact[]>([]);
   const router = useRouter();
 
   useEffect(() => {
