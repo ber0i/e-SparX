@@ -2,6 +2,7 @@
 # The configs are specified in the .env file at the project root.
 
 services:
+
   artifactdb:
     container_name: artifactdb
     image: mongo
@@ -55,6 +56,34 @@ services:
     depends_on:
       artifactdb:
         condition: service_healthy
+      dagdb:
+        condition: service_healthy
+
+  artifactdbgui:
+    container_name: artifactdbgui
+    image: mongo-express
+    restart: on-failure
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
+      ME_CONFIG_MONGODB_SERVER: artifactdb
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+    ports:
+      - "8081:8081"
+    depends_on:
+      artifactdb:
+        condition: service_healthy
+
+  dagdbgui:
+    container_name: dagdbgui
+    image: dpage/pgadmin4
+    restart: on-failure
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "8082:80"
+    depends_on:
       dagdb:
         condition: service_healthy
 

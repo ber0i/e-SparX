@@ -1,51 +1,67 @@
-'use client'
-import React, { useCallback } from 'react';
-import {
-  ReactFlow,
-  addEdge,
-  Connection,
-  useNodesState,
-  useEdgesState,
-} from '@xyflow/react';
- 
-import '@xyflow/react/dist/style.css';
- 
-const initialNodes = [
-  {
-    id: 'Freedom',
-    sourcePosition: 'right',
-    type: 'input',
-    data: { label: 'Freedom' },
-    position: { x: 100, y: 100 },
-  },
-  {
-    id: 'Kelmarsh SCADA Data',
-    sourcePosition: 'right',
-    targetPosition: 'left',
-    data: { label: 'Kelmarsh SCADA Data' },
-    position: { x: 350, y: 100 },
-  },
-];
-const initialEdges = [{ id: 'e1-2', source: 'Freedom', target: 'Kelmarsh SCADA Data' }];
- 
-export default function App() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
- 
-  const onConnect = useCallback(
-    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges],
-  );
- 
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { PipelinesService } from "@/lib/api/services/PipelinesService";
+import type { Pipeline } from "@/lib/manual/pipeline";
+
+
+export default function PipelinesPage() {
+  const [Pipelines, setPipelines] = useState<Pipeline[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchPipelines = async () => {
+      try {
+        const response = await PipelinesService.getPipelinesPipelinesGet();
+        setPipelines(response);
+      } catch (error) {
+        console.error("Failed to fetch pipelines", error);
+      }
+    };
+
+    fetchPipelines();
+  }, []);
+
+  // Handler to navigate to the artifact details page
+  const handleRowClick = (name: string) => {
+    router.push(`/pipelines/${name}`);  // Navigate to /pipelines/[name]
+  };
+
+
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-      />
+    <div className="p-5 ">
+      <h1>Pipelines Overview</h1>
+      <section className="mb-8">
+        <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+          <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+            <table className="min-w-full leading-normal">
+              <thead>
+                <tr>
+                  <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                    Name
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {Pipelines.map((pipeline) => (
+                  <tr
+                    key={pipeline.name}
+                    className="cursor-pointer"
+                    onClick={() => handleRowClick(pipeline.name)}
+                  >
+                    <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
+                      <div className="text-contrast whitespace-no-wrap">
+                        {pipeline.name}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

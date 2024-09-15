@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 
-import * as api from "@/lib/api";
+import * as api from "@/lib/manual/api";
 import { useEffect, useState } from "react";
 
 export default function StatusPage() {

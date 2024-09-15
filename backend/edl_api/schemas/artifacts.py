@@ -31,7 +31,9 @@ class DataArtifactPandas(BaseModel):
     description: str
     dataset_type: str
     created_at: datetime = datetime.now()
-    url: Optional[HttpUrl] = None
     num_rows: int
     num_columns: int
-    schema: List[ColSpec]
+    data_schema: List[ColSpec]
+    url: Optional[HttpUrl] = None
+    pipeline_name: Optional[str] = None
+    parent_name: Optional[str] = None

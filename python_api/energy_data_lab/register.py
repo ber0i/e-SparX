@@ -19,7 +19,11 @@ def register_data_free(
     parent_name: Optional[str] = None,
 ):
     """
-    Register a free-form dataset artifact in the Energy Data Lab.
+    Registers a free-form dataset artifact in the Energy Data Lab.
+    To add an existing artifact to a pipeline, use the existing artifact name in name and define the pipeline via the pipeline_name.
+    If the pipeline does not exist yet, it will be created.
+    Pipeline connections are specified via the parent_name parameter.
+    If your artifact is a source node in the pipeline, set parent_name to None (default).
 
     Parameters
     ----------
@@ -48,7 +52,9 @@ def register_data_free(
         json=result,
     )
     if response.status_code == 200:
-        print("Entry registered successfully", response.json())
+        response_json = response.json()
+        message = response_json.get("message", "No message provided")
+        print(f"{message}")
     else:
         print("Failed to register entry:", response.text)
 

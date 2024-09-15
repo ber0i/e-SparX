@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DataArtifactService } from "@/lib/api/services/DataArtifactService";
+import { DataArtifactsService } from "@/lib/api/services/DataArtifactsService";
 import type { DataArtifactPandas } from "@/lib/api/models/DataArtifactPandas";
 
 export default function ArtifactDetailPage({ params }: { params: { name: string } }) {
@@ -11,11 +11,10 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
 
   useEffect(() => {
     const fetchArtifactDetails = async () => {
-      console.log(name)
       if (name) {
         try {
-          // Assuming there is an API to fetch a single artifact by name
-          const response = await DataArtifactService.getArtifactByNameDataArtifactNameGet(name as string);
+          // Fetch artifact by name
+          const response = await DataArtifactsService.getArtifactByNameDataArtifactsNameGet(name as string);
           setArtifact(response);
         } catch (error) {
           console.error("Failed to fetch artifact details", error);
@@ -28,8 +27,6 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
   if (!artifact) {
     return <div>Loading...</div>;
   }
-
-  console.log(name)
 
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) {
@@ -50,24 +47,37 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
   return (
     <div className="p-5">
       <h1>Artifact Details: {artifact.name}</h1>
-      <p>Description: {artifact.description}</p>
-      <p>Dataset Type: {artifact.dataset_type}</p>
-      <p>Created At: {formatDate(artifact.created_at)}</p>
-      {artifact.num_rows ? (
-        <p>Number of Rows: {artifact.num_rows}</p>
-      ) : (
-        <p>Number of Rows: not available</p>
-      )}
-      {artifact.num_columns ? (
-        <p>Number of Columns: {artifact.num_columns}</p>
-      ) : (
-        <p>Number of Columns: not available</p>
-      )}
+      <div className="artifact-info">
+        <p className="key">Description:</p>
+        <p className="value">{artifact.description}</p>
 
-      {/* Schema Table */}
-      <h2>Dataset Schema</h2>
-      {artifact.schema && artifact.schema.length > 0 ? (
+        <p className="key">Dataset Type:</p>
+        <p className="value">{artifact.dataset_type}</p>
+
+        <p className="key">Created At:</p>
+        <p className="value">{formatDate(artifact.created_at)}</p>
+
+        <p className="key">URL to artifact:</p>
+        <p className="value">
+          {artifact.url ? (
+            <a href={artifact.url} target="_blank" rel="noopener noreferrer" className="artifact-link">
+              {artifact.url}
+            </a>
+          ) : (
+            "not available"
+          )}
+        </p>
+
+        <p className="key">Number of Rows:</p>
+        <p className="value">{artifact.num_rows ? artifact.num_rows : "not available"}</p>
+
+        <p className="key">Number of Columns:</p>
+        <p className="value">{artifact.num_columns ? artifact.num_columns : "not available"}</p>
+      </div>
+      
+      {artifact.data_schema && artifact.data_schema.length > 0 ? (
         <div className="overflow-x-auto">
+          <h2>Dataset Schema</h2>
           <table className="min-w-full leading-normal border">
             <thead>
               <tr>
@@ -83,7 +93,7 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
               </tr>
             </thead>
             <tbody>
-              {artifact.schema.map((colSpec, index) => (
+              {artifact.data_schema.map((colSpec, index) => (
                 <tr key={index}>
                   <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
                     <div className="text-contrast whitespace-no-wrap">

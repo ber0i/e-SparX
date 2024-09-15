@@ -14,6 +14,6 @@ export type DataArtifactPandas = {
     url?: (string | null);
     num_rows: number;
     num_columns: number;
-    schema?: Array<ColSpec>;
+    data_schema: Array<ColSpec>;
 };
 

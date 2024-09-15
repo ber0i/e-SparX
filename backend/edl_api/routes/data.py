@@ -14,7 +14,7 @@ from edl_api.schemas import (
     DataArtifactPandas,
 )
 
-DataArtifactRouter = APIRouter(tags=["Data Artifact"])
+DataArtifactRouter = APIRouter(tags=["Data Artifacts"])
 
 db = DocumentDBClient.artifactdb
 artifact_collection = db.artifacts
@@ -23,32 +23,47 @@ artifact_collection.create_index("name", unique=True)
 
 @DataArtifactRouter.post("/")
 async def register_free_data_artifact(dataset: DataArtifactFree, session: Session = Session):
-    """Register a free-form data artifact. Saves the artifact in the document database."""
+    """Register a free-form data artifact."""
 
     entry_data = dataset.model_dump()
     pipeline = entry_data["pipeline_name"] if entry_data["pipeline_name"] else None
-    node_data = ArtifactCreation(name=entry_data["name"], pipeline=pipeline)
-    try:
-        # Check if an entry with the same name already exists in artifactdb
-        existing_entry = artifact_collection.find_one({"name": entry_data["name"]})
-        if not existing_entry:
-            # Insert the new entry if the name is not found
-            artifact_collection.insert_one(entry_data)
-            print("Entry inserted successfully.")
+    parent = entry_data["parent_name"] if entry_data["parent_name"] else None
 
-        with session.begin() as s:
-            response = Artifact.create(session=s, param=node_data)
-        return {"message": response}
-    except DuplicateKeyError:
-        print("Error: An artifact with the same name already exists.")
-        return {"error": "Artifact with this name already exists."}
+    if parent and not pipeline:
+        return {"error": "Parent artifact specified without pipeline."}
+    if parent:
+        parent_entry = artifact_collection.find_one({"name": entry_data["parent_name"]})
+        if not parent_entry:
+            return {"error": "Parent artifact does not exist. Create the parent artifact first."}
+
+    # If artifact does not exist in artifactdb, insert it
+    existing_entry = artifact_collection.find_one({"name": entry_data["name"]})
+    if not existing_entry:
+        if entry_data["url"]:
+            entry_data["url"] = str(entry_data["url"])
+        # remove pipeline-related logic
+        entry_data.pop("pipeline_name", None)
+        entry_data.pop("parent_name", None)
+        artifact_collection.insert_one(entry_data)
+        print("New artifact inserted successfully in artifactdb.")
+    else:
+        print("Artifact already exists in artifactdb.")
+
+    # Handle dagdb operations (logic is inside the create method)
+    node_data = ArtifactCreation(name=entry_data["name"], pipeline=pipeline, parent=parent)
+    with session.begin() as s:
+        response = Artifact.create(session=s, param=node_data)
+
+    return {"message": response}
 
 
 @DataArtifactRouter.post("/pandas")
 async def register_pandas_data_artifact(dataset: DataArtifactPandas):
-    """Register a pandas.DataFrame data artifact. Saves the artifact in the document database."""
+    """Register a pandas.DataFrame data artifact."""
 
     entry_data = dataset.model_dump()
+    if entry_data["url"]:
+        entry_data["url"] = str(entry_data["url"])
     try:
         artifact_collection.insert_one(entry_data)
         return {"message": f"Artifact registered: {entry_data}"}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { DataArtifactService } from "@/lib/api/services/DataArtifactService";
+import { DataArtifactsService } from "@/lib/api/services/DataArtifactsService";
 import type { DataArtifactPandas } from "@/lib/api/models/DataArtifactPandas";
 
 export default function ArtifactsPage() {
@@ -12,7 +12,7 @@ export default function ArtifactsPage() {
   useEffect(() => {
     const fetchArtifacts = async () => {
       try {
-        const response = await DataArtifactService.getArtifactsDataArtifactGet();
+        const response = await DataArtifactsService.getArtifactsDataArtifactsGet();
         setArtifacts(response.entries);
       } catch (error) {
         console.error("Failed to fetch datasets", error);

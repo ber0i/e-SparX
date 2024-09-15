@@ -83,4 +83,27 @@
     @apply rounded-md focus-visible:outline-none disabled:cursor-not-allowed m-0 focus-visible:ring-primary focus-visible:ring-1;
     @apply bg-accent text-contrast p-1;
   }
+
+  .artifact-link {
+    text-decoration: underline;
+  }
+
+  .artifact-info {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .artifact-info p {
+    margin: 0;
+  }
+  
+  .artifact-info .key {
+    font-weight: bold;
+  }
+  
+  .artifact-info .value {
+    text-align: left;
+  }
 }

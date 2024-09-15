@@ -3,10 +3,11 @@ from __future__ import annotations
 from typing import List, Optional
 
 from pydantic import BaseModel
-from sqlalchemy import Column, ForeignKey, Integer, String, Table, select
+from sqlalchemy import Column, ForeignKey, Integer, String, Table, and_, select
 from sqlalchemy.orm import (
     Mapped,
     Session,
+    aliased,
     declarative_base,
     joinedload,
     mapped_column,
@@ -19,29 +20,29 @@ Base = declarative_base()
 artifact_pipelines = Table(
     "artifact_pipelines",
     Base.metadata,
-    Column("left_id", ForeignKey("artifacts.id"), primary_key=True),
-    Column("right_id", ForeignKey("pipelines.id"), primary_key=True),
+    Column("left_id", ForeignKey("artifacts.id", ondelete="CASCADE"), primary_key=True),
+    Column("right_id", ForeignKey("pipelines.id", ondelete="CASCADE"), primary_key=True),
 )
 
 connection_sourceartifact = Table(
     "connection_sourceartifact",
     Base.metadata,
-    Column("left_id", ForeignKey("connections.id"), primary_key=True),
-    Column("right_id", ForeignKey("artifacts.id"), primary_key=True),
+    Column("left_id", ForeignKey("connections.id", ondelete="CASCADE"), primary_key=True),
+    Column("right_id", ForeignKey("artifacts.id", ondelete="CASCADE"), primary_key=True),
 )
 
 connection_targetartifact = Table(
     "connection_targetartifact",
     Base.metadata,
-    Column("left_id", ForeignKey("connections.id"), primary_key=True),
-    Column("right_id", ForeignKey("artifacts.id"), primary_key=True),
+    Column("left_id", ForeignKey("connections.id", ondelete="CASCADE"), primary_key=True),
+    Column("right_id", ForeignKey("artifacts.id", ondelete="CASCADE"), primary_key=True),
 )
 
 connection_pipeline = Table(
     "connection_pipeline",
     Base.metadata,
-    Column("left_id", ForeignKey("connections.id"), primary_key=True),
-    Column("right_id", ForeignKey("pipelines.id"), primary_key=True),
+    Column("left_id", ForeignKey("connections.id", ondelete="CASCADE"), primary_key=True),
+    Column("right_id", ForeignKey("pipelines.id", ondelete="CASCADE"), primary_key=True),
 )
 
 
@@ -52,7 +53,10 @@ class ArtifactCreation(BaseModel):
     """Name of the artifact"""
 
     pipeline: Optional[str] = None
-    """List of pipeline names this artifact is part of"""
+    """Pipeline names this artifact should be linked to"""
+
+    parent: Optional[str] = None
+    """Name of the parent artifact in pipeline"""
 
 
 class ArtifactResponse(BaseModel):
@@ -61,6 +65,15 @@ class ArtifactResponse(BaseModel):
 
     class Config:
         model_config = {"from_attributes": True}  # Use model_validate
+
+
+class ArtifactResponseForConnections(BaseModel):
+    name: str
+
+
+class ConnectionResponse(BaseModel):
+    source: ArtifactResponseForConnections
+    target: ArtifactResponseForConnections
 
 
 class Artifact(Base):
@@ -74,15 +87,20 @@ class Artifact(Base):
     name: Mapped[str] = mapped_column("name", String, unique=True, nullable=False)
     """Unique artifact name"""
 
-    pipelines: Mapped[List[Pipeline]] = relationship(secondary=artifact_pipelines, back_populates="artifacts")
-    """List of pipelines the artifact is part of"""
+    pipelines: Mapped[List[Pipeline]] = relationship(
+        secondary=artifact_pipelines, back_populates="artifacts", cascade="all, delete"
+    )
+    """
+    List of pipelines the artifact is part of.
+    When an artifact is deleted, the link to the pipeline is also deleted.
+    """
 
-    connections_as_source: Mapped[List[Connections]] = relationship(
-        secondary=connection_sourceartifact, back_populates="source"
+    connections_as_source: Mapped[List[Connection]] = relationship(
+        secondary=connection_sourceartifact, back_populates="source", cascade="all, delete"
     )
 
-    connections_as_target: Mapped[List[Connections]] = relationship(
-        secondary=connection_targetartifact, back_populates="target"
+    connections_as_target: Mapped[List[Connection]] = relationship(
+        secondary=connection_targetartifact, back_populates="target", cascade="all, delete"
     )
 
     @classmethod
@@ -104,7 +122,6 @@ class Artifact(Base):
     def get_artifacts_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Artifact"]:
         """Get all artifacts in a pipeline"""
 
-        print(pipeline_name)
         stmt = (
             select(cls)
             .options(joinedload(cls.pipelines))
@@ -112,39 +129,96 @@ class Artifact(Base):
             .join(Pipeline, artifact_pipelines.c.right_id == Pipeline.id)  # Join artifact_pipelines with pipelines
             .where(Pipeline.name == pipeline_name)  # Filter by pipeline name
         )
-        print(stmt.compile(compile_kwargs={"literal_binds": True}))
         return session.execute(stmt).unique().scalars().all()
 
     @classmethod
     def create(cls, session: Session, param: ArtifactCreation) -> "Artifact":
-        """Create a new artifact"""
+        """
+        Dagdb operation to create an artifact and link it to a pipeline.
+        See Miro graphik for underlying logic.
+        """
 
-        # If a pipeline was passed, retrieve it or create a new one
-        if param.pipeline:
-            pipeline_obj = session.query(Pipeline).filter_by(name=param.pipeline).first()
-            if not pipeline_obj:
-                print(f"Pipeline {param.pipeline} does not exist. Creating a new one.")
-                pipeline_obj = Pipeline(name=param.pipeline)
-                session.add(pipeline_obj)
-                session.flush()
-                print("New pipeline entry created.")
-
-        # Check whether artifact exists in artifacts table
         artifact = session.query(Artifact).filter_by(name=param.name).first()
-
-        if not artifact and not param.pipeline:
+        if not artifact:
             artifact = Artifact(name=param.name)
             session.add(artifact)
             session.flush()
-            response = f"Artifact {artifact.name} created without link to a pipeline."
-        elif not artifact:
-            artifact = Artifact(name=param.name, pipelines=[pipeline_obj])
-            session.add(artifact)
-            session.flush()
-            response = f"Artifact {artifact.name} created and linked to pipeline {pipeline_obj.name}."
+            print(f"Artifact {artifact.name} created.")
+            response = f"Artifact {artifact.name} created."
         else:
-            artifact.pipelines.append(pipeline_obj)
-            response = f"Artifact {artifact.name} found and linked to pipeline {pipeline_obj.name}."
+            print(f"Artifact {artifact.name} already exists.")
+            response = f"Artifact {artifact.name} already exists."
+
+        if not param.pipeline:
+            print("No pipeline linked.")
+            response += " No pipeline linked."  # Done.
+
+        else:
+            pipeline = session.query(Pipeline).filter_by(name=param.pipeline).first()
+            if not pipeline:
+                pipeline = Pipeline(name=param.pipeline, artifacts=[artifact])
+                session.add(pipeline)
+                session.flush()
+                print(f"Pipeline {pipeline.name} created and linked to artifact {artifact.name}.")
+                response += f" Pipeline {pipeline.name} created and linked to artifact {artifact.name}."
+
+            else:
+                if pipeline not in artifact.pipelines:
+                    artifact.pipelines.append(pipeline)
+                    print(f"Pipeline {pipeline.name} found and linked to artifact {artifact.name}.")
+                    response += f" Pipeline {pipeline.name} found and linked to artifact {artifact.name}."
+                else:
+                    print(f"Pipeline {pipeline.name} found, and it is already linked to artifact {artifact.name}.")
+                    response += (
+                        f" Pipeline {pipeline.name} found, and it is already linked to artifact {artifact.name}."
+                    )
+
+            if param.parent:
+                parent = session.query(Artifact).filter_by(name=param.parent).first()
+
+                # Aliases for clearer joins
+                SourceArtifact = aliased(Artifact, name="source_artifact")
+                TargetArtifact = aliased(Artifact, name="target_artifact")
+
+                # Query for existing connection
+                connection = (
+                    session.query(Connection)
+                    .join(connection_sourceartifact, connection_sourceartifact.c.left_id == Connection.id)
+                    .join(SourceArtifact, connection_sourceartifact.c.right_id == SourceArtifact.id)
+                    .join(connection_targetartifact, connection_targetartifact.c.left_id == Connection.id)
+                    .join(TargetArtifact, connection_targetartifact.c.right_id == TargetArtifact.id)
+                    .filter(
+                        and_(
+                            SourceArtifact.id == parent.id,
+                            TargetArtifact.id == artifact.id,
+                            Connection.pipeline == pipeline,
+                        )
+                    )
+                    .first()
+                )
+                if not connection:
+                    parent = session.query(Artifact).filter_by(name=param.parent).first()
+                    connection = Connection(source=parent, target=artifact, pipeline=pipeline)
+                    session.add(connection)
+                    session.flush()
+                    print(
+                        f"Connection between {param.parent} and {param.name} created within pipeline {param.pipeline}."
+                    )
+                    response += (
+                        f" Connection between {param.parent} and {param.name} created within pipeline {param.pipeline}."
+                    )
+                    # Check whether the connection parent is linked to the pipeline
+                    if parent not in pipeline.artifacts:
+                        parent.pipelines.append(pipeline)
+                        print(
+                            f"For this, the parent artifact {parent.name} was linked to pipeline {pipeline.name}, as this connection had not been established yet."
+                        )
+                        response += f" For this, the parent artifact {parent.name} was linked to pipeline {pipeline.name}, as this connection had not been established yet."
+                else:
+                    print(
+                        f"Connection between {param.parent} and {param.name} already exists in pipeline {param.pipeline}."
+                    )
+                    response += f" Connection between {param.parent} and {param.name} already exists in pipeline {param.pipeline}."  # Done.
 
         return response
 
@@ -160,12 +234,22 @@ class Pipeline(Base):
     name: Mapped[str] = mapped_column("name", String, unique=True, nullable=False)
     """Unique pipeline name"""
 
-    artifacts: Mapped[List[Artifact]] = relationship(secondary=artifact_pipelines, back_populates="pipelines")
+    artifacts: Mapped[List[Artifact]] = relationship(
+        secondary=artifact_pipelines, back_populates="pipelines", cascade="all, delete"
+    )
 
-    connections: Mapped[List[Connections]] = relationship(secondary=connection_pipeline, back_populates="pipeline")
+    connections: Mapped[List[Connection]] = relationship(
+        secondary=connection_pipeline, back_populates="pipeline", cascade="all, delete"
+    )
+
+    @classmethod
+    def get_all_pipelines(cls, session: Session) -> List["Pipeline"]:
+        """Get all pipelines"""
+
+        return session.query(cls).all()
 
 
-class Connections(Base):
+class Connection(Base):
     """Represenation of a connection between two artifacts in the SQL/DAG database"""
 
     __tablename__ = "connections"
@@ -173,11 +257,32 @@ class Connections(Base):
     id: Mapped[int] = mapped_column("id", Integer, primary_key=True, unique=True, autoincrement=True, nullable=False)
     """unique identifier of the connection"""
 
-    source: Mapped[Artifact] = relationship(secondary=connection_sourceartifact, back_populates="connections_as_source")
+    source: Mapped[Artifact] = relationship(
+        secondary=connection_sourceartifact, back_populates="connections_as_source", cascade="all, delete"
+    )
     """source artifact"""
 
-    target: Mapped[Artifact] = relationship(secondary=connection_targetartifact, back_populates="connections_as_target")
+    target: Mapped[Artifact] = relationship(
+        secondary=connection_targetartifact, back_populates="connections_as_target", cascade="all, delete"
+    )
     """target artifact"""
 
-    pipeline: Mapped[Pipeline] = relationship(secondary=connection_pipeline, back_populates="connections")
+    pipeline: Mapped[Pipeline] = relationship(
+        secondary=connection_pipeline, back_populates="connections", cascade="all, delete"
+    )
     """corresponding pipeline"""
+
+    @classmethod
+    def get_connections_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Connection"]:
+        """Get all connections in a pipeline"""
+
+        stmt = (
+            select(cls)
+            .options(joinedload(cls.pipeline))
+            .join(
+                connection_pipeline, cls.id == connection_pipeline.c.left_id
+            )  # Join connections with connection_pipeline
+            .join(Pipeline, connection_pipeline.c.right_id == Pipeline.id)  # Join connection_pipelines with pipelines
+            .where(Pipeline.name == pipeline_name)  # Filter by pipeline name
+        )
+        return session.execute(stmt).unique().scalars().all()

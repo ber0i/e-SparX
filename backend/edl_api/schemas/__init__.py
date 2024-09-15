@@ -1,2 +1,2 @@
 from .artifacts import DataArtifactFree, DataArtifactPandas
-from .dag import Base, ArtifactResponse, ArtifactCreation, Artifact
+from .dag import Base, ArtifactResponse, ArtifactCreation, Artifact, Pipeline, Connection, ConnectionResponse
