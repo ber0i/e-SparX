@@ -19,7 +19,8 @@ class DataArtifact(BaseModel):
     description: str
     dataset_type: str
     created_at: datetime = datetime.now()
-    url: Optional[HttpUrl] = None
+    source_url: Optional[HttpUrl] = None
+    download_url: Optional[HttpUrl] = None
     pipeline_name: Optional[str] = None
     parent_name: Optional[str] = None
     num_rows: Optional[int] = None

@@ -16,10 +16,10 @@ df = pd.read_csv(file_path, nrows=100)
 # We should think about how to handle this in the future
 
 edl.register_data_pandas(
-    name="Kelmarsh Wind Power",
-    description="SCADA wind power measurements on turbine level at the Kelmarsh wind farm.",
+    name="Kelmarsh SCADA 2022",
+    description="SCADA wind power measurements on turbine level at the Kelmarsh wind farm from 2022.",
     df=df,
-    url="https://zenodo.org/records/8252025",
+    source_url="https://zenodo.org/records/8252025",
     pipeline_name="Wind Power Forecasting",
 )
 

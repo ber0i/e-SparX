@@ -32,8 +32,10 @@ async def register_data_artifact(dataset: DataArtifact, session: Session = Sessi
     # If artifact does not exist in artifactdb, insert it
     existing_entry = artifact_collection.find_one({"name": entry_data["name"]})
     if not existing_entry:
-        if entry_data["url"]:
-            entry_data["url"] = str(entry_data["url"])
+        if entry_data["source_url"]:
+            entry_data["source_url"] = str(entry_data["source_url"])
+        if entry_data["download_url"]:
+            entry_data["download_url"] = str(entry_data["download_url"])
         # remove pipeline-related logic
         entry_data.pop("pipeline_name", None)
         entry_data.pop("parent_name", None)

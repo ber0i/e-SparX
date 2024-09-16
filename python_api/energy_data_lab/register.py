@@ -14,7 +14,8 @@ from pydantic import HttpUrl
 def register_data_free(
     name: str,
     description: str,
-    url: Optional[HttpUrl] = None,
+    source_url: Optional[HttpUrl] = None,
+    download_url: Optional[HttpUrl] = None,
     pipeline_name: Optional[str] = None,
     parent_name: Optional[str] = None,
 ):
@@ -31,8 +32,10 @@ def register_data_free(
         The name of the dataset.
     description : str
         The description of the dataset.
-    url: [Optional] str
-        The URL on where to access the underlying file.
+    source_url: [Optional] str
+        The URL on where to find the underlying file.
+    download_url: [Optional] str
+        The download URL of the underlying file.
     pipeline_name: [Optional] str
         The name of the ML pipeline the dataset is used in.
     parent_name: [Optional] str
@@ -42,7 +45,8 @@ def register_data_free(
         "name": name,
         "description": description,
         "dataset_type": "free-form",
-        "url": url,
+        "source_url": source_url,
+        "download_url": download_url,
         "pipeline_name": pipeline_name,
         "parent_name": parent_name,
     }
@@ -63,7 +67,8 @@ def register_data_pandas(
     name: str,
     description: str,
     df: pd.DataFrame,
-    url: Optional[HttpUrl] = None,
+    source_url: Optional[HttpUrl] = None,
+    download_url: Optional[HttpUrl] = None,
     pipeline_name: Optional[str] = None,
     parent_name: Optional[str] = None,
 ):
@@ -78,8 +83,10 @@ def register_data_pandas(
         The description of the dataset.
     df : pd.DataFrame
         The pandas DataFrame to register.
-    url: [Optional] str
-        The URL on where to access the underlying file.
+    source_url: [Optional] str
+        The URL on where to find the underlying file.
+    download_url: [Optional] str
+        The download URL of the underlying file.
     pipeline_name: [Optional] str
         The name of the ML pipeline the dataset is used in.
     parent_name: [Optional] str
@@ -117,8 +124,10 @@ def register_data_pandas(
                 "num_columns": num_columns,
                 "data_schema": schema_data["mlflow_colspec"],
             }
-            if url is not None:
-                result["url"] = url
+            if source_url is not None:
+                result["source_url"] = source_url
+            if download_url is not None:
+                result["download_url"] = download_url
             if pipeline_name is not None:
                 result["pipeline_name"] = pipeline_name
             if parent_name is not None:

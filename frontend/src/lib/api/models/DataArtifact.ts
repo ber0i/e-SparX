@@ -11,7 +11,8 @@ export type DataArtifact = {
     description: string;
     dataset_type: string;
     created_at?: string;
-    url?: (string | null);
+    source_url?: (string | null);
+    download_url?: (string | null);
     pipeline_name?: (string | null);
     parent_name?: (string | null);
     num_rows?: (number | null);
