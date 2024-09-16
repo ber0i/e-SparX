@@ -9,7 +9,8 @@ import type { ColSpec } from './ColSpec';
 export type DataArtifact = {
     name: string;
     description: string;
-    dataset_type: string;
+    artifact_type: string;
+    file_type: string;
     created_at?: string;
     source_url?: (string | null);
     download_url?: (string | null);

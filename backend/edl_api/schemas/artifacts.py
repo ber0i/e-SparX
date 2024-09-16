@@ -17,7 +17,8 @@ class DataArtifact(BaseModel):
 
     name: str
     description: str
-    dataset_type: str
+    artifact_type: str
+    file_type: str
     created_at: datetime = datetime.now()
     source_url: Optional[HttpUrl] = None
     download_url: Optional[HttpUrl] = None

@@ -51,8 +51,11 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
         <p className="key">Description:</p>
         <p className="value">{artifact.description}</p>
 
-        <p className="key">Dataset Type:</p>
-        <p className="value">{artifact.dataset_type}</p>
+        <p className="key">Artifact Type:</p>
+        <p className="value">{artifact.artifact_type}</p>
+
+        <p className="key">File Type:</p>
+        <p className="value">{artifact.file_type}</p>
 
         <p className="key">Created At:</p>
         <p className="value">{formatDate(artifact.created_at)}</p>

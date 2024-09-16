@@ -14,6 +14,7 @@ from pydantic import HttpUrl
 def register_data_free(
     name: str,
     description: str,
+    file_type: str,
     source_url: Optional[HttpUrl] = None,
     download_url: Optional[HttpUrl] = None,
     pipeline_name: Optional[str] = None,
@@ -32,6 +33,8 @@ def register_data_free(
         The name of the dataset.
     description : str
         The description of the dataset.
+    file_type : str
+        The type of the underlying file, as "CSV", "ZIP", etc.
     source_url: [Optional] str
         The URL on where to find the underlying file.
     download_url: [Optional] str
@@ -44,7 +47,8 @@ def register_data_free(
     result = {
         "name": name,
         "description": description,
-        "dataset_type": "free-form",
+        "file_type": file_type,
+        "artifact_type": "dataset",
         "source_url": source_url,
         "download_url": download_url,
         "pipeline_name": pipeline_name,
@@ -93,7 +97,9 @@ def register_data_pandas(
         The name of the parent artifact in the mentioned pipeline. If source node, set to None (default).
     """
 
-    dataset = mlflow.data.from_pandas(df, name=name)
+    # we only pass the first 100 rows to mlflow as otherwise, the dataset is too slow
+    # the correct nrows will be extracted from df manually
+    dataset = mlflow.data.from_pandas(df.head(100), name=name)
     mlflow.log_input(dataset)
     mlruns_path = mlflow.get_tracking_uri().replace("file:///", "")
     datasets_path = os.path.join(mlruns_path, "0", "datasets")
@@ -107,19 +113,19 @@ def register_data_pandas(
             with open(meta_yaml_path, "r") as yaml_file:
                 meta_data = yaml.safe_load(yaml_file)
 
-            # Extract 'profile' and 'schema' fields and parse them as JSON
-            profile_data = json.loads(meta_data.get("profile", "{}"))
+            # Extract 'schema' field and parse it as JSON
             schema_data = json.loads(meta_data.get("schema", "{}"))
 
             # Extract number of rows and columns
-            num_rows = profile_data["num_rows"]
+            num_rows = len(df)
             num_columns = len(schema_data["mlflow_colspec"])
 
             # Construct the desired JSON structure
             result = {
                 "name": name,
                 "description": description,
-                "dataset_type": "pandas.DataFrame",
+                "artifact_type": "dataset",
+                "file_type": "pandas.DataFrame",
                 "num_rows": num_rows,
                 "num_columns": num_columns,
                 "data_schema": schema_data["mlflow_colspec"],

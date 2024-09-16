@@ -56,7 +56,10 @@ export default function ArtifactsPage() {
                     Description
                   </th>
                   <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
-                    Dataset Type
+                    Artifact Type
+                  </th>
+                  <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                    File Type
                   </th>
                   <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
                     Created At
@@ -82,7 +85,12 @@ export default function ArtifactsPage() {
                     </td>
                     <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
                       <div className="text-contrast whitespace-no-wrap">
-                        {artifact.dataset_type}
+                        {artifact.artifact_type}
+                      </div>
+                    </td>
+                    <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
+                      <div className="text-contrast whitespace-no-wrap">
+                        {artifact.file_type}
                       </div>
                     </td>
                     <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
