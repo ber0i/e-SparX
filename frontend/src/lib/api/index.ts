@@ -14,9 +14,11 @@ export type { ConnectionCreation } from './models/ConnectionCreation';
 export type { ConnectionResponse } from './models/ConnectionResponse';
 export type { DataArtifact } from './models/DataArtifact';
 export type { HTTPValidationError } from './models/HTTPValidationError';
+export type { ScriptArtifact } from './models/ScriptArtifact';
 export type { ValidationError } from './models/ValidationError';
 
 export { ConnectionsService } from './services/ConnectionsService';
 export { DataArtifactsService } from './services/DataArtifactsService';
 export { PipelinesService } from './services/PipelinesService';
+export { ScriptArtifactsService } from './services/ScriptArtifactsService';
 export { WelcomeService } from './services/WelcomeService';

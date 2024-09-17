@@ -52,6 +52,9 @@ class ArtifactCreation(BaseModel):
     name: str
     """Name of the artifact"""
 
+    artifact_type: str
+    """Type of the artifact. Can be "dataset" or "script"."""
+
     pipeline: Optional[str] = None
     """Pipeline names this artifact should be linked to"""
 
@@ -70,6 +73,7 @@ class ConnectionCreation(BaseModel):
 class ArtifactResponse(BaseModel):
     id: int
     name: str
+    artifact_type: str
 
     class Config:
         model_config = {"from_attributes": True}  # Use model_validate
@@ -94,6 +98,9 @@ class Artifact(Base):
 
     name: Mapped[str] = mapped_column("name", String, unique=True, nullable=False)
     """Unique artifact name"""
+
+    artifact_type: Mapped[str] = mapped_column("artifact_type", String, nullable=False)
+    """Type of the artifact. Can be "dataset" or "script"."""
 
     pipelines: Mapped[List[Pipeline]] = relationship(
         secondary=artifact_pipelines, back_populates="artifacts", cascade="all, delete"
@@ -148,7 +155,7 @@ class Artifact(Base):
 
         artifact = session.query(Artifact).filter_by(name=param.name).first()
         if not artifact:
-            artifact = Artifact(name=param.name)
+            artifact = Artifact(name=param.name, artifact_type=param.artifact_type)
             session.add(artifact)
             session.flush()
             print(f"Artifact '{artifact.name}' created.")

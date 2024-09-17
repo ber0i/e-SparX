@@ -45,7 +45,9 @@ async def register_data_artifact(dataset: DataArtifact, session: Session = Sessi
         print("Artifact already exists in artifactdb.")
 
     # Handle dagdb operations (logic is inside the create method)
-    node_data = ArtifactCreation(name=entry_data["name"], pipeline=pipeline, parent=parent)
+    node_data = ArtifactCreation(
+        name=entry_data["name"], artifact_type=entry_data["artifact_type"], pipeline=pipeline, parent=parent
+    )
     with session.begin() as s:
         response = Artifact.create(session=s, param=node_data)
 
@@ -73,7 +75,11 @@ async def get_artifact_by_name(name: str):
 
 
 def artifact_to_dict(artifact: Artifact) -> dict:
-    return {"id": artifact.id, "name": artifact.name}
+    return {
+        "id": artifact.id,
+        "name": artifact.name,
+        "artifact_type": artifact.artifact_type,
+    }
 
 
 @DataArtifactRouter.get("/pipeline/{pipeline_name}", response_model=List[ArtifactResponse])

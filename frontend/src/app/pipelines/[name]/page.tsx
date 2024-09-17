@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import {
   ReactFlow,
   addEdge,
@@ -10,6 +10,7 @@ import {
  
 import '@xyflow/react/dist/style.css';
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DataArtifactsService } from "@/lib/api/services/DataArtifactsService";
 import { ConnectionsService } from '@/lib/api/services/ConnectionsService';
@@ -37,23 +38,26 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
     const tempMark: Set<string> = new Set();
     const nodeLevels: Map<string, number> = new Map();
 
-    const visit = (node: string, level: number) => {
-      console.log(`Visiting node ${node} at level ${level}`); // Debugging
-      const dependencies = nodesMap.get(node) || [];
-      dependencies.forEach(dep => visit(dep, level + 1));
-      if (!visited.has(node)) {
-        visited.add(node);  // Mark as permanently visited
-        sortedNodes.push(node);  // Add node to sorted result
+    const visit = (node: string, level: number, inLoop: boolean) => {
+      if (tempMark.has(node)) return; // Ignore temporary marked nodes (prevents cycles)
+      if (!visited.has(node) || inLoop) {
+        tempMark.add(node);  // Mark the node temporarily
+        const dependencies = nodesMap.get(node) || [];
+        dependencies.forEach(dep => visit(dep, level + 1, true));
+        if (!visited.has(node)) {
+            visited.add(node);  // Mark as permanently visited
+            sortedNodes.push(node);  // Add node to sorted result
+        }
+        tempMark.delete(node);
+        nodeLevels.set(node, Math.max(level, nodeLevels.get(node) || 0));
       }
-      nodeLevels.set(node, Math.max(level, nodeLevels.get(node) || 0));
     };
 
     nodesMap.forEach((_, node) => {
       if (!visited.has(node)) {
-        visit(node, 0);
+        visit(node, 0, false);
       }
     });
-
     return { sortedNodes, nodeLevels };
   };
 
@@ -66,7 +70,7 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
           const fetchedConnections = await ConnectionsService.getConnectionsByPipelineConnectionsPipelinePipelineNameGet(name as string);
           setConnections(fetchedConnections);
 
-          // Create a dependency map (each node gets assigned a list of source nodes)
+          // Create a dependency map
           const nodeDependencies = new Map<string, string[]>();
           fetchedArtifacts.forEach(artifact => {
             nodeDependencies.set(artifact.name, []);
@@ -76,38 +80,46 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
             nodeDependencies.get(connection.target.name)?.push(connection.source.name);
           });
 
-          console.log("Node Dependencies:", nodeDependencies); // Debugging
-
-          // Perform topological sorting to get the ordered list of nodes and their levels
+          // Perform topological sorting to get the ordered list of nodes
           const { sortedNodes, nodeLevels } = topologicalSort(nodeDependencies);
 
-          console.log("Sorted Nodes:", sortedNodes); // Debugging
-          console.log("Node Levels:", nodeLevels); // Debugging
           // get maximum level
           const maxLevel = Math.max(...Array.from(nodeLevels.values()));
 
-          const levelHeight = 250; // Distance between levels
-          const nodeHeight = 100;  // Distance between nodes at the same level
+          const getNodeStyle = (artifact_type: string) => {
+            if (artifact_type === 'dataset') {
+              return { backgroundColor: 'rgb(63, 161, 241)' };  // Blue background, black text
+            }
+            if (artifact_type === 'script') {
+              return { backgroundColor: 'gray', color: 'white' };  // Gray background, white text
+            }
+            return { backgroundColor: 'white' };  // White background, black text
+          };
 
-          const levelNodeCounts: Map<number, number> = new Map();
+          const levelNodeCounts: Map<number, number> = new Map(); // Initialize the map to track node counts at each level
 
           const updatedNodes = sortedNodes.map((nodeName) => {
             const level = nodeLevels.get(nodeName) || 0;
+            const artifact_type = fetchedArtifacts.find(artifact => artifact.name === nodeName)?.artifact_type || 'unknown';
 
-            // Count nodes at this level to determine vertical positioning
-            const yPos = levelNodeCounts.has(level)
-              ? levelNodeCounts.get(level)! * nodeHeight
-              : 0;
+            // Initialize the node count for this level if it doesn't exist
+            if (!levelNodeCounts.has(level)) {
+            levelNodeCounts.set(level, 0);
+            }
 
-            // Update the count for this level
-            levelNodeCounts.set(level, (levelNodeCounts.get(level) || 0) + 1);
+            // Calculate the vertical position based on how many nodes are already placed at this level
+            const yPos = levelNodeCounts.get(level)! * 100;  // Vertical distance between nodes at the same level
+
+            // Increment the count for this level
+            levelNodeCounts.set(level, levelNodeCounts.get(level)! + 1);
 
             return {
               id: nodeName,
               data: { label: nodeName },
-              position: { x: 100 + maxLevel * levelHeight - level * levelHeight, y: yPos + 100 }, // Correct horizontal spacing
+              position: { x: 100 + maxLevel * 250 - level * 250, y: 100 + yPos },  // Horizontal position by level, vertical by node count at the level
               sourcePosition: 'right',
               targetPosition: 'left',
+              style: getNodeStyle(artifact_type),
             };
           });
           setNodes(updatedNodes);
@@ -142,5 +154,4 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
         onNodeClick={handleNodeClick}
       />
     </div>
-    );
-}
+    );}

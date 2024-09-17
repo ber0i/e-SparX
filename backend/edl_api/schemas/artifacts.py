@@ -29,3 +29,19 @@ class DataArtifact(BaseModel):
     data_schema: Optional[List[ColSpec]] = None
     index_name: Optional[str] = None
     index_dtype: Optional[str] = None
+
+
+class ScriptArtifact(BaseModel):
+    """Schema for a script artifact"""
+
+    name: str
+    description: str
+    artifact_type: str
+    file_type: str
+    created_at: datetime = datetime.now()
+    source_url: Optional[HttpUrl] = None
+    download_url: Optional[HttpUrl] = None
+    pipeline_name: Optional[str] = None
+    parent_name: Optional[str] = None
+    input_artifact: Optional[str] = None
+    output_artifact: Optional[str] = None

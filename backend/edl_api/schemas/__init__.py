@@ -1,4 +1,4 @@
-from .artifacts import DataArtifact
+from .artifacts import DataArtifact, ScriptArtifact
 from .dag import (
     Base,
     ArtifactResponse,

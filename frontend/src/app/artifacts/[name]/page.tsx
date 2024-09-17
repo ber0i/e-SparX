@@ -77,7 +77,7 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
         <p className="key">Created At:</p>
         <p className="value">{formatDate(artifact.created_at)}</p>
 
-        <p className="key">URL to Artifact Source:</p>
+        <p className="key">URL:</p>
         <p className="value">
           {artifact.source_url ? (
             <a href={artifact.source_url} target="_blank" rel="noopener noreferrer" className="artifact-link">

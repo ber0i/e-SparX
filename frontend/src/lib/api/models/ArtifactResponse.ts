@@ -5,5 +5,6 @@
 export type ArtifactResponse = {
     id: number;
     name: string;
+    artifact_type: string;
 };
 
