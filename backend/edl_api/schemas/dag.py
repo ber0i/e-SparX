@@ -59,6 +59,14 @@ class ArtifactCreation(BaseModel):
     """Name of the parent artifact in pipeline"""
 
 
+class ConnectionCreation(BaseModel):
+    """Schema for a connection"""
+
+    source: str
+    target: str
+    pipeline: str
+
+
 class ArtifactResponse(BaseModel):
     id: int
     name: str
@@ -297,3 +305,71 @@ class Connection(Base):
             .where(Pipeline.name == pipeline_name)  # Filter by pipeline name
         )
         return session.execute(stmt).unique().scalars().all()
+
+    @classmethod
+    def create(cls, session: Session, param: ConnectionCreation) -> "Connection":
+        """
+        Dagdb operation to create a connection between two existing artifacts in a pipeline.
+        The artifacts must already be linked to the pipeline.
+        """
+
+        source_artifact = session.query(Artifact).filter_by(name=param.source).first()
+        if not source_artifact:
+            print(f"Artifact '{param.source}' not found.")
+            raise ValueError(f"Artifact '{param.source}' not found.")
+
+        target_artifact = session.query(Artifact).filter_by(name=param.target).first()
+        if not target_artifact:
+            print(f"Artifact '{param.target}' not found.")
+            raise ValueError(f"Artifact '{param.target}' not found.")
+
+        pipeline = session.query(Pipeline).filter_by(name=param.pipeline).first()
+        if not pipeline:
+            print(f"Pipeline '{param.pipeline}' not found.")
+            raise ValueError(f"Pipeline '{param.pipeline}' not found.")
+
+        if pipeline not in source_artifact.pipelines:
+            print(f"Artifact '{param.source}' is not linked to pipeline '{param.pipeline}'.")
+            raise ValueError(f"Artifact '{param.source}' is not linked to pipeline '{param.pipeline}'.")
+
+        if pipeline not in target_artifact.pipelines:
+            print(f"Artifact '{param.target}' is not linked to pipeline '{param.pipeline}'.")
+            raise ValueError(f"Artifact '{param.target}' is not linked to pipeline '{param.pipeline}'.")
+
+        # Aliases for clearer joins
+        SourceArtifact = aliased(Artifact, name="source_artifact")
+        TargetArtifact = aliased(Artifact, name="target_artifact")
+
+        # Query for existing connection
+        connection = (
+            session.query(Connection)
+            .join(connection_sourceartifact, connection_sourceartifact.c.left_id == Connection.id)
+            .join(SourceArtifact, connection_sourceartifact.c.right_id == SourceArtifact.id)
+            .join(connection_targetartifact, connection_targetartifact.c.left_id == Connection.id)
+            .join(TargetArtifact, connection_targetartifact.c.right_id == TargetArtifact.id)
+            .filter(
+                and_(
+                    SourceArtifact.id == source_artifact.id,
+                    TargetArtifact.id == target_artifact.id,
+                    Connection.pipeline == pipeline,
+                )
+            )
+            .first()
+        )
+        if not connection:
+            connection = Connection(source=source_artifact, target=target_artifact, pipeline=pipeline)
+            session.add(connection)
+            session.flush()
+            print(
+                f"Connection between '{param.source}' and '{param.target}' created within pipeline '{param.pipeline}'."
+            )
+            response = (
+                f" Connection between '{param.source}' and '{param.target}' created within pipeline '{param.pipeline}'."
+            )
+        else:
+            print(
+                f"Connection between '{param.source}' and '{param.target}' already exists in pipeline '{param.pipeline}'."
+            )
+            response += f" Connection between '{param.source}' and '{param.target}' already exists in pipeline {param.pipeline}."
+
+        return response
