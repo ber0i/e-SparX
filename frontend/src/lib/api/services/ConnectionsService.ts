@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ConnectionCreation } from '../models/ConnectionCreation';
 import type { ConnectionResponse } from '../models/ConnectionResponse';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -23,6 +24,26 @@ export class ConnectionsService {
             path: {
                 'pipeline_name': pipelineName,
             },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Create Connection
+     * Create a connection between two artifacts in a pipeline
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static createConnectionConnectionsCreatePost(
+        requestBody: ConnectionCreation,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/connections/create',
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },

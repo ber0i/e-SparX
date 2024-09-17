@@ -2,12 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { DataArtifactsService } from "@/lib/api/services/DataArtifactsService";
+import { PipelinesService } from "@/lib/api/services/PipelinesService";
 import type { DataArtifact } from "@/lib/api/models/DataArtifact";
+import type { Pipeline } from "@/lib/manual/pipeline"
 
 export default function ArtifactDetailPage({ params }: { params: { name: string } }) {
   // Get the artifact name from the URL
   const name = params.name;
   const [artifact, setArtifact] = useState<DataArtifact | null>(null);
+  const [pipelines, setPipelines] = useState<Pipeline[]>([]);
 
   useEffect(() => {
     const fetchArtifactDetails = async () => {
@@ -21,8 +24,22 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
         }
       }
     };
+    const fetchPipelines = async () => {
+      if (name) {
+        try {
+          const decodedName = decodeURIComponent(name as string);
+          const fetchedPipelines = await PipelinesService.getPipelinesByArtifactPipelinesArtifactNameGet(decodedName as string);
+          setPipelines(fetchedPipelines);
+        } catch (error) {
+          console.error("Failed to fetch pipelines", error);
+        }
+      }
+    };
     fetchArtifactDetails();
+    fetchPipelines();
   }, [name]);
+
+  
 
   if (!artifact) {
     return <div>Loading...</div>;
@@ -87,11 +104,31 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
 
         <p className="key">Number of Columns:</p>
         <p className="value">{artifact.num_columns ? artifact.num_columns : "not available"}</p>
+
+        <p className="key">Pipelines:</p>
+        <div className="value">
+          {pipelines.length > 0 ? (
+            <ul className="inline-flex">
+              {pipelines.map((pipeline, index) => (
+                <li key={index} className="mr-1">
+                  <a href={`/pipelines/${pipeline.name}`}>{pipeline.name}</a>
+                {index < pipelines.length - 1 && ", "}
+              </li>
+              ))}
+            </ul>
+          ) : (
+            "not available"
+          )}
+        </div>
       </div>
       
       {artifact.data_schema && artifact.data_schema.length > 0 ? (
         <div className="overflow-x-auto">
           <h2>Dataset Schema</h2>
+          <div className="artifact-info">
+            <p className="key">Index:</p>
+            <p className="value">{artifact.index_name} (data type: {artifact.index_dtype})</p>
+          </div>
           <table className="min-w-full leading-normal border">
             <thead>
               <tr>

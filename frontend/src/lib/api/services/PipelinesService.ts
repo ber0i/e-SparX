@@ -18,4 +18,25 @@ export class PipelinesService {
             url: '/pipelines/',
         });
     }
+    /**
+     * Get Pipelines By Artifact
+     * Get all pipelines in the DAG database that contain a specific artifact.
+     * @param artifactName
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static getPipelinesByArtifactPipelinesArtifactNameGet(
+        artifactName: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/pipelines/{artifact_name}',
+            path: {
+                'artifact_name': artifactName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
 }

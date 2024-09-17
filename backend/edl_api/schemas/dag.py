@@ -246,6 +246,19 @@ class Pipeline(Base):
 
         return session.query(cls).all()
 
+    @classmethod
+    def get_pipelines_by_artifact(cls, session: Session, artifact_name: str) -> List["Pipeline"]:
+        """Get all pipelines that contain a specific artifact"""
+
+        stmt = (
+            select(cls)
+            .options(joinedload(cls.artifacts))
+            .join(artifact_pipelines, cls.id == artifact_pipelines.c.right_id)  # Join pipelines with artifact_pipelines
+            .join(Artifact, artifact_pipelines.c.left_id == Artifact.id)  # Join artifact_pipelines with artifacts
+            .where(Artifact.name == artifact_name)  # Filter by artifact name
+        )
+        return session.execute(stmt).unique().scalars().all()
+
 
 class Connection(Base):
     """Represenation of a connection between two artifacts in the SQL/DAG database"""

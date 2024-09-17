@@ -19,5 +19,7 @@ export type DataArtifact = {
     num_rows?: (number | null);
     num_columns?: (number | null);
     data_schema?: (Array<ColSpec> | null);
+    index_name?: (string | null);
+    index_dtype?: (string | null);
 };
 

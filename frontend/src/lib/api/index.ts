@@ -10,6 +10,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 export type { ArtifactResponse } from './models/ArtifactResponse';
 export type { ArtifactResponseForConnections } from './models/ArtifactResponseForConnections';
 export type { ColSpec } from './models/ColSpec';
+export type { ConnectionCreation } from './models/ConnectionCreation';
 export type { ConnectionResponse } from './models/ConnectionResponse';
 export type { DataArtifact } from './models/DataArtifact';
 export type { HTTPValidationError } from './models/HTTPValidationError';

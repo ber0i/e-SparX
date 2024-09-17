@@ -21,3 +21,13 @@ async def get_pipelines(session: Session = Session):
         pipelines = Pipeline.get_all_pipelines(s)
         pipeline_dicts = [pipeline_to_dict(pipeline) for pipeline in pipelines]
         return pipeline_dicts
+
+
+@PipelineRouter.get("/{artifact_name}")
+async def get_pipelines_by_artifact(artifact_name: str, session: Session = Session):
+    """Get all pipelines in the DAG database that contain a specific artifact."""
+
+    with session.begin() as s:
+        pipelines = Pipeline.get_pipelines_by_artifact(s, artifact_name)
+        pipeline_dicts = [pipeline_to_dict(pipeline) for pipeline in pipelines]
+        return pipeline_dicts

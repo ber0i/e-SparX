@@ -16,7 +16,7 @@ artifact_collection.create_index("name", unique=True)
 
 @DataArtifactRouter.post("/")
 async def register_data_artifact(dataset: DataArtifact, session: Session = Session):
-    """Register a data artifact. Currently supported: Free-form and pd.DataFrame artifacts."""
+    """Register a data artifact. Currently supported: Free-form and pd.DataFrame data artifacts."""
 
     entry_data = dataset.model_dump()
     pipeline = entry_data["pipeline_name"] if entry_data["pipeline_name"] else None

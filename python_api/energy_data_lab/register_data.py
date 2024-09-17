@@ -129,6 +129,8 @@ def register_data_pandas(
                 "num_rows": num_rows,
                 "num_columns": num_columns,
                 "data_schema": schema_data["mlflow_colspec"],
+                "index_name": df.index.name,
+                "index_dtype": str(df.index.dtype),
             }
             if source_url is not None:
                 result["source_url"] = source_url

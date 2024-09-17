@@ -27,3 +27,5 @@ class DataArtifact(BaseModel):
     num_rows: Optional[int] = None
     num_columns: Optional[int] = None
     data_schema: Optional[List[ColSpec]] = None
+    index_name: Optional[str] = None
+    index_dtype: Optional[str] = None

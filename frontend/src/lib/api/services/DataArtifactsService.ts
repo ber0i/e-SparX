@@ -22,7 +22,7 @@ export class DataArtifactsService {
     }
     /**
      * Register Data Artifact
-     * Register a data artifact. Currently supported: Free-form and pd.DataFrame artifacts.
+     * Register a data artifact. Currently supported: Free-form and pd.DataFrame data artifacts.
      * @param requestBody
      * @returns any Successful Response
      * @throws ApiError
