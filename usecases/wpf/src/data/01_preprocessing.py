@@ -37,7 +37,7 @@ if os.path.exists(os.path.join(processed_data_path, "Penmanshiel_SCADA_2022.csv"
     print("Done.")
 else:
     # if not, continue with preprocessing
-    print("Data not yet processed. Continuing with preprocessing.")
+    print("Data not yet processed. Continuing with preprocessing:")
 
     # unpack SCADA ZIP files
     print("Unpacking SCADA ZIP files.")
@@ -98,13 +98,12 @@ edl.register_data_pandas(
     df=df,
     pipeline_name="Wind Power Forecasting",
 )
-print("Done.")
 
 
 # register this script in EDL
 print("Registering this preprocessing script in EDL:")
-edl.register_script(
-    name="Preprocess Raw",
+edl.register_code(
+    name="Preprocess Raw Data",
     description="Extract relevant variables from raw SCADA data from Penmanshiel wind farm and save it to one CSV file.",
     file_type="PY",
     source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/data/01_preprocess_raw.py",
@@ -122,4 +121,4 @@ edl.connect(
     parent_name="Preprocess Raw",
     target_name="Penmanshiel SCADA 2022",
 )
-print("Done.")
+print("Scipt finished.")
