@@ -27,57 +27,68 @@ edl.register_data_free(
     pipeline_name="Wind Power Forecasting",
 )
 
-# unpack SCADA ZIP files
-print("Unpacking SCADA ZIP files.")
-zip_path = os.path.join(raw_data_path, "Penmanshiel_SCADA_2022_WT01-10_4462.zip")
-zip_ref = zipfile.ZipFile(zip_path, "r")
-zip_ref.extractall(unpack_path)
-zip_ref.close()
-zip_path = os.path.join(raw_data_path, "Penmanshiel_SCADA_2022_WT11-15_4463.zip")
-zip_ref = zipfile.ZipFile(zip_path, "r")
-zip_ref.extractall(unpack_path)
-zip_ref.close()
-print("Done.")
+# check whether usecases/wpf/data/processed/Penmanshiel_SCADA_2022.csv already exists
+if os.path.exists(os.path.join(processed_data_path, "Penmanshiel_SCADA_2022.csv")):
+    # if yes, load data
+    print("Data already processed. Loading as pandas DataFrame.")
+    df = pd.read_csv(
+        os.path.join(processed_data_path, "Penmanshiel_SCADA_2022.csv"), index_col=0
+    )
+    print("Done.")
+else:
+    # if not, continue with preprocessing
+    print("Data not yet processed. Continuing with preprocessing.")
 
-# loop over all file names in raw_data_path/unpacked starting with "Turbine"
-# and write the CSV file to a pandas DataFrame
-print("Extracting relevant data from SCADA files.")
-df_list = []
-turbine_ids = [i for i in range(1, 16) if i != 3]  # turbine 3 is missing in data
-mycolumns = [
-    "# Date and time",
-    "Wind speed (m/s)",
-    "Wind direction (°)",
-    "Nacelle position (°)",
-    "Vane position 1+2 (°)",
-    "Power (kW)",
-    "Potential power learned PC (kW)",
-]
-idx = 0
-for file_name in os.listdir(unpack_path):
-    if file_name.startswith("Turbine"):
-        df = pd.read_csv(
-            os.path.join(unpack_path, file_name),
-            skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
-            index_col=0,
-            parse_dates=True,
-            usecols=mycolumns,
-        )
-        df["turbine"] = f"T{turbine_ids[idx]:02d}"
-        df_list.append(df)
-        idx += 1
-print("Done.")
+    # unpack SCADA ZIP files
+    print("Unpacking SCADA ZIP files.")
+    zip_path = os.path.join(raw_data_path, "Penmanshiel_SCADA_2022_WT01-10_4462.zip")
+    zip_ref = zipfile.ZipFile(zip_path, "r")
+    zip_ref.extractall(unpack_path)
+    zip_ref.close()
+    zip_path = os.path.join(raw_data_path, "Penmanshiel_SCADA_2022_WT11-15_4463.zip")
+    zip_ref = zipfile.ZipFile(zip_path, "r")
+    zip_ref.extractall(unpack_path)
+    zip_ref.close()
+    print("Done.")
 
+    # loop over all file names in raw_data_path/unpacked starting with "Turbine"
+    # and write the CSV file to a pandas DataFrame
+    print("Extracting relevant data from SCADA files.")
+    df_list = []
+    turbine_ids = [i for i in range(1, 16) if i != 3]  # turbine 3 is missing in data
+    mycolumns = [
+        "# Date and time",
+        "Wind speed (m/s)",
+        "Wind direction (°)",
+        "Nacelle position (°)",
+        "Vane position 1+2 (°)",
+        "Power (kW)",
+        "Potential power learned PC (kW)",
+    ]
+    idx = 0
+    for file_name in os.listdir(unpack_path):
+        if file_name.startswith("Turbine"):
+            df = pd.read_csv(
+                os.path.join(unpack_path, file_name),
+                skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
+                index_col=0,
+                parse_dates=True,
+                usecols=mycolumns,
+            )
+            df["turbine"] = f"T{turbine_ids[idx]:02d}"
+            df_list.append(df)
+            idx += 1
+    print("Done.")
 
-# concatenate the SCADA dfs
-print("Saving data to one CSV file.")
-df = pd.concat(df_list)  # Concatenate the SCADA dfs
-df["timestamp"] = df.index.astype(str)
-df["timestamp_turbine"] = df.index.astype(str) + " " + df["turbine"]
-# set new index but keep old index as column
-df.set_index("timestamp_turbine", inplace=True)
-df.to_csv(os.path.join(processed_data_path, "Penmanshiel_SCADA_2022.csv"))
-print("Done.")
+    # concatenate the SCADA dfs
+    print("Saving data to one CSV file.")
+    df = pd.concat(df_list)  # Concatenate the SCADA dfs
+    df["timestamp"] = df.index.astype(str)
+    df["timestamp_turbine"] = df.index.astype(str) + " " + df["turbine"]
+    # set new index but keep old index as column
+    df.set_index("timestamp_turbine", inplace=True)
+    df.to_csv(os.path.join(processed_data_path, "Penmanshiel_SCADA_2022.csv"))
+    print("Done.")
 
 # register processed data in EDL
 print("Registering processed data in EDL:")
