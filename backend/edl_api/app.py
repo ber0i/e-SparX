@@ -5,10 +5,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from edl_api.routes import (
+    CodeArtifactRouter,
     ConnectionRouter,
     DataArtifactRouter,
     PipelineRouter,
-    ScriptArtifactRouter,
 )
 
 app = FastAPI(
@@ -24,7 +24,7 @@ app.add_middleware(
 app.include_router(DataArtifactRouter, prefix="/data-artifacts")
 app.include_router(PipelineRouter, prefix="/pipelines")
 app.include_router(ConnectionRouter, prefix="/connections")
-app.include_router(ScriptArtifactRouter, prefix="/script-artifacts")
+app.include_router(CodeArtifactRouter, prefix="/code-artifacts")
 
 
 @app.get("/", tags=["Welcome"])  # tags are used to group the endpoints in the documentation

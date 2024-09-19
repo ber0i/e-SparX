@@ -3,9 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Schema for a script artifact
+ * Schema for a code artifact
  */
-export type ScriptArtifact = {
+export type CodeArtifact = {
     name: string;
     description: string;
     artifact_type: string;

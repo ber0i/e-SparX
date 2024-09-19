@@ -2,20 +2,20 @@ from fastapi import APIRouter
 
 from edl_api.dagdb import Session
 from edl_api.documentdb import DocumentDBClient
-from edl_api.schemas import Artifact, ArtifactCreation, ScriptArtifact
+from edl_api.schemas import Artifact, ArtifactCreation, CodeArtifact
 
-ScriptArtifactRouter = APIRouter(tags=["Script Artifacts"])
+CodeArtifactRouter = APIRouter(tags=["Code Artifacts"])
 
 db = DocumentDBClient.artifactdb
 artifact_collection = db.artifacts
 artifact_collection.create_index("name", unique=True)
 
 
-@ScriptArtifactRouter.post("/")
-async def register_script_artifact(script: ScriptArtifact, session: Session = Session):
-    """Register a code script artifact."""
+@CodeArtifactRouter.post("/")
+async def register_code_artifact(code: CodeArtifact, session: Session = Session):
+    """Register a code artifact."""
 
-    entry_data = script.model_dump()
+    entry_data = code.model_dump()
     pipeline = entry_data["pipeline_name"] if entry_data["pipeline_name"] else None
     parent = entry_data["parent_name"] if entry_data["parent_name"] else None
 

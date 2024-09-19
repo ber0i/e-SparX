@@ -53,7 +53,7 @@ class ArtifactCreation(BaseModel):
     """Name of the artifact"""
 
     artifact_type: str
-    """Type of the artifact. Can be "dataset" or "script"."""
+    """Type of the artifact. Can be "dataset" or "code"."""
 
     pipeline: Optional[str] = None
     """Pipeline names this artifact should be linked to"""
@@ -100,7 +100,7 @@ class Artifact(Base):
     """Unique artifact name"""
 
     artifact_type: Mapped[str] = mapped_column("artifact_type", String, nullable=False)
-    """Type of the artifact. Can be "dataset" or "script"."""
+    """Type of the artifact. Can be "dataset" or "code"."""
 
     pipelines: Mapped[List[Pipeline]] = relationship(
         secondary=artifact_pipelines, back_populates="artifacts", cascade="all, delete"

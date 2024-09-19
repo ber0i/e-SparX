@@ -31,8 +31,8 @@ class DataArtifact(BaseModel):
     index_dtype: Optional[str] = None
 
 
-class ScriptArtifact(BaseModel):
-    """Schema for a script artifact"""
+class CodeArtifact(BaseModel):
+    """Schema for a code artifact"""
 
     name: str
     description: str

@@ -90,7 +90,7 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
             if (artifact_type === 'dataset') {
               return { backgroundColor: 'rgb(63, 161, 241)' };  // Blue background, black text
             }
-            if (artifact_type === 'script') {
+            if (artifact_type === 'code') {
               return { backgroundColor: 'gray', color: 'white' };  // Gray background, white text
             }
             return { backgroundColor: 'white' };  // White background, black text
