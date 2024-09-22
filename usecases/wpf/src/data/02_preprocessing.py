@@ -106,19 +106,19 @@ edl.register_code(
     name="Preprocess Raw Data",
     description="Extract relevant variables from raw SCADA data from Penmanshiel wind farm and save it to one CSV file.",
     file_type="PY",
-    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/data/01_preprocess_raw.py",
-    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/data/01_preprocess_raw.py?inline=false",
+    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/data/02_preprocessing.py",
+    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/data/02_preprocessing.py?inline=false",
     pipeline_name="Wind Power Forecasting",
     parent_name="Penmanshiel SCADA 2022 WT01-10",
 )
 edl.connect(
     pipeline_name="Wind Power Forecasting",
     parent_name="Penmanshiel SCADA 2022 WT11-15",
-    target_name="Preprocess Raw",
+    target_name="Preprocess Raw Data",
 )
 edl.connect(
     pipeline_name="Wind Power Forecasting",
-    parent_name="Preprocess Raw",
+    parent_name="Preprocess Raw Data",
     target_name="Penmanshiel SCADA 2022",
 )
-print("Scipt finished.")
+print("Script finished.")

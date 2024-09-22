@@ -6,3 +6,7 @@ __pycache__/
 
 infrastructure/*/data/
 .env
+
+archive/
+
+.cache.sqlite
