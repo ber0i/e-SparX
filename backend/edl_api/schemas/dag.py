@@ -377,6 +377,6 @@ class Connection(Base):
             print(
                 f"Connection between '{param.source}' and '{param.target}' already exists in pipeline '{param.pipeline}'."
             )
-            response += f" Connection between '{param.source}' and '{param.target}' already exists in pipeline {param.pipeline}."
+            response = f" Connection between '{param.source}' and '{param.target}' already exists in pipeline {param.pipeline}."
 
         return response

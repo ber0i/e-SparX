@@ -95,6 +95,7 @@ print("Registering processed data in EDL:")
 edl.register_data_pandas(
     name="Penmanshiel SCADA 2022",
     description="Processed Penmanshiel SCADA data from 2022, all turbines.",
+    file_type="CSV",
     df=df,
     pipeline_name="Wind Power Forecasting",
 )

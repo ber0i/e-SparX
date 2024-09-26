@@ -2,17 +2,17 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Hyperparameter } from './Hyperparameter';
 /**
- * Schema for a code artifact
+ * Schema for a hyperparameter artifact
  */
-export type CodeArtifact = {
+export type HyperparameterArtifact = {
     name: string;
     description: string;
     artifact_type: string;
     file_type: string;
     created_at?: string;
-    source_url?: (string | null);
-    download_url?: (string | null);
+    hyperparameters: Array<Hyperparameter>;
     pipeline_name?: (string | null);
     parent_name?: (string | null);
 };

@@ -93,6 +93,12 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
             if (artifact_type === 'code') {
               return { backgroundColor: 'gray', color: 'white' };  // Gray background, white text
             }
+            if (artifact_type === 'model') {
+              return { backgroundColor: 'rgb(12, 167, 137)', color: 'black' };  // Green background, white text
+            }
+            if (artifact_type === 'hyperparameter') {
+              return { backgroundColor: 'rgba(12, 167, 137, 0.6)' };  // White background, black text
+            }
             return { backgroundColor: 'white' };  // White background, black text
           };
 

@@ -15,10 +15,17 @@ export type { ConnectionCreation } from './models/ConnectionCreation';
 export type { ConnectionResponse } from './models/ConnectionResponse';
 export type { DataArtifact } from './models/DataArtifact';
 export type { HTTPValidationError } from './models/HTTPValidationError';
+export type { Hyperparameter } from './models/Hyperparameter';
+export type { HyperparameterArtifact } from './models/HyperparameterArtifact';
+export type { ModelArtifact } from './models/ModelArtifact';
+export type { PyTorchFormat } from './models/PyTorchFormat';
+export type { TensorSpec } from './models/TensorSpec';
 export type { ValidationError } from './models/ValidationError';
 
 export { CodeArtifactsService } from './services/CodeArtifactsService';
 export { ConnectionsService } from './services/ConnectionsService';
 export { DataArtifactsService } from './services/DataArtifactsService';
+export { HyperparameterArtifactsService } from './services/HyperparameterArtifactsService';
+export { ModelArtifactsService } from './services/ModelArtifactsService';
 export { PipelinesService } from './services/PipelinesService';
 export { WelcomeService } from './services/WelcomeService';

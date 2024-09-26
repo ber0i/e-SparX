@@ -2,16 +2,19 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ColSpec } from './ColSpec';
+import type { ColSpec } from "@/lib/api/models/ColSpec";
+import type { PyTorchFormat } from "@/lib/api/models/PyTorchFormat";
+import type { Hyperparameter } from "@/lib/api/models/Hyperparameter";
 /**
- * Schema for a data artifact
+ * Typescript schema for any artifact
  */
-export type DataArtifact = {
+export type Artifact = {
     name: string;
     description: string;
     artifact_type: string;
-    artifact_subtype: string;
     file_type: string;
+    artifact_subtype?: (string | null);
+    flavor?: (string | null);
     created_at?: string;
     source_url?: (string | null);
     download_url?: (string | null);
@@ -22,5 +25,9 @@ export type DataArtifact = {
     data_schema?: (Array<ColSpec> | null);
     index_name?: (string | null);
     index_dtype?: (string | null);
+    dependencies?: (Array<string> | null);
+    input_format?: (Array<PyTorchFormat> | null);
+    output_format?: (Array<PyTorchFormat> | null);
+    hyperparameters?: (Array<Hyperparameter> | null);
 };
 

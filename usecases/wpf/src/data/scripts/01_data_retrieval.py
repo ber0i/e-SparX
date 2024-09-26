@@ -172,8 +172,8 @@ edl.register_code(
     name="Retrieve Historical Weather Data",
     description="Retrieve historical weather data and historical weather forecast data from the Open-Meteo.com Weather API and save to CSV.",
     file_type="PY",
-    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/data/01_data_retrieval.py",
-    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/data/01_data_retrieval.py?inline=false",
+    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/data/scripts/01_data_retrieval.py",
+    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/data/scripts/01_data_retrieval.py?inline=false",
     pipeline_name="Wind Power Forecasting",
 )
 
@@ -182,14 +182,18 @@ print("Registering data in EDL:")
 edl.register_data_pandas(
     name="Historical Weather Forecast Data",
     description="Historical weather forecasts (Model: GFS Global) at the Penmanshiel wind farm in 2022.",
+    file_type="CSV",
     df=df_hist_forecast,
+    source_url="https://open-meteo.com/en/docs/historical-forecast-api",
     pipeline_name="Wind Power Forecasting",
     parent_name="Retrieve Historical Weather Data",
 )
 edl.register_data_pandas(
     name="Historical Weather Data",
     description="Historical weather data at the Penmanshiel wind farm in 2022.",
+    file_type="CSV",
     df=df_hist_weather,
+    source_url="https://open-meteo.com/en/docs/historical-weather-api",
     pipeline_name="Wind Power Forecasting",
     parent_name="Retrieve Historical Weather Data",
 )

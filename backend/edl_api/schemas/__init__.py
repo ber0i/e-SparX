@@ -1,4 +1,4 @@
-from .artifacts import DataArtifact, CodeArtifact
+from .artifacts import DataArtifact, CodeArtifact, ModelArtifact, HyperparameterArtifact
 from .dag import (
     Base,
     ArtifactResponse,
