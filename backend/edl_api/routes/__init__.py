@@ -4,3 +4,4 @@ from .connections import ConnectionRouter
 from .code import CodeArtifactRouter
 from .models import ModelArtifactRouter
 from .hyperparameters import HyperparametersArtifactRouter
+from .parameters import ParametersArtifactRouter

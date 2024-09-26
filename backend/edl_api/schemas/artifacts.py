@@ -98,3 +98,17 @@ class HyperparametersArtifact(BaseModel):
     hyperparameters: List[Hyperparameter]
     pipeline_name: Optional[str] = None
     parent_name: Optional[str] = None
+
+
+class ParametersArtifact(BaseModel):
+    """Schema for a parameters artifact"""
+
+    name: str
+    description: str
+    artifact_type: str
+    file_type: str
+    created_at: datetime = datetime.now()
+    source_url: Optional[HttpUrl] = None
+    download_url: Optional[HttpUrl] = None
+    pipeline_name: Optional[str] = None
+    parent_name: Optional[str] = None

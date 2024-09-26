@@ -10,6 +10,7 @@ from edl_api.routes import (
     DataArtifactRouter,
     HyperparametersArtifactRouter,
     ModelArtifactRouter,
+    ParametersArtifactRouter,
     PipelineRouter,
 )
 
@@ -29,6 +30,7 @@ app.include_router(ConnectionRouter, prefix="/connections")
 app.include_router(CodeArtifactRouter, prefix="/code-artifacts")
 app.include_router(ModelArtifactRouter, prefix="/model-artifacts")
 app.include_router(HyperparametersArtifactRouter, prefix="/hyperparameters-artifacts")
+app.include_router(ParametersArtifactRouter, prefix="/parameters-artifacts")
 
 
 @app.get("/", tags=["Welcome"])  # tags are used to group the endpoints in the documentation

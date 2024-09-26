@@ -95,8 +95,6 @@ def main():
     )
 
     n = len(dataset)
-    # TODO: REMOVE THIS LINE (FOR DEBUGGING PURPOSES ONLY)
-    n = 1000
     n_train = int(args.train_share * n)  # 70% for training
     n_val = int(args.val_share * n)  # 15% for validation
     n_test = n - n_train - n_val  # Remaining 15% for testing
@@ -223,8 +221,15 @@ def main():
     )
 
     if args.model == "mlp":
-        torch.save(model, "usecases/wpf/models/MLP.pth")
-        print("Model saved.")
+        torch.save(model.state_dict(), "usecases/wpf/models/MLP.pth")
+        print("Model parameters saved.")
+        edl.register_parameters(
+            name="MLP Parameters",
+            description="Trained parameters of the MLP model.",
+            file_type="PTH",
+            pipeline_name="Wind Power Forecasting",
+            parent_name="Main",
+        )
 
 
 if __name__ == "__main__":
