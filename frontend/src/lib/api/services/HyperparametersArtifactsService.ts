@@ -2,24 +2,24 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { HyperparameterArtifact } from '../models/HyperparameterArtifact';
+import type { HyperparametersArtifact } from '../models/HyperparametersArtifact';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class HyperparameterArtifactsService {
+export class HyperparametersArtifactsService {
     /**
-     * Register Hyperparameter Artifact
-     * Register a hyperparameter artifact.
+     * Register Hyperparameters Artifact
+     * Register a hyperparameters artifact.
      * @param requestBody
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static registerHyperparameterArtifactHyperparameterArtifactsPost(
-        requestBody: HyperparameterArtifact,
+    public static registerHyperparametersArtifactHyperparametersArtifactsPost(
+        requestBody: HyperparametersArtifact,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/hyperparameter-artifacts/',
+            url: '/hyperparameters-artifacts/',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

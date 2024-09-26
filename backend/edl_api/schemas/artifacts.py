@@ -27,7 +27,7 @@ class PyTorchFormat(BaseModel):
 
 
 class Hyperparameter(BaseModel):
-    """Schema for a hyperparameter used in hyperparameter artifacts."""
+    """Schema for a hyperparameter used in hyperparameters artifacts."""
 
     name: str
     value: float | int | str | bool
@@ -85,14 +85,16 @@ class ModelArtifact(BaseModel):
     output_format: Optional[List[PyTorchFormat]] = None
 
 
-class HyperparameterArtifact(BaseModel):
-    """Schema for a hyperparameter artifact"""
+class HyperparametersArtifact(BaseModel):
+    """Schema for a hyperparameters artifact"""
 
     name: str
     description: str
     artifact_type: str
     file_type: str
     created_at: datetime = datetime.now()
+    source_url: Optional[HttpUrl] = None
+    download_url: Optional[HttpUrl] = None
     hyperparameters: List[Hyperparameter]
     pipeline_name: Optional[str] = None
     parent_name: Optional[str] = None

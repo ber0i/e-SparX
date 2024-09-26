@@ -2,20 +2,20 @@ from fastapi import APIRouter
 
 from edl_api.dagdb import Session
 from edl_api.documentdb import DocumentDBClient
-from edl_api.schemas import Artifact, ArtifactCreation, HyperparameterArtifact
+from edl_api.schemas import Artifact, ArtifactCreation, HyperparametersArtifact
 
-HyperparameterArtifactRouter = APIRouter(tags=["Hyperparameter Artifacts"])
+HyperparametersArtifactRouter = APIRouter(tags=["Hyperparameters Artifacts"])
 
 db = DocumentDBClient.artifactdb
 artifact_collection = db.artifacts
 artifact_collection.create_index("name", unique=True)
 
 
-@HyperparameterArtifactRouter.post("/")
-async def register_hyperparameter_artifact(hyperparameter: HyperparameterArtifact, session: Session = Session):
-    """Register a hyperparameter artifact."""
+@HyperparametersArtifactRouter.post("/")
+async def register_hyperparameters_artifact(hyperparameters: HyperparametersArtifact, session: Session = Session):
+    """Register a hyperparameters artifact."""
 
-    entry_data = hyperparameter.model_dump()
+    entry_data = hyperparameters.model_dump()
     pipeline = entry_data["pipeline_name"] if entry_data["pipeline_name"] else None
     parent = entry_data["parent_name"] if entry_data["parent_name"] else None
 
@@ -29,6 +29,10 @@ async def register_hyperparameter_artifact(hyperparameter: HyperparameterArtifac
     # If artifact does not exist in artifactdb, insert it
     existing_entry = artifact_collection.find_one({"name": entry_data["name"]})
     if not existing_entry:
+        if entry_data["source_url"]:
+            entry_data["source_url"] = str(entry_data["source_url"])
+        if entry_data["download_url"]:
+            entry_data["download_url"] = str(entry_data["download_url"])
         # remove pipeline-related logic
         entry_data.pop("pipeline_name", None)
         entry_data.pop("parent_name", None)

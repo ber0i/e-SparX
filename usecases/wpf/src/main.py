@@ -1,4 +1,5 @@
 import argparse
+import json
 
 import energy_data_lab as edl
 import torch
@@ -12,22 +13,10 @@ def main():
 
     parser = argparse.ArgumentParser(description="Wind Power Forecasting")
     parser.add_argument(
-        "--lookback_timesteps",
-        type=int,
-        default=12,
-        help="Number of lookback timesteps. Default: 12.",
-    )
-    parser.add_argument(
-        "--forecast_timesteps",
-        type=int,
-        default=6,
-        help="Number of forecast timesteps. Default: 6.",
-    )
-    parser.add_argument(
-        "--batch_size",
-        type=int,
-        default=64,
-        help="Number of time windows per batch. Default: 64.",
+        "--hp_file",
+        type=str,
+        default="usecases/wpf/hyperparameters/mlp.json",
+        help="Path to hyperparameters file. Default: usecases/wpf/hyperparameters/mlp.json.",
     )
     parser.add_argument(
         "--model",
@@ -53,67 +42,40 @@ def main():
         default="Wind Power Forecasting",
         help="Weights and Biases project name. Default: Wind Power Forecasting.",
     )
-    parser.add_argument(
-        "--n_epochs",
-        type=int,
-        default=1,
-        help="Number of epochs to train the model. Default: 1.",
-    )
-    parser.add_argument(
-        "--train_share",
-        type=float,
-        default=0.7,
-        help="Fraction of data to use for training. Default: 0.7.",
-    )
-    parser.add_argument(
-        "--val_share",
-        type=float,
-        default=0.15,
-        help="Fraction of data to use for validation. Default: 0.15.",
-    )
-    parser.add_argument(
-        "--learning_rate",
-        type=float,
-        default=1e-3,
-        help="Learning rate for training. Default: 1e-3.",
-    )
-    parser.add_argument(
-        "--train_loss_fn",
-        type=str,
-        default="MSE",
-        help="Loss function to use for training. Options: MSE. Default: MSE.",
-    )
-    parser.add_argument(
-        "--n_hidden_neurons",
-        type=int,
-        default=512,
-        help="Number of hidden neurons. Default: 512.",
-    )
-    parser.add_argument(
-        "--n_hidden_layers",
-        type=int,
-        default=2,
-        help="Number of hidden layers. Default: 2.",
-    )
-    parser.add_argument(
-        "--dropout_rate",
-        type=float,
-        default=0.05,
-        help="Dropout rate. Default: 0.05.",
-    )
-    parser.add_argument(
-        "--norm_layer",
-        type=str,
-        default="layer",
-        help="Normalization layer. Options: layer, batch. Default: layer.",
-    )
-    parser.add_argument(
-        "--activation",
-        type=str,
-        default="relu",
-        help="Activation function. Options: relu, leaky_relu. Default: relu.",
-    )
     args = parser.parse_args()
+
+    # Load and extract hyperparameters
+
+    with open(args.hp_file, "r") as f:
+        hp = json.load(f)
+
+    args.lookback_timesteps = hp["lookback_timesteps"]
+    args.forecast_timesteps = hp["forecast_timesteps"]
+    args.batch_size = hp["batch_size"]
+    args.n_epochs = hp["n_epochs"]
+    args.train_share = hp["train_share"]
+    args.val_share = hp["val_share"]
+    args.learning_rate = hp["learning_rate"]
+    args.train_loss_fn = hp["train_loss_fn"]
+    args.n_hidden_neurons = hp["n_hidden_neurons"]
+    args.n_hidden_layers = hp["n_hidden_layers"]
+    args.dropout_rate = hp["dropout_rate"]
+    args.norm_layer = hp["norm_layer"]
+    args.activation = hp["activation"]
+    args.optimizer = hp["optimizer"]
+
+    # Register hyperparameters
+
+    if args.model == "mlp":
+        edl.register_hyperparameters(
+            name="MLP Hyperparameters",
+            description="Hyperparameters for the MLP model.",
+            hyperparameters=hp,
+            file_type="JSON",
+            source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/hyperparameters/mlp.json",
+            download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/hyperparameters/mlp.json?inline=false",
+            pipeline_name="Wind Power Forecasting",
+        )
 
     # Data Preparation
 
@@ -167,35 +129,10 @@ def main():
             pipeline_name="Wind Power Forecasting",
         )
 
-    hyperparameters = [
-        {"name": "lookback_timesteps", "value": args.lookback_timesteps},
-        {"name": "forecast_timesteps", "value": args.forecast_timesteps},
-        {"name": "batch_size", "value": args.batch_size},
-        {"name": "n_epochs", "value": args.n_epochs},
-        {"name": "train_share", "value": args.train_share},
-        {"name": "val_share", "value": args.val_share},
-        {
-            "name": "test_share",
-            "value": round(1 - args.train_share - args.val_share, 2),
-        },
-        {"name": "learning_rate", "value": args.learning_rate},
-        {"name": "train_loss_fn", "value": args.train_loss_fn},
-        {"name": "n_hidden_neurons", "value": args.n_hidden_neurons},
-        {"name": "n_hidden_layers", "value": args.n_hidden_layers},
-        {"name": "dropout_rate", "value": args.dropout_rate},
-        {"name": "norm_layer", "value": args.norm_layer},
-        {"name": "activation", "value": args.activation},
-    ]
-
-    if args.model == "mlp":
-        edl.register_hyperparameters(
-            name="MLP Hyperparameters",
-            description="Hyperparameters for the MLP model.",
-            hyperparameters=hyperparameters,
-            pipeline_name="Wind Power Forecasting",
-        )
-
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
+    if args.optimizer == "adam":
+        optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
+    else:
+        raise ValueError(f"Unknown optimizer {args.optimizer}")
 
     if args.wandb:
         wandb.init(
@@ -204,7 +141,7 @@ def main():
         )
 
     # set training loss function
-    if args.train_loss_fn == "MSE":
+    if args.train_loss_fn == "mse":
         loss_fn = torch.nn.MSELoss()
     else:
         raise ValueError(f"Unknown loss function {args.train_loss_fn}")

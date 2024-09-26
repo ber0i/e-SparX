@@ -89,14 +89,8 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
           <></>
         )}
 
-        {artifact.artifact_type !== "hyperparameter" ? (
-          <>
-            <p className="key">File Type:</p>
-            <p className="value">{artifact.file_type}</p>
-          </>
-        ) : (
-          <></>
-        )}
+        <p className="key">File Type:</p>
+        <p className="value">{artifact.file_type}</p>
 
         <p className="key">Created At:</p>
         <p className="value">{formatDate(artifact.created_at)}</p>
@@ -124,33 +118,27 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
           <></>
         )}
 
-        {artifact.artifact_type !== "hyperparameter" ? (
-          <>
-            <p className="key">URL:</p>
-            <p className="value">
-              {artifact.source_url ? (
-                <a href={artifact.source_url} target="_blank" rel="noopener noreferrer" className="artifact-link">
-                  {artifact.source_url}
-                </a>
-              ) : (
-                "not available"
-              )}
-            </p>
+        <p className="key">URL:</p>
+        <p className="value">
+          {artifact.source_url ? (
+            <a href={artifact.source_url} target="_blank" rel="noopener noreferrer" className="artifact-link">
+              {artifact.source_url}
+            </a>
+          ) : (
+            "not available"
+          )}
+        </p>
 
-            <p className="key">Download URL:</p>
-            <p className="value">
-              {artifact.download_url ? (
-                <a href={artifact.download_url} target="_blank" rel="noopener noreferrer" className="artifact-link">
-                  {artifact.download_url}
-                </a>
-              ) : (
-                "not available"
-              )}
-            </p>
-          </>
-        ) : (
-          <></>
-        )}
+        <p className="key">Download URL:</p>
+        <p className="value">
+          {artifact.download_url ? (
+            <a href={artifact.download_url} target="_blank" rel="noopener noreferrer" className="artifact-link">
+              {artifact.download_url}
+            </a>
+          ) : (
+            "not available"
+          )}
+        </p>
 
         <p className="key">Pipelines:</p>
         <div className="value">
@@ -225,7 +213,7 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
         </>
       )}
 
-      {artifact.artifact_type === "hyperparameter" && (
+      {artifact.artifact_type === "hyperparameters" && (
         <>
         {artifact.hyperparameters && artifact.hyperparameters.length > 0 ? (
           <div className="overflow-x-auto">

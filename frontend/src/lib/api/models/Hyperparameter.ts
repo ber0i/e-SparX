@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Schema for a hyperparameter used in hyperparameter artifacts.
+ * Schema for a hyperparameter used in hyperparameters artifacts.
  */
 export type Hyperparameter = {
     name: string;
