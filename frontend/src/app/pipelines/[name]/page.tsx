@@ -1,27 +1,25 @@
 'use client'
-import React, { useCallback } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import {
   ReactFlow,
-  addEdge,
-  Connection,
-  Background,
   useNodesState,
   useEdgesState,
 } from '@xyflow/react';
 import DagLegend from "../../daglegend.svg";
- 
+
 import '@xyflow/react/dist/style.css';
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DataArtifactsService } from "@/lib/api/services/DataArtifactsService";
 import { ConnectionsService } from '@/lib/api/services/ConnectionsService';
+import { topologicalSort } from '@/lib/manual/topological_sort';
+import { getNodeStyle } from '@/lib/manual/get_node_style';
 import type { ArtifactResponse } from '@/lib/api/models/ArtifactResponse';
 import type { ConnectionResponse } from '@/lib/api/models/ConnectionResponse';
 
-
-
+// Define the DAG component
 const DAGFlow = ({ name }: { name: string }) => {
   const [artifacts, setArtifacts] = useState<ArtifactResponse[]>([]);
   const [connections, setConnections] = useState<ConnectionResponse[]>([]);
@@ -35,40 +33,13 @@ const DAGFlow = ({ name }: { name: string }) => {
     router.push(`/artifacts/${nodeId}`);  // Navigate to the artifact route
   };
 
-  // Helper function to perform topological sort (enabling DAGs)
-  const topologicalSort = (nodesMap: Map<string, string[]>) => {
-    const sortedNodes: string[] = [];
-    const visited: Set<string> = new Set();
-    const tempMark: Set<string> = new Set();
-    const nodeLevels: Map<string, number> = new Map();
-
-    const visit = (node: string, level: number, inLoop: boolean) => {
-      if (tempMark.has(node)) return; // Ignore temporary marked nodes (prevents cycles)
-      if (!visited.has(node) || inLoop) {
-        tempMark.add(node);  // Mark the node temporarily
-        const dependencies = nodesMap.get(node) || [];
-        dependencies.forEach(dep => visit(dep, level + 1, true));
-        if (!visited.has(node)) {
-            visited.add(node);  // Mark as permanently visited
-            sortedNodes.push(node);  // Add node to sorted result
-        }
-        tempMark.delete(node);
-        nodeLevels.set(node, Math.max(level, nodeLevels.get(node) || 0));
-      }
-    };
-
-    nodesMap.forEach((_, node) => {
-      if (!visited.has(node)) {
-        visit(node, 0, false);
-      }
-    });
-    return { sortedNodes, nodeLevels };
-  };
-
   useEffect(() => {
+
     const fetchArtifacts = async () => {
       if (name) {
         try {
+
+          // Fetch artifacts and connections by pipeline name
           const fetchedArtifacts = await DataArtifactsService.getArtifactsByPipelineDataArtifactsPipelinePipelineNameGet(name as string);
           setArtifacts(fetchedArtifacts);
           const fetchedConnections = await ConnectionsService.getConnectionsByPipelineConnectionsPipelinePipelineNameGet(name as string);
@@ -87,33 +58,12 @@ const DAGFlow = ({ name }: { name: string }) => {
           // Perform topological sorting to get the ordered list of nodes
           const { sortedNodes, nodeLevels } = topologicalSort(nodeDependencies);
 
-          // get maximum level
+          // Get maximum node level (for positioning)
           const maxLevel = Math.max(...Array.from(nodeLevels.values()));
-
-          const getNodeStyle = (artifact_type: string) => {
-            if (artifact_type === 'dataset') {
-              return { backgroundColor: 'rgb(63, 161, 241)' };  // Blue background, black text
-            }
-            if (artifact_type === 'code') {
-              return { backgroundColor: 'gray', color: 'white' };  // Gray background, white text
-            }
-            if (artifact_type === 'model') {
-              return { backgroundColor: 'rgb(12, 167, 137)', color: 'black' };  // Green background, white text
-            }
-            if (artifact_type === 'hyperparameters') {
-              return { backgroundColor: 'rgba(12, 167, 137, 0.6)' };  
-            }
-            if (artifact_type === 'parameters') {
-              return { backgroundColor: 'rgba(12, 167, 137, 0.6)' };  
-            }
-            if (artifact_type === 'results') {
-              return { backgroundColor: 'rgba(8, 102, 84, 0.8)', color: 'white' };  
-            }
-            return { backgroundColor: 'white' };  // White background, black text
-          };
 
           const levelNodeCounts: Map<number, number> = new Map(); // Initialize the map to track node counts at each level
 
+          // Set node positions based on the topological sort
           const updatedNodes = sortedNodes.map((nodeName) => {
             const level = nodeLevels.get(nodeName) || 0;
             const artifact_type = fetchedArtifacts.find(artifact => artifact.name === nodeName)?.artifact_type || 'unknown';
@@ -138,8 +88,10 @@ const DAGFlow = ({ name }: { name: string }) => {
               style: getNodeStyle(artifact_type),
             };
           });
+          {/* @ts-ignore */}
           setNodes(updatedNodes);
 
+          // Set edges based on fetched connections
           const updatedEdges = fetchedConnections.map((connection) => ({
             id: connection.source.name + '-' + connection.target.name,
             source: connection.source.name,
@@ -150,6 +102,7 @@ const DAGFlow = ({ name }: { name: string }) => {
               height: 20,
             },
           }));
+          {/* @ts-ignore */}
           setEdges(updatedEdges);
 
         } catch (error) {
@@ -157,6 +110,7 @@ const DAGFlow = ({ name }: { name: string }) => {
         }
       }
     };
+
     fetchArtifacts();
   }, [name, setNodes, setEdges]);
 
@@ -173,11 +127,11 @@ const DAGFlow = ({ name }: { name: string }) => {
     );
   }
 
+
 export default function PipelinePage({ params }: { params: { name: string } }) {
   const name = params.name;
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      {/* Apply margin-left of 100px */}
       <div style={{ marginLeft: '100px' }}>
         <Image
           src={DagLegend}
@@ -192,10 +146,3 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
     
   );
 }
-
-{/* Image <Image
-        src={legend}
-        alt="Legend"
-        width='500'
-        height='500'
-      /> */}  

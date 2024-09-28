@@ -31,6 +31,8 @@ The `--reload` flag is optional and is recommended during development.
 
 The API is now running on [http://localhost:8000](http://localhost:8000).
 
+When running the entire project with docker compose, the backend will run in the api container.
+
 ## Database Migrations
 
 The PostgresSQL database requires migration scripts to be created and run. Whenever a change is made on the database structure, the corrsponding migration scripts can be created automatically via running
@@ -41,3 +43,4 @@ Replace `<migration message>` with a short description of the changes you applie
 ```bash
 alembic upgrade head
 ```
+

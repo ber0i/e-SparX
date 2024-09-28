@@ -1,3 +1,5 @@
+// TODO: This page renders the DAG legend. Should be displayed nicely on the pipeline/[name] page at some point.
+
 import React from 'react';
 import { ReactFlow } from '@xyflow/react';
  
@@ -25,6 +27,7 @@ const initialNodes = [
 export default function App() {
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
+      {/* @ts-ignore */}
       <ReactFlow nodes={initialNodes} edges={[]} />
     </div>
   );

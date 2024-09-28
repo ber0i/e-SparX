@@ -3,20 +3,23 @@
 import { useEffect, useState } from "react";
 import { DataArtifactsService } from "@/lib/api/services/DataArtifactsService";
 import { PipelinesService } from "@/lib/api/services/PipelinesService";
+import { formatDate } from "@/lib/manual/format_date";
 import type { Artifact } from "@/lib/manual/artifact";
 import type { Pipeline } from "@/lib/manual/pipeline"
 
 export default function ArtifactDetailPage({ params }: { params: { name: string } }) {
+
   // Get the artifact name from the URL
   const name = params.name;
   const [artifact, setArtifact] = useState<Artifact | null>(null);
   const [pipelines, setPipelines] = useState<Pipeline[]>([]);
 
   useEffect(() => {
+
+    // Fetch artifact by name
     const fetchArtifactDetails = async () => {
       if (name) {
         try {
-          // Fetch artifact by name
           const response = await DataArtifactsService.getArtifactByNameDataArtifactsNameGet(name as string);
           setArtifact(response);
         } catch (error) {
@@ -24,6 +27,8 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
         }
       }
     };
+
+    // Fetch pipelines by artifact name
     const fetchPipelines = async () => {
       if (name) {
         try {
@@ -35,36 +40,22 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
         }
       }
     };
+
     fetchArtifactDetails();
     fetchPipelines();
   }, [name]);
-
-  
 
   if (!artifact) {
     return <div>Loading...</div>;
   }
 
-  const formatDate = (dateString: string | undefined) => {
-    if (!dateString) {
-      return "N/A";  // Return fallback if dateString is undefined
-    }
-    const date = new Date(dateString);
-    return date.toLocaleString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      timeZone: "Europe/Berlin",  // Use Germany's time zone
-    });
-  };
-
   return (
     <div className="p-5">
+
       <h1>Artifact Details: {artifact.name}</h1>
+
       <div className="artifact-info">
+
         <p className="key">Description:</p>
         <p className="value">{artifact.description}</p>
 
@@ -173,7 +164,9 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
         <>
         {artifact.data_schema && artifact.data_schema.length > 0 ? (
           <div className="overflow-x-auto">
+
             <h2>Dataset Schema</h2>
+
             <div className="artifact-info">
 
               <p className="key">Number of Rows:</p>
@@ -229,7 +222,9 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
         <>
         {artifact.hyperparameters && artifact.hyperparameters.length > 0 ? (
           <div className="overflow-x-auto">
+
             <h2>Hyperparameters</h2>
+
             <div className="w-1/2">
             <table className="leading-normal border w-full">
               <thead>
@@ -309,7 +304,9 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
         <>
         {artifact.input_format && artifact.input_format.length > 0 ? (
           <div className="overflow-x-auto">
+
             <h2>Input Format</h2>
+            
             <div className="w-1/2">
               <table className="leading-normal border w-full">
                 <thead>

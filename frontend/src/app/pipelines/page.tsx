@@ -7,10 +7,13 @@ import type { Pipeline } from "@/lib/manual/pipeline";
 
 
 export default function PipelinesPage() {
+
   const [Pipelines, setPipelines] = useState<Pipeline[]>([]);
   const router = useRouter();
 
   useEffect(() => {
+
+    // Fetch all pipelines
     const fetchPipelines = async () => {
       try {
         const response = await PipelinesService.getPipelinesPipelinesGet();
@@ -28,10 +31,11 @@ export default function PipelinesPage() {
     router.push(`/pipelines/${name}`);  // Navigate to /pipelines/[name]
   };
 
-
   return (
     <div className="p-5 ">
+
       <h1>Pipelines Overview</h1>
+      
       <section className="mb-8">
         <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
           <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">

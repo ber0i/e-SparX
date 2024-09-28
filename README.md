@@ -11,9 +11,11 @@ MONGO_USER=some_mongo_username
 MONGO_PASSWORD=some_mongo_password
 POSTGRES_USER=some_postgres_username
 POSTGRES_PASSWORD=some_postgres_password
+PGADMIN_EMAIL=some@email.com
+PGADMIN_PASSWORD=some_pgadmin_password
 ```
 
-Replace `some_mongo/postgres_username` and `some_mongo/postgres_password` with your credentials of choice.
+Replace the values with your credentials of choice.
 
 To start the services, Docker and Docker Compose must be installed. Next, at the root of your project, run
 
@@ -22,3 +24,5 @@ docker compose --env-file .env up
 ```
 
 If changes were made, we recommend using the flag `--build` to rebuild the images before starting the containers. If one wants to use the console after starting the containers, one should use the flag  `-d`.
+
+Currently, the frontend is not integrated in the docker compose. Must be started manually. See the README file in the frontend folder on how to do this.
