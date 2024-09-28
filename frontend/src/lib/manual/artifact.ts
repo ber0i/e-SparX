@@ -5,6 +5,7 @@
 import type { ColSpec } from "@/lib/api/models/ColSpec";
 import type { PyTorchFormat } from "@/lib/api/models/PyTorchFormat";
 import type { Hyperparameter } from "@/lib/api/models/Hyperparameter";
+import type { Result } from "@/lib/api/models/Result"
 /**
  * Typescript schema for any artifact
  */
@@ -29,5 +30,6 @@ export type Artifact = {
     input_format?: (Array<PyTorchFormat> | null);
     output_format?: (Array<PyTorchFormat> | null);
     hyperparameters?: (Array<Hyperparameter> | null);
+    results?: (Array<Result> | null);
 };
 

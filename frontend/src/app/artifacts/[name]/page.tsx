@@ -89,8 +89,14 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
           <></>
         )}
 
-        <p className="key">File Type:</p>
-        <p className="value">{artifact.file_type}</p>
+        {artifact.artifact_type !== "results" ? (
+          <>
+            <p className="key">File Type:</p>
+            <p className="value">{artifact.file_type}</p>
+          </>
+        ) : (
+          <></>
+        )}
 
         <p className="key">Created At:</p>
         <p className="value">{formatDate(artifact.created_at)}</p>
@@ -118,27 +124,33 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
           <></>
         )}
 
-        <p className="key">URL:</p>
-        <p className="value">
-          {artifact.source_url ? (
-            <a href={artifact.source_url} target="_blank" rel="noopener noreferrer" className="artifact-link">
-              {artifact.source_url}
-            </a>
-          ) : (
-            "not available"
-          )}
-        </p>
+        {artifact.artifact_type !== "results" ? (
+          <>
+            <p className="key">URL:</p>
+            <p className="value">
+              {artifact.source_url ? (
+                <a href={artifact.source_url} target="_blank" rel="noopener noreferrer" className="artifact-link">
+                  {artifact.source_url}
+                </a>
+              ) : (
+                "not available"
+              )}
+            </p>
 
-        <p className="key">Download URL:</p>
-        <p className="value">
-          {artifact.download_url ? (
-            <a href={artifact.download_url} target="_blank" rel="noopener noreferrer" className="artifact-link">
-              {artifact.download_url}
-            </a>
-          ) : (
-            "not available"
-          )}
-        </p>
+            <p className="key">Download URL:</p>
+            <p className="value">
+              {artifact.download_url ? (
+                <a href={artifact.download_url} target="_blank" rel="noopener noreferrer" className="artifact-link">
+                  {artifact.download_url}
+                </a>
+              ) : (
+                "not available"
+              )}
+            </p>
+          </>
+        ) : (
+          <></>
+        )}
 
         <p className="key">Pipelines:</p>
         <div className="value">
@@ -240,6 +252,46 @@ export default function ArtifactDetailPage({ params }: { params: { name: string 
                     </td>
                     <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
                       {hyperparameter.value}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
+        </>
+      )}
+
+      {artifact.artifact_type === "results" && (
+        <>
+        {artifact.results && artifact.results.length > 0 ? (
+          <div className="overflow-x-auto">
+            <h2>Results</h2>
+            <div className="w-1/2">
+            <table className="leading-normal border w-full">
+              <thead>
+                <tr>
+                  <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                    Metric
+                  </th>
+                  <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                    Value
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {artifact.results.map((result, index) => (
+                  <tr key={index}>
+                    <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
+                      <div className="text-contrast whitespace-no-wrap">
+                        {result.metric}
+                      </div>
+                    </td>
+                    <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
+                      {result.value}
                     </td>
                   </tr>
                 ))}

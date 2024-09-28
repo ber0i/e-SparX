@@ -20,6 +20,8 @@ export type { HyperparametersArtifact } from './models/HyperparametersArtifact';
 export type { ModelArtifact } from './models/ModelArtifact';
 export type { ParametersArtifact } from './models/ParametersArtifact';
 export type { PyTorchFormat } from './models/PyTorchFormat';
+export type { Result } from './models/Result';
+export type { ResultsArtifact } from './models/ResultsArtifact';
 export type { TensorSpec } from './models/TensorSpec';
 export type { ValidationError } from './models/ValidationError';
 
@@ -30,4 +32,5 @@ export { HyperparametersArtifactsService } from './services/HyperparametersArtif
 export { ModelArtifactsService } from './services/ModelArtifactsService';
 export { ParametersArtifactsService } from './services/ParametersArtifactsService';
 export { PipelinesService } from './services/PipelinesService';
+export { ResultsArtifactsService } from './services/ResultsArtifactsService';
 export { WelcomeService } from './services/WelcomeService';

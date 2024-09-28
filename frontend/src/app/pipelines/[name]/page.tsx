@@ -1,12 +1,15 @@
 'use client'
 import React, { useCallback } from 'react';
+import Image from 'next/image';
 import {
   ReactFlow,
   addEdge,
   Connection,
+  Background,
   useNodesState,
   useEdgesState,
 } from '@xyflow/react';
+import DagLegend from "../../daglegend.svg";
  
 import '@xyflow/react/dist/style.css';
 
@@ -17,8 +20,9 @@ import { ConnectionsService } from '@/lib/api/services/ConnectionsService';
 import type { ArtifactResponse } from '@/lib/api/models/ArtifactResponse';
 import type { ConnectionResponse } from '@/lib/api/models/ConnectionResponse';
 
-export default function PipelinePage({ params }: { params: { name: string } }) {
-  const name = params.name;
+
+
+const DAGFlow = ({ name }: { name: string }) => {
   const [artifacts, setArtifacts] = useState<ArtifactResponse[]>([]);
   const [connections, setConnections] = useState<ConnectionResponse[]>([]);
   const router = useRouter();
@@ -97,10 +101,13 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
               return { backgroundColor: 'rgb(12, 167, 137)', color: 'black' };  // Green background, white text
             }
             if (artifact_type === 'hyperparameters') {
-              return { backgroundColor: 'rgba(12, 167, 137, 0.6)' };  // White background, black text
+              return { backgroundColor: 'rgba(12, 167, 137, 0.6)' };  
             }
             if (artifact_type === 'parameters') {
-              return { backgroundColor: 'rgba(12, 167, 137, 0.6)' };  // White background, black text
+              return { backgroundColor: 'rgba(12, 167, 137, 0.6)' };  
+            }
+            if (artifact_type === 'results') {
+              return { backgroundColor: 'rgba(8, 102, 84, 0.8)', color: 'white' };  
             }
             return { backgroundColor: 'white' };  // White background, black text
           };
@@ -163,4 +170,32 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
         onNodeClick={handleNodeClick}
       />
     </div>
-    );}
+    );
+  }
+
+export default function PipelinePage({ params }: { params: { name: string } }) {
+  const name = params.name;
+  return (
+    <div style={{ width: '100vw', height: '100vh' }}>
+      {/* Apply margin-left of 100px */}
+      <div style={{ marginLeft: '100px' }}>
+        <Image
+          src={DagLegend}
+          alt="DAG Legend"
+          width={229 * 3} // Adjust size as needed
+          height={30 * 3}
+          layout="fixed"
+        />
+      </div>
+      <DAGFlow name={name} />
+    </div>
+    
+  );
+}
+
+{/* Image <Image
+        src={legend}
+        alt="Legend"
+        width='500'
+        height='500'
+      /> */}  

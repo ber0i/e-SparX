@@ -33,6 +33,13 @@ class Hyperparameter(BaseModel):
     value: float | int | str | bool
 
 
+class Result(BaseModel):
+    """Schema for a result used in results artifacts."""
+
+    metric: str
+    value: float
+
+
 class DataArtifact(BaseModel):
     """Schema for a data artifact"""
 
@@ -110,5 +117,17 @@ class ParametersArtifact(BaseModel):
     created_at: datetime = datetime.now()
     source_url: Optional[HttpUrl] = None
     download_url: Optional[HttpUrl] = None
+    pipeline_name: Optional[str] = None
+    parent_name: Optional[str] = None
+
+
+class ResultsArtifact(BaseModel):
+    """Schema for a results artifact"""
+
+    name: str
+    description: str
+    artifact_type: str
+    results: List[Result]
+    created_at: datetime = datetime.now()
     pipeline_name: Optional[str] = None
     parent_name: Optional[str] = None
