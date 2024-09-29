@@ -40,6 +40,7 @@ def register_results(
         "name": name,
         "description": description,
         "artifact_type": "results",
+        "file_type": "none",
         "results": results_list,
         "pipeline_name": pipeline_name,
         "parent_name": parent_name,

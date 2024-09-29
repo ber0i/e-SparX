@@ -1,6 +1,6 @@
 # EDL Use Cases
 
-## Wind Power Forecasting
+## Wind Power Forecasting (WPF)
 
 Objective: Farm-level forecasts (i.e., one time series) for the Penmanshiel wind farm. Forecasting horizon: 1h, multi-step, 10min resolution (i.e., one forecast consists of six values).
 
@@ -11,7 +11,7 @@ To produce one forecast for $t+1,\dots,t+6$, the input features are:
 
 Weather data is taken from Open Meteo. Wind power data is taken from Zenodo.
 
-### Acknowledgements
+## Acknowledgements
 
 We appreciate the following GitHub repository for its publicly available code and methods, which we use as example models:
 

@@ -136,8 +136,8 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
         <Image
           src={DagLegend}
           alt="DAG Legend"
-          width={229 * 3} // Adjust size as needed
-          height={30 * 3}
+          width={229 * 2.5} 
+          height={30 * 2.5}
           layout="fixed"
         />
       </div>

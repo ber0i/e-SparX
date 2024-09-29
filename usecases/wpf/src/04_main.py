@@ -2,14 +2,26 @@ import argparse
 import json
 
 import energy_data_lab as edl
+import numpy as np
 import torch
 import wandb
-from data.datasets import PenmanshielDataset
+from datasets import PenmanshielDataset
 from models import mlp
 from torch.utils.data import DataLoader, Subset
 
 
 def main():
+
+    print(">>>>>>>>>>Registering this script in EDL<<<<<<<<<<")
+    edl.register_code(
+        name="Main",
+        description="Script to train and evaluate a model for wind power forecasting.",
+        file_type="PY",
+        source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/main.py",
+        download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/main.py?inline=false",
+        pipeline_name="Wind Power Forecasting",
+        parent_name="Cleaned Data",
+    )
 
     parser = argparse.ArgumentParser(description="Wind Power Forecasting")
     parser.add_argument(
@@ -49,24 +61,13 @@ def main():
     with open(args.hp_file, "r") as f:
         hp = json.load(f)
 
-    args.lookback_timesteps = hp["lookback_timesteps"]
-    args.forecast_timesteps = hp["forecast_timesteps"]
-    args.batch_size = hp["batch_size"]
-    args.n_epochs = hp["n_epochs"]
-    args.train_share = hp["train_share"]
-    args.val_share = hp["val_share"]
-    args.learning_rate = hp["learning_rate"]
-    args.train_loss_fn = hp["train_loss_fn"]
-    args.n_hidden_neurons = hp["n_hidden_neurons"]
-    args.n_hidden_layers = hp["n_hidden_layers"]
-    args.dropout_rate = hp["dropout_rate"]
-    args.norm_layer = hp["norm_layer"]
-    args.activation = hp["activation"]
-    args.optimizer = hp["optimizer"]
+    for key, value in hp.items():
+        setattr(args, key, value)
 
     # Register hyperparameters
 
     if args.model == "mlp":
+        print(">>>>>>>>>>Registering hyperparameters for MLP model in EDL<<<<<<<<<<")
         edl.register_hyperparameters(
             name="MLP Hyperparameters",
             description="Hyperparameters for the MLP model.",
@@ -85,12 +86,13 @@ def main():
         forecast_timesteps=args.forecast_timesteps,
     )
 
+    print(">>>>>>>>>>Registering the dataset class code in EDL<<<<<<<<<<")
     edl.register_code(
         name="Penmanshiel Torch Dataset Class",
         description="Code defining the PyTorch dataset class for the Penmanshiel dataset.",
         file_type="PY",
-        source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/data/datasets/penmanshiel.py",
-        download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/data/datasets/penmanshiel.py?inline=false",
+        source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/datasets/penmanshiel.py",
+        download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/datasets/penmanshiel.py?inline=false",
         pipeline_name="Wind Power Forecasting",
     )
 
@@ -116,6 +118,7 @@ def main():
     model.to(device=args.device)
 
     if args.model == "mlp":
+        print(">>>>>>>>>>Registering MLP model in EDL<<<<<<<<<<")
         edl.register_model_pytorch(
             name="MLP",
             description="PyTorch nn.Module class for the Multilayer Perceptron (MLP) model.",
@@ -143,6 +146,10 @@ def main():
         loss_fn = torch.nn.MSELoss()
     else:
         raise ValueError(f"Unknown loss function {args.train_loss_fn}")
+
+    # Training
+
+    print("Training starts.")
 
     for epoch in range(args.n_epochs):
         model.train()
@@ -180,7 +187,10 @@ def main():
         if args.wandb:
             wandb.log({"val_mse": sum(loss_list) / len(loss_list)})
 
-    # Compute test loss
+    # Testing
+
+    print("Training finished, evaluating on test set starts.")
+
     model.eval()
     loss_list = []
     for batch, (X, y) in enumerate(loader_test):
@@ -191,19 +201,27 @@ def main():
         loss_list.append(loss.cpu().item())
 
     print(f"Test MSE: {sum(loss_list)/len(loss_list):.4f}")
+    print(f"Test RMSE: {np.sqrt(sum(loss_list)/len(loss_list)):.4f}")
+
     if args.wandb:
         wandb.log({"test_mse": sum(loss_list) / len(loss_list)})
+        wandb.log({"test_rmse": np.sqrt(sum(loss_list) / len(loss_list))})
         wandb.finish()
 
-    edl.register_code(
-        name="Main",
-        description="Script to train and evaluate a model for wind power forecasting.",
-        file_type="PY",
-        source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/main.py",
-        download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/main.py?inline=false",
-        pipeline_name="Wind Power Forecasting",
-        parent_name="Cleaned Data",
-    )
+    if args.model == "mlp":
+        print(">>>>>>>>>>Registering MLP results in EDL<<<<<<<<<<")
+        edl.register_results(
+            name="MLP Results",
+            description="Error metric values of the MLP model on the test dataset.",
+            results={
+                "MSE": sum(loss_list) / len(loss_list),
+                "RMSE": np.sqrt(sum(loss_list) / len(loss_list)),
+            },
+            pipeline_name="Wind Power Forecasting",
+            parent_name="Main",
+        )
+
+    print(">>>>>>>>>>Setting additional pipeline connections in EDL<<<<<<<<<<")
     edl.connect(
         pipeline_name="Wind Power Forecasting",
         parent_name="Penmanshiel Torch Dataset Class",
@@ -220,9 +238,12 @@ def main():
         target_name="Main",
     )
 
+    # Save model parameters
+
     if args.model == "mlp":
         torch.save(model.state_dict(), "usecases/wpf/models/MLP.pth")
         print("Model parameters saved.")
+        print(">>>>>>>>>>Registering MLP parameters in EDL<<<<<<<<<<")
         edl.register_parameters(
             name="MLP Parameters",
             description="Trained parameters of the MLP model.",

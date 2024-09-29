@@ -127,6 +127,7 @@ class ResultsArtifact(BaseModel):
     name: str
     description: str
     artifact_type: str
+    file_type: str
     results: List[Result]
     created_at: datetime = datetime.now()
     pipeline_name: Optional[str] = None

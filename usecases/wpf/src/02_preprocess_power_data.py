@@ -1,3 +1,9 @@
+"""
+Unzips the raw SCADA data from Penmanshiel wind farm,
+extracts the relevant variables
+and saves it to a CSV file.
+"""
+
 import os
 import zipfile
 
@@ -9,7 +15,7 @@ unpack_path = os.path.join(raw_data_path, "unpacked")
 processed_data_path = "usecases/wpf/data/processed"
 
 # register raw data in EDL
-print("Registering raw data in EDL:")
+print(">>>>>>>>>>Registering raw data in EDL<<<<<<<<<<")
 edl.register_data_free(
     name="Penmanshiel SCADA 2022 WT01-10",
     description="Raw Penmanshiel SCADA data from 2022, Turbine 01 to 10, downloaded from Zenodo as ZIP file.",
@@ -91,7 +97,7 @@ else:
     print("Done.")
 
 # register processed data in EDL
-print("Registering processed data in EDL:")
+print(">>>>>>>>>>Registering processed data in EDL<<<<<<<<<<")
 edl.register_data_pandas(
     name="Penmanshiel SCADA 2022",
     description="Processed Penmanshiel SCADA data from 2022, all turbines.",
@@ -102,16 +108,19 @@ edl.register_data_pandas(
 
 
 # register this script in EDL
-print("Registering this preprocessing script in EDL:")
+print(">>>>>>>>>>Registering this preprocessing script in EDL<<<<<<<<<<")
 edl.register_code(
     name="Preprocess Raw Data",
     description="Extract relevant variables from raw SCADA data from Penmanshiel wind farm and save it to one CSV file.",
     file_type="PY",
-    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/data/02_preprocessing.py",
-    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/data/02_preprocessing.py?inline=false",
+    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/02_preprocess_power_data.py",
+    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/02_preprocess_power_data.py?inline=false",
     pipeline_name="Wind Power Forecasting",
     parent_name="Penmanshiel SCADA 2022 WT01-10",
 )
+
+# set remaining pipeline connections in EDL
+print(">>>>>>>>>>Setting additional pipeline connections in EDL<<<<<<<<<<")
 edl.connect(
     pipeline_name="Wind Power Forecasting",
     parent_name="Penmanshiel SCADA 2022 WT11-15",

@@ -1,7 +1,8 @@
 """
 Retrieve historical weather data and historical weather forecast data from
-the Open-Meteo.com Weather API (Zippenfenig, P. (2023). Open-Meteo.com Weather API
-[Computer software]. Zenodo. https://doi.org/10.5281/ZENODO.7970649).
+the Open-Meteo.com Weather API.
+(Zippenfenig, P. (2023). Open-Meteo.com Weather API [Computer software].
+Zenodo. https://doi.org/10.5281/ZENODO.7970649)
 
 We set the location to the Penmanshiel wind farm, where we use the coordinates
 as stated here: https://www.thewindpower.net/windfarm_en_23147_penmanshiel.php.
@@ -28,6 +29,7 @@ processed_data_path = "usecases/wpf/data/processed"
 if os.path.exists(
     os.path.join(processed_data_path, "Hist_Weather.csv")
 ) and os.path.exists(os.path.join(processed_data_path, "Hist_Forecast.csv")):
+
     # if yes, load data
     print("Data already retrieved. Loading as pandas DataFrame.")
     df_hist_weather = pd.read_csv(
@@ -41,9 +43,10 @@ if os.path.exists(
         parse_dates=True,
     )
     print("Done.")
+
 else:
 
-    # Latitude, Longitude (source: https://www.thewindpower.net/windfarm_en_23147_penmanshiel.php)
+    # Latitude, Longitude
     latitude = 55.871333
     longitude = -2.354500
     # start, end
@@ -167,18 +170,18 @@ else:
 
 
 # register this script in EDL
-print("Registering this data retrieval script in EDL:")
+print(">>>>>>>>>>Registering this data retrieval script in EDL<<<<<<<<<<")
 edl.register_code(
     name="Retrieve Historical Weather Data",
     description="Retrieve historical weather data and historical weather forecast data from the Open-Meteo.com Weather API and save to CSV.",
     file_type="PY",
-    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/data/scripts/01_data_retrieval.py",
-    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/data/scripts/01_data_retrieval.py?inline=false",
+    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/01_retrieve_weather_data.py",
+    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/01_retrieve_weather_data.py?inline=false",
     pipeline_name="Wind Power Forecasting",
 )
 
 # register data in EDL
-print("Registering data in EDL:")
+print(">>>>>>>>>>Registering data in EDL<<<<<<<<<<")
 edl.register_data_pandas(
     name="Historical Weather Forecast Data",
     description="Historical weather forecasts (Model: GFS Global) at the Penmanshiel wind farm in 2022.",
