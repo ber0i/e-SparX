@@ -41,6 +41,7 @@ const DAGFlow = ({ name }: { name: string }) => {
 
           // Fetch artifacts and connections by pipeline name
           const fetchedArtifacts = await DataArtifactsService.getArtifactsByPipelineDataArtifactsPipelinePipelineNameGet(name as string);
+          console.log(fetchedArtifacts);
           setArtifacts(fetchedArtifacts);
           const fetchedConnections = await ConnectionsService.getConnectionsByPipelineConnectionsPipelinePipelineNameGet(name as string);
           setConnections(fetchedConnections);

@@ -49,4 +49,16 @@ export class ConnectionsService {
             },
         });
     }
+    /**
+     * Get Connections
+     * Get all connections
+     * @returns ConnectionResponse Successful Response
+     * @throws ApiError
+     */
+    public static getConnectionsConnectionsGet(): CancelablePromise<Array<ConnectionResponse>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/connections/',
+        });
+    }
 }

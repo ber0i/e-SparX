@@ -25,7 +25,7 @@ def register_model_pytorch(
     parent_name: Optional[str] = None,
 ):
     """
-    Register a pandas DataFrame as a dataset artifact in the Energy Data Lab.
+    Register a PyToroch nn.Module as model in the Energy Data Lab.
 
     Parameters
     ----------
@@ -37,6 +37,8 @@ def register_model_pytorch(
         The type of the underlying file, as "PY", "IPYNB", etc.
     model: nn.Module
         The PyTorch model to register.
+    input_example: torch.Tensor
+        An example input tensor to infer the in and output format of the model.
     source_url: [Optional] str
         The URL on where to find the underlying file.
     download_url: [Optional] str
@@ -130,3 +132,67 @@ def register_model_pytorch(
 
     mlflow.delete_experiment(experiment_id)
     shutil.rmtree(mlruns_path)
+
+
+def register_model_free(
+    name: str,
+    description: str,
+    file_type: str,
+    flavor: Optional[str] = None,
+    source_url: Optional[HttpUrl] = None,
+    download_url: Optional[HttpUrl] = None,
+    pipeline_name: Optional[str] = None,
+    parent_name: Optional[str] = None,
+):
+    """
+    Register a PyToroch nn.Module as model in the Energy Data Lab.
+
+    Parameters
+    ----------
+    name : str
+        The name of the dataset.
+    description : str
+        The description of the dataset.
+    file_type : str
+        The type of the underlying file, as "PY", "IPYNB", etc.
+    flavor: [Optional] str
+        The flavor of the model, e.g., "keras".
+    source_url: [Optional] str
+        The URL on where to find the underlying file.
+    download_url: [Optional] str
+        The download URL of the underlying file.
+    pipeline_name: [Optional] str
+        The name of the ML pipeline the dataset is used in.
+    parent_name: [Optional] str
+        The name of the parent artifact in the mentioned pipeline. If source node, set to None (default).
+    """
+
+    # Construct the desired JSON structure
+    result = {
+        "name": name,
+        "description": description,
+        "artifact_type": "model",
+        "file_type": file_type,
+    }
+    if flavor is not None:
+        result["flavor"] = flavor
+    else:
+        result["flavor"] = "not available"
+    if source_url is not None:
+        result["source_url"] = source_url
+    if download_url is not None:
+        result["download_url"] = download_url
+    if pipeline_name is not None:
+        result["pipeline_name"] = pipeline_name
+    if parent_name is not None:
+        result["parent_name"] = parent_name
+    response = requests.post(
+        "http://localhost:8080/model-artifacts",
+        json=result,
+    )
+    if response.status_code == 200:
+        response_json = response.json()
+        message = response_json.get("message", "No message provided")
+        print(f"{message}")
+    else:
+        print("Failed to register entry:", response.text)

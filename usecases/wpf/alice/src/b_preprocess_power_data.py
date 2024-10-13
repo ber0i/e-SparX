@@ -7,12 +7,12 @@ and saves it to a CSV file.
 import os
 import zipfile
 
-import energy_data_lab as edl
+import energydatalab as edl
 import pandas as pd
 
-raw_data_path = "usecases/wpf/data/raw"
+raw_data_path = "usecases/wpf/alice/data/raw"
 unpack_path = os.path.join(raw_data_path, "unpacked")
-processed_data_path = "usecases/wpf/data/processed"
+processed_data_path = "usecases/wpf/alice/data/processed"
 
 # register raw data in EDL
 print(">>>>>>>>>>Registering raw data in EDL<<<<<<<<<<")
@@ -22,7 +22,7 @@ edl.register_data_free(
     file_type="ZIP",
     source_url="https://zenodo.org/records/8253010",
     download_url="https://zenodo.org/records/8253010/files/Penmanshiel_SCADA_2022_WT01-10_4462.zip?download=1",
-    pipeline_name="Wind Power Forecasting",
+    pipeline_name="Wind Power Forecasting - MLP and LSTM",
 )
 edl.register_data_free(
     name="Penmanshiel SCADA 2022 WT11-15",
@@ -30,10 +30,10 @@ edl.register_data_free(
     file_type="ZIP",
     source_url="https://zenodo.org/records/8253010",
     download_url="https://zenodo.org/records/8253010/files/Penmanshiel_SCADA_2022_WT11-15_4463.zip?download=1",
-    pipeline_name="Wind Power Forecasting",
+    pipeline_name="Wind Power Forecasting - MLP and LSTM",
 )
 
-# check whether usecases/wpf/data/processed/Penmanshiel_SCADA_2022.csv already exists
+# check whether processed data already exists
 if os.path.exists(os.path.join(processed_data_path, "Penmanshiel_SCADA_2022.csv")):
     # if yes, load data
     print("Data already processed. Loading as pandas DataFrame.")
@@ -103,7 +103,7 @@ edl.register_data_pandas(
     description="Processed Penmanshiel SCADA data from 2022, all turbines.",
     file_type="CSV",
     df=df,
-    pipeline_name="Wind Power Forecasting",
+    pipeline_name="Wind Power Forecasting - MLP and LSTM",
 )
 
 
@@ -113,21 +113,21 @@ edl.register_code(
     name="Preprocess Raw Data",
     description="Extract relevant variables from raw SCADA data from Penmanshiel wind farm and save it to one CSV file.",
     file_type="PY",
-    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/02_preprocess_power_data.py",
-    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/02_preprocess_power_data.py?inline=false",
-    pipeline_name="Wind Power Forecasting",
+    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/src/b_preprocess_power_data.py",
+    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/src/b_preprocess_power_data.py?inline=false",
+    pipeline_name="Wind Power Forecasting - MLP and LSTM",
     parent_name="Penmanshiel SCADA 2022 WT01-10",
 )
 
 # set remaining pipeline connections in EDL
 print(">>>>>>>>>>Setting additional pipeline connections in EDL<<<<<<<<<<")
 edl.connect(
-    pipeline_name="Wind Power Forecasting",
+    pipeline_name="Wind Power Forecasting - MLP and LSTM",
     parent_name="Penmanshiel SCADA 2022 WT11-15",
     target_name="Preprocess Raw Data",
 )
 edl.connect(
-    pipeline_name="Wind Power Forecasting",
+    pipeline_name="Wind Power Forecasting - MLP and LSTM",
     parent_name="Preprocess Raw Data",
     target_name="Penmanshiel SCADA 2022",
 )

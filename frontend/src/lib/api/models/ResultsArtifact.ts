@@ -10,6 +10,7 @@ export type ResultsArtifact = {
     name: string;
     description: string;
     artifact_type: string;
+    file_type: string;
     results: Array<Result>;
     created_at?: string;
     pipeline_name?: (string | null);

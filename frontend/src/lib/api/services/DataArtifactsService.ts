@@ -41,6 +41,18 @@ export class DataArtifactsService {
         });
     }
     /**
+     * Get Artifacts For Global View
+     * Get all artifacts from the DAG DB for global view
+     * @returns ArtifactResponse Successful Response
+     * @throws ApiError
+     */
+    public static getArtifactsForGlobalViewDataArtifactsGlobalGet(): CancelablePromise<Array<ArtifactResponse>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/data-artifacts/global',
+        });
+    }
+    /**
      * Get Artifact By Name
      * Get a single data artifact by name
      * @param name

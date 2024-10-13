@@ -2,7 +2,11 @@ import clsx from "clsx";
 import Image from "next/legacy/image";
 
 const Header = () => {
-  const pages = [{ url: "/artifacts", title: "Artifacts" }, { url: "/pipelines", title: "Pipelines" }]; 
+  const pages = [
+    { url: "/artifacts", title: "Artifacts" },
+    { url: "/pipelines", title: "Pipelines" },
+    { url: "/global", title: "Global Artifact Graph"},
+  ]; 
   //  let mobile_menu_open = false;
 
   return (

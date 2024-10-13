@@ -80,8 +80,8 @@ class ModelArtifact(BaseModel):
     name: str
     description: str
     artifact_type: str
-    flavor: str
     file_type: str
+    flavor: str
     created_at: datetime = datetime.now()
     source_url: Optional[HttpUrl] = None
     download_url: Optional[HttpUrl] = None

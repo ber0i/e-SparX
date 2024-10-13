@@ -37,3 +37,13 @@ async def create_connection(connection: ConnectionCreation, session: Session = S
         response = Connection.create(session=s, param=connection)
 
     return {"message": response}
+
+
+@ConnectionRouter.get("/", response_model=List[ConnectionResponse])
+async def get_connections(session: Session = Session):
+    """Get all connections"""
+
+    with session.begin() as s:
+        connections = Connection.get_all_connections(s)
+        connection_dicts = [connection_to_dict(connection) for connection in connections]
+        return connection_dicts
