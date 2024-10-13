@@ -119,6 +119,12 @@ class Artifact(Base):
     )
 
     @classmethod
+    def get_all_artifacts(cls, session: Session) -> List["Artifact"]:
+        """Get all artifacts"""
+
+        return session.query(cls).all()
+
+    @classmethod
     def read_by_name(cls, session: Session, name: str) -> "Artifact":
         """Read an artifact by name"""
 
@@ -224,9 +230,9 @@ class Artifact(Base):
                     if parent not in pipeline.artifacts:
                         parent.pipelines.append(pipeline)
                         print(
-                            f"For this, the parent artifact '{parent.name}' was linked to pipeline '{pipeline.name}', as this connection had not been established yet."
+                            f"For this, the parent artifact '{parent.name}' was linked to pipeline '{pipeline.name}', as this connection had not been established yet."  # noqa: E501
                         )
-                        response += f" For this, the parent artifact '{parent.name}' was linked to pipeline '{pipeline.name}', as this connection had not been established yet."
+                        response += f" For this, the parent artifact '{parent.name}' was linked to pipeline '{pipeline.name}', as this connection had not been established yet."  # noqa: E501
                 else:
                     print(
                         f"Connection between '{param.parent}' and '{param.name}' already exists in pipeline '{param.pipeline}'."
@@ -299,6 +305,12 @@ class Connection(Base):
     """corresponding pipeline"""
 
     @classmethod
+    def get_all_connections(cls, session: Session) -> List["Connection"]:
+        """Get all connections"""
+
+        return session.query(cls).all()
+
+    @classmethod
     def get_connections_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Connection"]:
         """Get all connections in a pipeline"""
 
@@ -316,8 +328,8 @@ class Connection(Base):
     @classmethod
     def create(cls, session: Session, param: ConnectionCreation) -> "Connection":
         """
-        Dagdb operation to create a connection between two existing artifacts in a pipeline.
-        The artifacts must already be linked to the pipeline.
+        Dagdb operation to create a connection between two existing artifacts.
+        If one of the two artifacts is not linked to the pipeline, the link will be created.
         """
 
         source_artifact = session.query(Artifact).filter_by(name=param.source).first()
@@ -335,13 +347,21 @@ class Connection(Base):
             print(f"Pipeline '{param.pipeline}' not found.")
             raise ValueError(f"Pipeline '{param.pipeline}' not found.")
 
+        response = ""
+
         if pipeline not in source_artifact.pipelines:
-            print(f"Artifact '{param.source}' is not linked to pipeline '{param.pipeline}'.")
-            raise ValueError(f"Artifact '{param.source}' is not linked to pipeline '{param.pipeline}'.")
+            source_artifact.pipelines.append(pipeline)
+            print(
+                f"The source artifact '{source_artifact.name}' was not linked to pipeline '{pipeline.name}' yet. This link was now created."
+            )
+            response += f"The source artifact '{source_artifact.name}' was not linked to pipeline '{pipeline.name}' yet. This link was now created."
 
         if pipeline not in target_artifact.pipelines:
-            print(f"Artifact '{param.target}' is not linked to pipeline '{param.pipeline}'.")
-            raise ValueError(f"Artifact '{param.target}' is not linked to pipeline '{param.pipeline}'.")
+            target_artifact.pipelines.append(pipeline)
+            print(
+                f"The target artifact '{target_artifact.name}' was not linked to pipeline '{pipeline.name}' yet. This link was now created."
+            )
+            response += f"The target artifact '{target_artifact.name}' was not linked to pipeline '{pipeline.name}' yet. This link was now created."
 
         # Aliases for clearer joins
         SourceArtifact = aliased(Artifact, name="source_artifact")
@@ -370,13 +390,13 @@ class Connection(Base):
             print(
                 f"Connection between '{param.source}' and '{param.target}' created within pipeline '{param.pipeline}'."
             )
-            response = (
+            response += (
                 f" Connection between '{param.source}' and '{param.target}' created within pipeline '{param.pipeline}'."
             )
         else:
             print(
                 f"Connection between '{param.source}' and '{param.target}' already exists in pipeline '{param.pipeline}'."
             )
-            response = f" Connection between '{param.source}' and '{param.target}' already exists in pipeline {param.pipeline}."
+            response += f" Connection between '{param.source}' and '{param.target}' already exists in pipeline {param.pipeline}."
 
         return response

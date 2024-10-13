@@ -17,13 +17,13 @@ GFS model cycle runtime: 00, 06, 12, 18 (see https://www.nco.ncep.noaa.gov/pmb/p
 
 import os
 
-import energy_data_lab as edl
+import energydatalab as edl
 import openmeteo_requests
 import pandas as pd
 import requests_cache
 from retry_requests import retry
 
-processed_data_path = "usecases/wpf/data/processed"
+processed_data_path = "usecases/wpf/alice/data/processed"
 
 # check whether data had already been retrieved
 if os.path.exists(
@@ -175,9 +175,9 @@ edl.register_code(
     name="Retrieve Historical Weather Data",
     description="Retrieve historical weather data and historical weather forecast data from the Open-Meteo.com Weather API and save to CSV.",
     file_type="PY",
-    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/src/01_retrieve_weather_data.py",
-    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/src/01_retrieve_weather_data.py?inline=false",
-    pipeline_name="Wind Power Forecasting",
+    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/src/a_retrieve_weather_data.py",
+    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/src/a_retrieve_weather_data.py?inline=false",
+    pipeline_name="Wind Power Forecasting - MLP and LSTM",
 )
 
 # register data in EDL
@@ -188,7 +188,7 @@ edl.register_data_pandas(
     file_type="CSV",
     df=df_hist_forecast,
     source_url="https://open-meteo.com/en/docs/historical-forecast-api",
-    pipeline_name="Wind Power Forecasting",
+    pipeline_name="Wind Power Forecasting - MLP and LSTM",
     parent_name="Retrieve Historical Weather Data",
 )
 edl.register_data_pandas(
@@ -197,7 +197,7 @@ edl.register_data_pandas(
     file_type="CSV",
     df=df_hist_weather,
     source_url="https://open-meteo.com/en/docs/historical-weather-api",
-    pipeline_name="Wind Power Forecasting",
+    pipeline_name="Wind Power Forecasting - MLP and LSTM",
     parent_name="Retrieve Historical Weather Data",
 )
 

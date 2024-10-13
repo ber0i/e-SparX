@@ -1,4 +1,8 @@
 playground.py
-wpf/data/
-wpf/models/
+data/
+ess_control/models/
 .cache.sqlite
+hp_tuning_results/
+wandb/
+visualizations.ipynb
+datasets/

@@ -62,6 +62,24 @@ async def get_artifacts():
     return {"entries": entries}
 
 
+def artifact_to_dict(artifact: Artifact) -> dict:
+    return {
+        "id": artifact.id,
+        "name": artifact.name,
+        "artifact_type": artifact.artifact_type,
+    }
+
+
+@DataArtifactRouter.get("/global", response_model=List[ArtifactResponse])
+async def get_artifacts_for_global_view(session: Session = Session):
+    """Get all artifacts from the DAG DB for global view"""
+
+    with session.begin() as s:
+        artifacts = Artifact.get_all_artifacts(s)
+        artifacts_dicts = [artifact_to_dict(artifact) for artifact in artifacts]
+        return [ArtifactResponse.model_validate(artifact_dict) for artifact_dict in artifacts_dicts]
+
+
 @DataArtifactRouter.get("/{name}")
 async def get_artifact_by_name(name: str):
     """Get a single data artifact by name"""
@@ -72,14 +90,6 @@ async def get_artifact_by_name(name: str):
 
     if artifact:
         return artifact
-
-
-def artifact_to_dict(artifact: Artifact) -> dict:
-    return {
-        "id": artifact.id,
-        "name": artifact.name,
-        "artifact_type": artifact.artifact_type,
-    }
 
 
 @DataArtifactRouter.get("/pipeline/{pipeline_name}", response_model=List[ArtifactResponse])

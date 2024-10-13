@@ -1,0 +1,15 @@
+{
+    "lookback_timesteps": 12,
+    "forecast_timesteps": 6,
+    "n_epochs": 30,
+    "train_share": 0.7,
+    "val_share": 0.15,
+    "test_share": 0.15,
+    "train_loss_fn": "mse",
+    "hidden_size": 19,
+    "lstm_layers": 2,
+    "num_attention_heads": 2,
+    "dropout": 0.5,
+    "batch_size": 64,
+    "learning_rate": 0.000489035986513014
+}
