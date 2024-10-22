@@ -207,15 +207,16 @@ def main():
     else:
 
         print("Demo mode, no training performed. Registering mock results")
+        # These are the results when training with seed = 42.
         if args.model == "mlp":
             mock_results = {
-                "MSE": 0.01415,
-                "RMSE": 0.11895,
+                "MSE": 0.014492,
+                "RMSE": 0.12038,
             }
         elif args.model == "lstm":
             mock_results = {
-                "MSE": 0.012978,
-                "RMSE": 0.11392,
+                "MSE": 0.0136,
+                "RMSE": 0.11662,
             }
         edl.register_results(
             name=f"{model_name} Results Tuned",
@@ -240,6 +241,11 @@ def main():
         pipeline_name="Wind Power Forecasting - TFT",
         parent_name=f"{model_name} Tuned Hyperparameters",
         target_name="Main",
+    )
+    edl.connect(
+        pipeline_name="Wind Power Forecasting - TFT",
+        parent_name="Main",
+        target_name="Persistence Results",
     )
 
     # Save model parameters

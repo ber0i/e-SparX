@@ -134,7 +134,7 @@ def main():
         model.save(
             os.path.join(
                 project_base_path,
-                "usecases/wpf/bob/models/tft.pkl",
+                "usecases/wpf/bob/models/tft/tft.pkl",
             )
         )
 
@@ -188,8 +188,7 @@ def main():
         name="TFT Parameters Tuned",
         description="Trained parameters for the TFT model.",
         file_type="PKL",
-        source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/models/tft.pkl",
-        download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/models/tft.pkl?inline=false",
+        source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/models/tft/",
         pipeline_name="Wind Power Forecasting - TFT",
         parent_name="TFT Training and Testing",
     )
