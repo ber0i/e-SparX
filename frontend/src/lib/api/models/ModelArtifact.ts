@@ -10,8 +10,8 @@ export type ModelArtifact = {
     name: string;
     description: string;
     artifact_type: string;
-    flavor: string;
     file_type: string;
+    flavor: string;
     created_at?: string;
     source_url?: (string | null);
     download_url?: (string | null);

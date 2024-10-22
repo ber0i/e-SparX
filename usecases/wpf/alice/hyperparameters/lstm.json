@@ -10,7 +10,7 @@
     "train_loss_fn": "mse",
     "n_hidden_neurons": 32,
     "n_hidden_layers": 2,
-    "dropout_rate": 0,
+    "dropout_rate": 0.05,
     "norm_layer": "layer",
     "activation": "relu",
     "optimizer": "adam"

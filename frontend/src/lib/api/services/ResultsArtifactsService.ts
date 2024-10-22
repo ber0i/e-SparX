@@ -27,4 +27,25 @@ export class ResultsArtifactsService {
             },
         });
     }
+    /**
+     * Get Results Artifacts By Pipeline
+     * Get all results artifacts in a pipeline
+     * @param pipelineName
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static getResultsArtifactsByPipelineResultsArtifactsPipelinePipelineNameGet(
+        pipelineName: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/results-artifacts/pipeline/{pipeline_name}',
+            path: {
+                'pipeline_name': pipelineName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
 }

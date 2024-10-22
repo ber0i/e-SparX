@@ -63,7 +63,17 @@ def main():
         default="Wind Power Forecasting - MLP and LSTM",
         help="Weights and Biases project name. Default: Wind Power Forecasting.",
     )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random seed. Default: 42.",
+    )
     args = parser.parse_args()
+
+    # Set random seed for reproducibility
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
 
     # Load and extract hyperparameters
 
@@ -211,6 +221,7 @@ def main():
 
         model.eval()
         loss_list = []
+        loss_list_persistence = []
         for batch, (X, y) in enumerate(loader_test):
             X = X.to(device=args.device)
             y = y.to(device=args.device)
@@ -218,8 +229,23 @@ def main():
             loss = loss_fn(y_pred, y)
             loss_list.append(loss.cpu().item())
 
+            # persistence prediction
+            last_power = X[:, args.lookback_timesteps - 1]
+            y_pred_persistence = last_power.unsqueeze(1).expand(
+                -1, hp["forecast_timesteps"]
+            )
+            loss_persistence = loss_fn(y_pred_persistence, y)
+            loss_list_persistence.append(loss_persistence.cpu().item())
+
         print(f"Test MSE: {sum(loss_list)/len(loss_list):.4f}")
         print(f"Test RMSE: {np.sqrt(sum(loss_list)/len(loss_list)):.4f}")
+
+        print(
+            f"Test MSE Persistence: {sum(loss_list_persistence)/len(loss_list_persistence):.4f}"
+        )
+        print(
+            f"Test RMSE Persistence: {np.sqrt(sum(loss_list_persistence)/len(loss_list_persistence)):.4f}"
+        )
 
         if args.wandb:
             wandb.log({"test_mse": sum(loss_list) / len(loss_list)})
@@ -237,23 +263,47 @@ def main():
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
             parent_name="Main",
         )
+        edl.register_results(
+            name="Persistence Results",
+            description="Error metric values of the persistence model on the test dataset.",
+            results={
+                "MSE": sum(loss_list_persistence) / len(loss_list_persistence),
+                "RMSE": np.sqrt(
+                    sum(loss_list_persistence) / len(loss_list_persistence)
+                ),
+            },
+            pipeline_name="Wind Power Forecasting - MLP and LSTM",
+            parent_name="Main",
+        )
 
     else:
         print("Demo mode, no training performed. Registering mock results")
+        # Info: The mock results are the results obtained when running the script with seed = 42.
         if args.model == "mlp":
             mock_results = {
-                "MSE": 0.014381,
-                "RMSE": 0.11992,
+                "MSE": 0.01642,
+                "RMSE": 0.12814,
             }
         elif args.model == "lstm":
             mock_results = {
-                "MSE": 0.0115522,
-                "RMSE": 0.12456,
+                "MSE": 0.014245,
+                "RMSE": 0.11935,
             }
+        mock_results_persistence = {
+            "MSE": 0.1275,
+            "RMSE": 0.3571,
+        }
         edl.register_results(
             name=f"{model_name} Results",
             description=f"Error metric values of the {model_name} model on the test dataset.",
             results=mock_results,
+            pipeline_name="Wind Power Forecasting - MLP and LSTM",
+            parent_name="Main",
+        )
+        edl.register_results(
+            name="Persistence Results",
+            description="Error metric values of the persistence model on the test dataset.",
+            results=mock_results_persistence,
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
             parent_name="Main",
         )

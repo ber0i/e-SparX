@@ -1,4 +1,6 @@
 'use client'
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation'
 import React from 'react';
 import Image from 'next/image';
 import {
@@ -11,7 +13,6 @@ import DagLegend from "../../daglegend.svg";
 import '@xyflow/react/dist/style.css';
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { DataArtifactsService } from "@/lib/api/services/DataArtifactsService";
 import { ConnectionsService } from '@/lib/api/services/ConnectionsService';
 import { topologicalSort } from '@/lib/manual/topological_sort';
@@ -130,9 +131,38 @@ const DAGFlow = ({ name }: { name: string }) => {
 
 
 export default function PipelinePage({ params }: { params: { name: string } }) {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Function to handle button click
+  const handleCompareClick = () => {
+    router.push(`${pathname}/compare`); // Navigate to the compare page
+  };
+
   const name = params.name;
+
+  const legendNodes = [
+    { id: '1', position: { x: 100, y: 0 }, data: { label: 'Dataset' },
+    style: { backgroundColor: 'rgb(63, 161, 241)' }, sourcePosition: 'right',
+    targetPosition: 'left'},
+    { id: '2', position: { x: 100 + 1*180, y: 0 }, data: { label: 'Code' },
+    style: { backgroundColor: 'gray', color: 'white' }, sourcePosition: 'right',
+    targetPosition: 'left'},
+    { id: '3', position: { x: 100 + 2*180, y: 0 }, data: { label: 'Model' },
+    style: { backgroundColor: 'rgb(12, 167, 137)' }, sourcePosition: 'right',
+    targetPosition: 'left'},
+    { id: '4', position: { x: 100 + 3*180, y: 0 }, data: { label: '(Hyper-)Parameters' },
+    style: { backgroundColor: 'rgba(12, 167, 137, 0.6)' }, sourcePosition: 'right',
+    targetPosition: 'left'},
+    { id: '5', position: { x: 100 + 4*180, y: 0 }, data: { label: 'Results' },
+    style: { backgroundColor: 'rgba(8, 102, 84, 0.8)', color: 'white' }, sourcePosition: 'right',
+    targetPosition: 'left'},
+  ];
+
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
+      
+      {/* TODO: Remove image once you have a better solution */}
       <div style={{ marginLeft: '100px' }}>
         <Image
           src={DagLegend}
@@ -140,10 +170,31 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
           width={229 * 2.5} 
           height={30 * 2.5}
           layout="fixed"
+      
         />
       </div>
+      <div style={{ position: 'absolute', top: '110px', right: '200px' }}>
+        <button
+          onClick={handleCompareClick}
+          style={{
+            padding: '10px 20px',
+            fontSize: '16px',
+            cursor: 'pointer',
+            backgroundColor: 'rgba(8, 102, 84, 0.8)', // Dark green background
+            color: '#ffffff', // White text
+            border: 'none',
+            borderRadius: '5px', // Optional: rounded corners
+            transition: 'background-color 0.3s', // Optional: smooth transition for hover effect
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#007f00')} // Lighter green on hover
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#005f00')} // Revert to dark green
+        >
+          Compare Results
+        </button>
+      </div>
+      {/* TODO: The legend is not displaying nicely, there is a huge space underneath */}
+      {/* <ReactFlow nodes={legendNodes} edges={[]} style={{ height: 'mincontent' }} /> */}
       <DAGFlow name={name} />
     </div>
-    
   );
 }

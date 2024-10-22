@@ -2,7 +2,7 @@
     "lookback_timesteps": 12,
     "forecast_timesteps": 6,
     "batch_size": 16,
-    "n_epochs": 50,
+    "n_epochs": 30,
     "train_share": 0.7,
     "val_share": 0.15,
     "test_share": 0.15,

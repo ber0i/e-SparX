@@ -100,7 +100,7 @@ class Artifact(Base):
     """Unique artifact name"""
 
     artifact_type: Mapped[str] = mapped_column("artifact_type", String, nullable=False)
-    """Type of the artifact. Can be "dataset" or "code"."""
+    """Type of the artifact."""
 
     pipelines: Mapped[List[Pipeline]] = relationship(
         secondary=artifact_pipelines, back_populates="artifacts", cascade="all, delete"
@@ -149,6 +149,20 @@ class Artifact(Base):
             .join(artifact_pipelines, cls.id == artifact_pipelines.c.left_id)  # Join artifacts with artifact_pipelines
             .join(Pipeline, artifact_pipelines.c.right_id == Pipeline.id)  # Join artifact_pipelines with pipelines
             .where(Pipeline.name == pipeline_name)  # Filter by pipeline name
+        )
+        return session.execute(stmt).unique().scalars().all()
+
+    @classmethod
+    def get_results_artifacts_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Artifact"]:
+        """Get all results artifacts in a pipeline"""
+
+        stmt = (
+            select(cls)
+            .options(joinedload(cls.pipelines))
+            .join(artifact_pipelines, cls.id == artifact_pipelines.c.left_id)  # Join artifacts with artifact_pipelines
+            .join(Pipeline, artifact_pipelines.c.right_id == Pipeline.id)  # Join artifact_pipelines with pipelines
+            .where(Pipeline.name == pipeline_name)  # Filter by pipeline name
+            .where(cls.artifact_type == "results")  # Filter by artifact type
         )
         return session.execute(stmt).unique().scalars().all()
 
