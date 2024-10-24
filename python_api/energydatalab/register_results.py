@@ -1,7 +1,6 @@
 from typing import Optional
 
-import requests
-
+from ._client import auth_client
 
 def register_results(
     name: str,
@@ -46,8 +45,8 @@ def register_results(
         "parent_name": parent_name,
     }
 
-    response = requests.post(
-        "http://localhost:8080/results-artifacts",
+    response = auth_client.post(
+        "/results-artifacts",
         json=result,
     )
     if response.status_code == 200:

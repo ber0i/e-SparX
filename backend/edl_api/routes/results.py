@@ -1,8 +1,9 @@
 import urllib.parse
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 
 from edl_api.dagdb import Session
+from edl_api.dependencies.auth import IdentifiedUser
 from edl_api.documentdb import DocumentDBClient
 from edl_api.schemas import Artifact, ArtifactCreation, ResultsArtifact
 
@@ -13,8 +14,16 @@ artifact_collection = db.artifacts
 artifact_collection.create_index("name", unique=True)
 
 
+def artifact_to_dict(artifact: Artifact) -> dict:
+    return {
+        "id": artifact.id,
+        "name": artifact.name,
+        "artifact_type": artifact.artifact_type,
+    }
+
+
 @ResultsArtifactRouter.post("/")
-async def register_results_artifact(results: ResultsArtifact, session: Session = Session):
+async def register_results_artifact(results: ResultsArtifact, session: Session, user: IdentifiedUser):
     """Register a hyperparameters artifact."""
 
     entry_data = results.model_dump()
@@ -43,18 +52,14 @@ async def register_results_artifact(results: ResultsArtifact, session: Session =
     node_data = ArtifactCreation(
         name=entry_data["name"], artifact_type=entry_data["artifact_type"], pipeline=pipeline, parent=parent
     )
-    with session.begin() as s:
-        response = Artifact.create(session=s, param=node_data)
+
+    try:
+        with session.begin() as s:
+            response = Artifact.create(session=s, param=node_data, user_id=user.id)
+    except PermissionError as err:
+        return HTTPException(status.HTTP_401_UNAUTHORIZED, err)
 
     return {"message": response}
-
-
-def artifact_to_dict(artifact: Artifact) -> dict:
-    return {
-        "id": artifact.id,
-        "name": artifact.name,
-        "artifact_type": artifact.artifact_type,
-    }
 
 
 @ResultsArtifactRouter.get("/pipeline/{pipeline_name}")

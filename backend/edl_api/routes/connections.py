@@ -1,9 +1,10 @@
 import urllib.parse
 from typing import List
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 
 from edl_api.dagdb import Session
+from edl_api.dependencies import IdentifiedUser
 from edl_api.schemas import Artifact, Connection, ConnectionCreation, ConnectionResponse
 
 ConnectionRouter = APIRouter(tags=["Connections"])
@@ -30,11 +31,14 @@ async def get_connections_by_pipeline(pipeline_name: str, session: Session = Ses
 
 
 @ConnectionRouter.post("/create")
-async def create_connection(connection: ConnectionCreation, session: Session = Session):
+async def create_connection(connection: ConnectionCreation, session: Session, user: IdentifiedUser):
     """Create a connection between two artifacts in a pipeline"""
 
-    with session.begin() as s:
-        response = Connection.create(session=s, param=connection)
+    try:
+        with session.begin() as s:
+            response = Connection.create(session=s, param=connection, user_id=user.id)
+    except PermissionError as err:
+        return HTTPException(status.HTTP_401_UNAUTHORIZED, err)
 
     return {"message": response}
 

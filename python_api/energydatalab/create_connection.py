@@ -1,4 +1,4 @@
-import requests
+from ._client import auth_client 
 
 
 def connect(
@@ -24,8 +24,8 @@ def connect(
         "pipeline": pipeline_name,
     }
 
-    response = requests.post(
-        "http://localhost:8080/connections/create",
+    response = auth_client.post(
+        "/connections/create",
         json=result,
     )
     if response.status_code == 200:
