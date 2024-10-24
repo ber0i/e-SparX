@@ -16,3 +16,4 @@ from .dag import (
     ConnectionResponse,
     ConnectionCreation,
 )
+from .user import User

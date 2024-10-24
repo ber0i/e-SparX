@@ -1,7 +1,8 @@
 from typing import Optional
 
-import requests
 from pydantic import HttpUrl
+
+from ._client import auth_client
 
 
 def register_hyperparameters(
@@ -58,8 +59,8 @@ def register_hyperparameters(
         "parent_name": parent_name,
     }
 
-    response = requests.post(
-        "http://localhost:8080/hyperparameters-artifacts",
+    response = auth_client.post(
+        "/hyperparameters-artifacts",
         json=result,
     )
     if response.status_code == 200:

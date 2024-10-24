@@ -6,9 +6,10 @@ from typing import Optional
 
 import mlflow
 import pandas as pd
-import requests
 import yaml
 from pydantic import HttpUrl
+
+from ._client import auth_client
 
 
 def register_data_free(
@@ -56,8 +57,8 @@ def register_data_free(
         "parent_name": parent_name,
     }
 
-    response = requests.post(
-        "http://localhost:8080/data-artifacts",
+    response = auth_client.post(
+        "/data-artifacts",
         json=result,
     )
     if response.status_code == 200:
@@ -164,8 +165,8 @@ def register_data_pandas(
                 result["pipeline_name"] = pipeline_name
             if parent_name is not None:
                 result["parent_name"] = parent_name
-            response = requests.post(
-                "http://localhost:8080/data-artifacts",
+            response = auth_client.post(
+                "/data-artifacts",
                 json=result,
             )
             if response.status_code == 200:

@@ -5,12 +5,13 @@ import shutil
 from typing import Optional
 
 import mlflow
-import requests
 import torch
 import yaml
 from mlflow.models import infer_signature
 from pydantic import HttpUrl
 from torch import nn
+
+from ._client import auth_client
 
 
 def register_model_pytorch(
@@ -119,8 +120,8 @@ def register_model_pytorch(
         result["pipeline_name"] = pipeline_name
     if parent_name is not None:
         result["parent_name"] = parent_name
-    response = requests.post(
-        "http://localhost:8080/model-artifacts",
+    response = auth_client.post(
+        "/model-artifacts",
         json=result,
     )
     if response.status_code == 200:
@@ -186,8 +187,8 @@ def register_model_free(
         result["pipeline_name"] = pipeline_name
     if parent_name is not None:
         result["parent_name"] = parent_name
-    response = requests.post(
-        "http://localhost:8080/model-artifacts",
+    response = auth_client.post(
+        "/model-artifacts",
         json=result,
     )
     if response.status_code == 200:

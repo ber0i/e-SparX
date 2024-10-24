@@ -15,4 +15,5 @@ dependencies = [
     "pandas",
     "mlflow",
     "pydantic",
+    "platformdirs"
 ]

@@ -1,6 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 
 from edl_api.dagdb import Session
+from edl_api.dependencies import IdentifiedUser
 from edl_api.documentdb import DocumentDBClient
 from edl_api.schemas import Artifact, ArtifactCreation, CodeArtifact
 
@@ -12,7 +13,7 @@ artifact_collection.create_index("name", unique=True)
 
 
 @CodeArtifactRouter.post("/")
-async def register_code_artifact(code: CodeArtifact, session: Session = Session):
+async def register_code_artifact(code: CodeArtifact, session: Session, user: IdentifiedUser):
     """Register a code artifact."""
 
     entry_data = code.model_dump()
@@ -45,7 +46,11 @@ async def register_code_artifact(code: CodeArtifact, session: Session = Session)
     node_data = ArtifactCreation(
         name=entry_data["name"], artifact_type=entry_data["artifact_type"], pipeline=pipeline, parent=parent
     )
-    with session.begin() as s:
-        response = Artifact.create(session=s, param=node_data)
+
+    try:
+        with session.begin() as s:
+            response = Artifact.create(session=s, param=node_data, user_id=user.id)
+    except PermissionError as err:
+        return HTTPException(status.HTTP_401_UNAUTHORIZED, detail=err)
 
     return {"message": response}

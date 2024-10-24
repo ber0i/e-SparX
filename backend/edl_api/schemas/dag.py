@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from enum import unique
 from typing import List, Optional
 
 from pydantic import BaseModel
@@ -96,6 +97,9 @@ class Artifact(Base):
     id: Mapped[int] = mapped_column("id", Integer, primary_key=True, unique=True, autoincrement=True, nullable=False)
     """unique identifier of the artifact"""
 
+    owner_id: Mapped[str] = mapped_column("owner_id", String, unique=False, nullable=False)
+    """unique identifier of the owner of the artifact"""
+
     name: Mapped[str] = mapped_column("name", String, unique=True, nullable=False)
     """Unique artifact name"""
 
@@ -118,39 +122,17 @@ class Artifact(Base):
         secondary=connection_targetartifact, back_populates="target", cascade="all, delete"
     )
 
+    def can_modify(self, user_id: str) -> bool:
+        """Checks if a given user is allowed to modify the artifact"""
+
+        return self.owner_id == user_id
+
     @classmethod
     def get_all_artifacts(cls, session: Session) -> List["Artifact"]:
         """Get all artifacts"""
 
         return session.query(cls).all()
 
-    @classmethod
-    def read_by_name(cls, session: Session, name: str) -> "Artifact":
-        """Read an artifact by name"""
-
-        # define SQL statement
-        stmt = select(cls).where(cls.name == name)
-        return session.execute(stmt).scalar_one()
-
-    @classmethod
-    def read_by_id(cls, session: Session, id: int) -> "Artifact":
-        """Read an artifact by id"""
-
-        stmt = select(cls).where(cls.id == id)
-        return session.execute(stmt).scalar_one()
-
-    @classmethod
-    def get_artifacts_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Artifact"]:
-        """Get all artifacts in a pipeline"""
-
-        stmt = (
-            select(cls)
-            .options(joinedload(cls.pipelines))
-            .join(artifact_pipelines, cls.id == artifact_pipelines.c.left_id)  # Join artifacts with artifact_pipelines
-            .join(Pipeline, artifact_pipelines.c.right_id == Pipeline.id)  # Join artifact_pipelines with pipelines
-            .where(Pipeline.name == pipeline_name)  # Filter by pipeline name
-        )
-        return session.execute(stmt).unique().scalars().all()
 
     @classmethod
     def get_results_artifacts_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Artifact"]:
@@ -167,7 +149,7 @@ class Artifact(Base):
         return session.execute(stmt).unique().scalars().all()
 
     @classmethod
-    def create(cls, session: Session, param: ArtifactCreation) -> "Artifact":
+    def create(cls, session: Session, param: ArtifactCreation, user_id: str) -> str:
         """
         Dagdb operation to create an artifact and link it to a pipeline.
         See Miro graphik for underlying logic.
@@ -175,7 +157,7 @@ class Artifact(Base):
 
         artifact = session.query(Artifact).filter_by(name=param.name).first()
         if not artifact:
-            artifact = Artifact(name=param.name, artifact_type=param.artifact_type)
+            artifact = Artifact(name=param.name, artifact_type=param.artifact_type, owner_id=user_id)
             session.add(artifact)
             session.flush()
             print(f"Artifact '{artifact.name}' created.")
@@ -191,13 +173,16 @@ class Artifact(Base):
         else:
             pipeline = session.query(Pipeline).filter_by(name=param.pipeline).first()
             if not pipeline:
-                pipeline = Pipeline(name=param.pipeline, artifacts=[artifact])
+                pipeline = Pipeline(name=param.pipeline, artifacts=[artifact], owner_id=user_id)
                 session.add(pipeline)
                 session.flush()
                 print(f"Pipeline '{pipeline.name}' created and linked to artifact '{artifact.name}'.")
                 response += f" Pipeline '{pipeline.name}' created and linked to artifact '{artifact.name}'."
 
             else:
+                if not pipeline.can_modify(user_id):
+                    raise PermissionError("Users can only modify pipelines, they created!")
+
                 if pipeline not in artifact.pipelines:
                     artifact.pipelines.append(pipeline)
                     print(f"Pipeline '{pipeline.name}' found and linked to artifact '{artifact.name}'.")
@@ -264,6 +249,9 @@ class Pipeline(Base):
     id: Mapped[int] = mapped_column("id", Integer, primary_key=True, unique=True, autoincrement=True, nullable=False)
     """unique identifier of the pipeline"""
 
+    owner_id: Mapped[str] = mapped_column("owner_id", String, unique=False, nullable=False)
+    """unique identifier of the owner of the artifact"""
+
     name: Mapped[str] = mapped_column("name", String, unique=True, nullable=False)
     """Unique pipeline name"""
 
@@ -274,6 +262,12 @@ class Pipeline(Base):
     connections: Mapped[List[Connection]] = relationship(
         secondary=connection_pipeline, back_populates="pipeline", cascade="all, delete"
     )
+
+    def can_modify(self, user_id: str) -> bool:
+        """Checks if a given user is allowed to modify the pipeline"""
+
+        return self.owner_id == user_id
+
 
     @classmethod
     def get_all_pipelines(cls, session: Session) -> List["Pipeline"]:
@@ -318,29 +312,20 @@ class Connection(Base):
     )
     """corresponding pipeline"""
 
+    def can_modify(self, user_id: str) -> bool:
+        """Checks if a given user is allowed to modify the connection"""
+
+        return self.pipeline.can_modify(user_id)
+
     @classmethod
     def get_all_connections(cls, session: Session) -> List["Connection"]:
         """Get all connections"""
 
         return session.query(cls).all()
 
-    @classmethod
-    def get_connections_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Connection"]:
-        """Get all connections in a pipeline"""
-
-        stmt = (
-            select(cls)
-            .options(joinedload(cls.pipeline))
-            .join(
-                connection_pipeline, cls.id == connection_pipeline.c.left_id
-            )  # Join connections with connection_pipeline
-            .join(Pipeline, connection_pipeline.c.right_id == Pipeline.id)  # Join connection_pipelines with pipelines
-            .where(Pipeline.name == pipeline_name)  # Filter by pipeline name
-        )
-        return session.execute(stmt).unique().scalars().all()
 
     @classmethod
-    def create(cls, session: Session, param: ConnectionCreation) -> "Connection":
+    def create(cls, session: Session, param: ConnectionCreation, user_id: str) -> str:
         """
         Dagdb operation to create a connection between two existing artifacts.
         If one of the two artifacts is not linked to the pipeline, the link will be created.
@@ -376,6 +361,9 @@ class Connection(Base):
                 f"The target artifact '{target_artifact.name}' was not linked to pipeline '{pipeline.name}' yet. This link was now created."
             )
             response += f"The target artifact '{target_artifact.name}' was not linked to pipeline '{pipeline.name}' yet. This link was now created."
+
+        if not pipeline.can_modify(user_id):
+            raise PermissionError("Users can only modify pipelines, they created!")
 
         # Aliases for clearer joins
         SourceArtifact = aliased(Artifact, name="source_artifact")

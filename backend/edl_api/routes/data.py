@@ -1,9 +1,10 @@
 import urllib.parse
 from typing import List
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 
 from edl_api.dagdb import Session
+from edl_api.dependencies.auth import IdentifiedUser
 from edl_api.documentdb import DocumentDBClient
 from edl_api.schemas import Artifact, ArtifactCreation, ArtifactResponse, DataArtifact
 
@@ -15,7 +16,7 @@ artifact_collection.create_index("name", unique=True)
 
 
 @DataArtifactRouter.post("/")
-async def register_data_artifact(dataset: DataArtifact, session: Session = Session):
+async def register_data_artifact(dataset: DataArtifact, session: Session, user: IdentifiedUser):
     """Register a data artifact. Currently supported: Free-form and pd.DataFrame data artifacts."""
 
     entry_data = dataset.model_dump()
@@ -48,8 +49,12 @@ async def register_data_artifact(dataset: DataArtifact, session: Session = Sessi
     node_data = ArtifactCreation(
         name=entry_data["name"], artifact_type=entry_data["artifact_type"], pipeline=pipeline, parent=parent
     )
-    with session.begin() as s:
-        response = Artifact.create(session=s, param=node_data)
+
+    try:
+        with session.begin() as s:
+            response = Artifact.create(session=s, param=node_data, user_id=user.id)
+    except PermissionError as err:
+        return HTTPException(status.HTTP_401_UNAUTHORIZED, err)
 
     return {"message": response}
 

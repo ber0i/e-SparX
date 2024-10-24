@@ -1,7 +1,8 @@
 from typing import Optional
 
-import requests
 from pydantic import HttpUrl
+
+from ._client import auth_client
 
 
 def register_code(
@@ -48,8 +49,8 @@ def register_code(
         "parent_name": parent_name,
     }
 
-    response = requests.post(
-        "http://localhost:8080/code-artifacts",
+    response = auth_client.post(
+        "/code-artifacts",
         json=result,
     )
     if response.status_code == 200:

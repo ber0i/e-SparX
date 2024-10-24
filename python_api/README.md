@@ -5,3 +5,13 @@ In this directory, run the following line to install the package into your Pytho
 ```bash
 pip install .
 ```
+
+> Currently, it is recommended to use Python 3.12 or lower!
+
+## User Config
+
+This tool can be configured using a global `config.json` file. The location of the configuration file changes depending on your operating system. The file is created, when you import the package the first time.
+
+- MacOS: `$HOME/.config/energy_data_lab/config.json` (`$HOME` refers to your home directory: `Users/<username>`)
+- Linux: `$XDG_CONFIG_HOME/energy_data_lab/config.json` (Defaults to `$HOME/.config/energy_data_lab/config.json`, `$HOME` refers to your home directory: `home/<username>`)
+- Windows: `\Users\<username>\AppData\Local\energy_data_lab\energy_data_lab\config.json`

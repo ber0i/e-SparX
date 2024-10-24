@@ -1,6 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 
 from edl_api.dagdb import Session
+from edl_api.dependencies import IdentifiedUser
 from edl_api.documentdb import DocumentDBClient
 from edl_api.schemas import Artifact, ArtifactCreation, ParametersArtifact
 
@@ -12,7 +13,7 @@ artifact_collection.create_index("name", unique=True)
 
 
 @ParametersArtifactRouter.post("/")
-async def register_parameters_artifact(parameters: ParametersArtifact, session: Session = Session):
+async def register_parameters_artifact(parameters: ParametersArtifact, session: Session, user: IdentifiedUser):
     """Register a parameters artifact."""
 
     entry_data = parameters.model_dump()
@@ -45,7 +46,11 @@ async def register_parameters_artifact(parameters: ParametersArtifact, session: 
     node_data = ArtifactCreation(
         name=entry_data["name"], artifact_type=entry_data["artifact_type"], pipeline=pipeline, parent=parent
     )
-    with session.begin() as s:
-        response = Artifact.create(session=s, param=node_data)
+
+    try:
+        with session.begin() as s:
+            response = Artifact.create(session=s, param=node_data, user_id=user.id)
+    except PermissionError as err:
+        return HTTPException(status.HTTP_401_UNAUTHORIZED, err)
 
     return {"message": response}
