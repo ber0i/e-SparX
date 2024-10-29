@@ -2,25 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { PipelinesService } from "@/lib/api/services/PipelinesService";
 import type { Pipeline } from "@/lib/manual/pipeline";
-
+import { getPipelinesPipelinesGet } from "@/lib/api";
 
 export default function PipelinesPage() {
-
   const [Pipelines, setPipelines] = useState<Pipeline[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-
     // Fetch all pipelines
     const fetchPipelines = async () => {
-      try {
-        const response = await PipelinesService.getPipelinesPipelinesGet();
-        setPipelines(response);
-      } catch (error) {
+      const { error, data } = await getPipelinesPipelinesGet();
+
+      if (error) {
         console.error("Failed to fetch pipelines", error);
+        return;
       }
+
+      setPipelines(data as Pipeline[]);
     };
 
     fetchPipelines();
@@ -28,14 +27,13 @@ export default function PipelinesPage() {
 
   // Handler to navigate to the artifact details page
   const handleRowClick = (name: string) => {
-    router.push(`/pipelines/${name}`);  // Navigate to /pipelines/[name]
+    router.push(`/pipelines/${name}`); // Navigate to /pipelines/[name]
   };
 
   return (
     <div className="p-5 ">
-
       <h1>Pipelines Overview</h1>
-      
+
       <section className="mb-8">
         <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
           <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">

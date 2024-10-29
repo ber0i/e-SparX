@@ -1,22 +1,20 @@
-'use client'
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
+"use client";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import {
-  ReactFlow,
-  useNodesState,
-  useEdgesState,
-} from '@xyflow/react';
+import { ReactFlow, useNodesState, useEdgesState } from "@xyflow/react";
 import DagLegend from "../daglegend.svg";
 
-import '@xyflow/react/dist/style.css';
+import "@xyflow/react/dist/style.css";
 
-import { DataArtifactsService } from "@/lib/api/services/DataArtifactsService";
-import { ConnectionsService } from '@/lib/api/services/ConnectionsService';
-import { topologicalSort } from '@/lib/manual/topological_sort';
-import { getNodeStyle } from '@/lib/manual/get_node_style';
-import type { ArtifactResponse } from '@/lib/api/models/ArtifactResponse';
-import type { ConnectionResponse } from '@/lib/api/models/ConnectionResponse';
+import { topologicalSort } from "@/lib/manual/topological_sort";
+import { getNodeStyle } from "@/lib/manual/get_node_style";
+import {
+  ArtifactResponse,
+  ConnectionResponse,
+  getArtifactsForGlobalViewDataArtifactsGlobalGet,
+  getConnectionsConnectionsGet,
+} from "@/lib/api";
 
 // Define the DAG component
 const DAGFlow = () => {
@@ -29,88 +27,104 @@ const DAGFlow = () => {
   // Function to handle node click
   const handleNodeClick = (event: React.MouseEvent, node: any) => {
     const nodeId = node.id;
-    router.push(`/artifacts/${nodeId}`);  // Navigate to the artifact route
+    router.push(`/artifacts/${nodeId}`); // Navigate to the artifact route
   };
 
   useEffect(() => {
-
     const fetchArtifacts = async () => {
-      try {
+      // Fetch all artifacts and connections
+      const { error: fetchArtifactsError, data: fetchedArtifacts } =
+        await getArtifactsForGlobalViewDataArtifactsGlobalGet();
 
-        // Fetch all artifacts and connections
-        const fetchedArtifacts = await DataArtifactsService.getArtifactsForGlobalViewDataArtifactsGlobalGet();
-        console.log(fetchedArtifacts);
-        setArtifacts(fetchedArtifacts);
-        const fetchedConnections = await ConnectionsService.getConnectionsConnectionsGet();
-        setConnections(fetchedConnections);
+      if (fetchArtifactsError) {
+        console.error("Failed to fetch Artifacts", fetchArtifactsError);
+        return;
+      }
 
+      console.log(fetchedArtifacts);
+      setArtifacts(fetchedArtifacts as ArtifactResponse[]);
 
-        // Create a dependency map
-        const nodeDependencies = new Map<string, string[]>();
-        fetchedArtifacts.forEach(artifact => {
-          nodeDependencies.set(artifact.name, []);
-        });
+      const { error: fetchConnectionsError, data: fetchedConnections } =
+        await getConnectionsConnectionsGet();
+      if (fetchConnectionsError) {
+        console.error("Failed to fetch Connections", fetchConnectionsError);
+      }
+      setConnections(fetchedConnections as ConnectionResponse[]);
 
-        fetchedConnections.forEach(connection => {
-          nodeDependencies.get(connection.target.name)?.push(connection.source.name);
-        });
+      // Create a dependency map
+      const nodeDependencies = new Map<string, string[]>();
 
-        // Perform topological sorting to get the ordered list of nodes
-        const { sortedNodes, nodeLevels } = topologicalSort(nodeDependencies);
+      // ! is needed as ts thinks the variable can be undefined due to inconsistent generation of the OpenAPI schema
+      fetchedArtifacts!.forEach((artifact) => {
+        nodeDependencies.set(artifact.name, []);
+      });
 
-        // Get maximum node level (for positioning)
-        const maxLevel = Math.max(...Array.from(nodeLevels.values()));
+      // ! is needed as ts thinks the variable can be undefined due to inconsistent generation of the OpenAPI schema
+      fetchedConnections!.forEach((connection) => {
+        nodeDependencies
+          .get(connection.target.name)
+          ?.push(connection.source.name);
+      });
 
-        const levelNodeCounts: Map<number, number> = new Map(); // Initialize the map to track node counts at each level
+      // Perform topological sorting to get the ordered list of nodes
+      const { sortedNodes, nodeLevels } = topologicalSort(nodeDependencies);
 
-        // Set node positions based on the topological sort
-        const updatedNodes = sortedNodes.map((nodeName) => {
-          const level = nodeLevels.get(nodeName) || 0;
-          {/* @ts-ignore */}
-          const artifact_type = fetchedArtifacts.find(artifact => artifact.name === nodeName)?.artifact_type || 'unknown';
+      // Get maximum node level (for positioning)
+      const maxLevel = Math.max(...Array.from(nodeLevels.values()));
 
-          // Initialize the node count for this level if it doesn't exist
-          if (!levelNodeCounts.has(level)) {
+      const levelNodeCounts: Map<number, number> = new Map(); // Initialize the map to track node counts at each level
+
+      // Set node positions based on the topological sort
+      const updatedNodes = sortedNodes.map((nodeName) => {
+        const level = nodeLevels.get(nodeName) || 0;
+
+        // ! is needed as ts thinks the variable can be undefined due to inconsistent generation of the OpenAPI schema
+        const artifact_type =
+          fetchedArtifacts!.find((artifact) => artifact.name === nodeName)
+            ?.artifact_type || "unknown";
+
+        // Initialize the node count for this level if it doesn't exist
+        if (!levelNodeCounts.has(level)) {
           levelNodeCounts.set(level, 0);
-          }
+        }
 
-          // Calculate the vertical position based on how many nodes are already placed at this level
-          const yPos = levelNodeCounts.get(level)! * 100;  // Vertical distance between nodes at the same level
+        // Calculate the vertical position based on how many nodes are already placed at this level
+        const yPos = levelNodeCounts.get(level)! * 100; // Vertical distance between nodes at the same level
 
-          // Increment the count for this level
-          levelNodeCounts.set(level, levelNodeCounts.get(level)! + 1);
+        // Increment the count for this level
+        levelNodeCounts.set(level, levelNodeCounts.get(level)! + 1);
 
-          return {
-            id: nodeName,
-            data: { label: nodeName },
-            position: { x: 100 + maxLevel * 250 - level * 250, y: 100 + yPos },  // Horizontal position by level, vertical by node count at the level
-            sourcePosition: 'right',
-            targetPosition: 'left',
-            style: getNodeStyle(artifact_type),
-          };
-        });
+        return {
+          id: nodeName,
+          data: { label: nodeName },
+          position: { x: 100 + maxLevel * 250 - level * 250, y: 100 + yPos }, // Horizontal position by level, vertical by node count at the level
+          sourcePosition: "right",
+          targetPosition: "left",
+          style: getNodeStyle(artifact_type),
+        };
+      });
 
-        {/* @ts-ignore */}
+      {
+        /* @ts-ignore */
         setNodes(updatedNodes);
+      }
 
-        // Set edges based on fetched connections
-        {/* @ts-ignore */}
-        const updatedEdges = fetchedConnections.map((connection) => ({
-          id: connection.source.name + '-' + connection.target.name,
-          source: connection.source.name,
-          target: connection.target.name,
-          markerEnd: {
-            type: 'arrow',
-            width: 20,  
-            height: 20,
-          },
-        }));
+      // Set edges based on fetched connections
+      // ! is needed as ts thinks the variable can be undefined due to inconsistent generation of the OpenAPI schema
+      const updatedEdges = fetchedConnections!.map((connection) => ({
+        id: connection.source.name + "-" + connection.target.name,
+        source: connection.source.name,
+        target: connection.target.name,
+        markerEnd: {
+          type: "arrow",
+          width: 20,
+          height: 20,
+        },
+      }));
 
-        {/* @ts-ignore */}
+      {
+        /* @ts-ignore */
         setEdges(updatedEdges);
-
-      } catch (error) {
-        console.error("Failed to fetch artifacts", error);
       }
     };
 
@@ -118,7 +132,7 @@ const DAGFlow = () => {
   }, [setNodes, setEdges]);
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
+    <div style={{ width: "100vw", height: "100vh" }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -128,22 +142,21 @@ const DAGFlow = () => {
       />
     </div>
   );
-}
-
+};
 
 export default function GlobalPage() {
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      <div style={{ marginLeft: '100px' }}>
+    <div style={{ width: "100vw", height: "100vh" }}>
+      <div style={{ marginLeft: "100px" }}>
         <Image
           src={DagLegend}
           alt="DAG Legend"
-          width={229 * 2.5} 
+          width={229 * 2.5}
           height={30 * 2.5}
           layout="fixed"
         />
       </div>
       <DAGFlow />
-    </div> 
+    </div>
   );
 }

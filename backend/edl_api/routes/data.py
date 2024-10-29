@@ -93,8 +93,10 @@ async def get_artifact_by_name(name: str):
     # Search for the artifact in the database collection
     artifact = artifact_collection.find_one({"name": name}, {"_id": 0})  # Omit the _id field
 
-    if artifact:
-        return artifact
+    if not artifact:
+        return HTTPException(status.HTTP_404_NOT_FOUND, detail="Artifact not found")
+    
+    return artifact
 
 
 @DataArtifactRouter.get("/pipeline/{pipeline_name}", response_model=List[ArtifactResponse])

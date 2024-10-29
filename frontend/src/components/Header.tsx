@@ -5,8 +5,8 @@ const Header = () => {
   const pages = [
     { url: "/artifacts", title: "Artifacts" },
     { url: "/pipelines", title: "Pipelines" },
-    { url: "/global", title: "Global Artifact Graph"},
-  ]; 
+    { url: "/global", title: "Global Artifact Graph" },
+  ];
   //  let mobile_menu_open = false;
 
   return (
