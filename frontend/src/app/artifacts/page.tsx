@@ -2,25 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { DataArtifactsService } from "@/lib/api/services/DataArtifactsService";
 import { formatDate } from "@/lib/manual/format_date";
-import type { DataArtifact } from "@/lib/api/models/DataArtifact";
+import { DataArtifact, getArtifactsDataArtifactsGet } from "@/lib/api";
 
 export default function ArtifactsPage() {
-
   const [Artifacts, setArtifacts] = useState<DataArtifact[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-
     // Fetch all artifacts
     const fetchArtifacts = async () => {
-      try {
-        const response = await DataArtifactsService.getArtifactsDataArtifactsGet();
-        setArtifacts(response.entries);
-      } catch (error) {
+      const { error, data } = await getArtifactsDataArtifactsGet();
+
+      if (error) {
         console.error("Failed to fetch datasets", error);
+        return;
       }
+
+      setArtifacts((data as { entries: DataArtifact[] }).entries);
     };
 
     fetchArtifacts();
@@ -28,14 +27,13 @@ export default function ArtifactsPage() {
 
   // Handler to navigate to the artifact details page
   const handleRowClick = (name: string) => {
-    router.push(`/artifacts/${name}`);  // Navigate to /artifacts/[name]
+    router.push(`/artifacts/${name}`); // Navigate to /artifacts/[name]
   };
 
   return (
     <div className="p-5 ">
-
       <h1>Artifacts Overview</h1>
-      
+
       <section className="mb-8">
         <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
           <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">

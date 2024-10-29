@@ -7,7 +7,6 @@ It is intended to be used as part of the build or development process for projec
 utilizing FastAPI with a TypeScript frontend.
 """
 
-
 import argparse
 import json
 import subprocess
@@ -62,7 +61,7 @@ def generate_typescript_code(verbose: bool = False):
     # command = "npx openapi-typescript-codegen --input ./src/lib/openapi.json --output ./src/lib/api"
 
     command = (
-        f"npx openapi-typescript-codegen --input {FRONTEND_PATHS['openapi_json']} "
+        f"npx @hey-api/openapi-ts --input {FRONTEND_PATHS['openapi_json']} "
         f"--output {FRONTEND_PATHS['api_dir'] / 'api'}"
     )
 
@@ -77,42 +76,6 @@ def generate_typescript_code(verbose: bool = False):
             print("Successfully generated TypeScript code from OpenAPI spec.")
     else:
         print("Error occurred while generating TypeScript code.")
-
-    command = (
-        f"npx openapi-typescript-codegen --input {FRONTEND_PATHS['openapi_json']} "
-        f"--output {FRONTEND_PATHS['api_dir'] / 'api'}"
-    )
-
-
-def adjust_openapi_ts_file(verbose: bool = False):
-    """Adjusts the OpenAPI.ts file to set the BASE URL and other configurations dynamically."""
-
-    # Retrieve the path to the OpenAPI.ts file from the frontend_paths
-    openapi_ts_path = FRONTEND_PATHS["openapi_ts"]
-
-    # Ensure the file exists
-    if not openapi_ts_path.exists():
-        print(f"File {openapi_ts_path} does not exist.")
-        return
-
-    # Read the content of the file
-    with open(openapi_ts_path, "r") as file:
-        lines = file.readlines()
-
-    # Replace the line with the desired content
-    for i, line in enumerate(lines):
-        # Set API Base URL
-        if line.strip().startswith("BASE: ''"):
-            lines[i] = (
-                '    BASE: process.env.API_ENDPOINT || "http://localhost:8080",\n'
-            )
-
-    # Write the modified content back to the file
-    with open(openapi_ts_path, "w") as file:
-        file.writelines(lines)
-
-    if verbose:
-        print("OpenAPI.ts has been adjusted.")
 
 
 def delete_openapi_json(verbose: bool = False):
@@ -145,7 +108,6 @@ def main():
 
     generate_openapi_json(verbose=args.verbose)
     generate_typescript_code(verbose=args.verbose)
-    adjust_openapi_ts_file(verbose=args.verbose)
     delete_openapi_json(verbose=args.verbose)
 
 

@@ -1,4 +1,3 @@
 export type Pipeline = {
-    name: string;
+  name: string;
 };
-

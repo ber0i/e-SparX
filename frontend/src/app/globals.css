@@ -94,15 +94,15 @@
     gap: 10px;
     margin-bottom: 20px;
   }
-  
+
   .artifact-info p {
     margin: 0;
   }
-  
+
   .artifact-info .key {
     font-weight: bold;
   }
-  
+
   .artifact-info .value {
     text-align: left;
   }
