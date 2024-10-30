@@ -9,6 +9,7 @@ import {
 import { formatDate } from "@/lib/manual/format_date";
 import type { Artifact } from "@/lib/manual/artifact";
 import type { Pipeline } from "@/lib/manual/pipeline";
+import type { Neighbor } from "@/lib/manual/neighbor";
 
 export default function ArtifactDetailPage({
   params,
@@ -19,7 +20,7 @@ export default function ArtifactDetailPage({
   const name = params.name;
   const [artifact, setArtifact] = useState<Artifact | null>(null);
   const [pipelines, setPipelines] = useState<Pipeline[]>([]);
-  const [neighbors, setNeighbors] = useState<Artifact[]>([]);
+  const [neighbors, setNeighbors] = useState<Neighbor[]>([]);
 
   useEffect(() => {
     // Fetch artifact by name
@@ -51,7 +52,6 @@ export default function ArtifactDetailPage({
           console.error("Failed to fetch pipelines", error);
           return;
         }
-        console.log(data);
         setPipelines(data as Pipeline[]);
       }
     };
@@ -69,8 +69,7 @@ export default function ArtifactDetailPage({
           console.error("Failed to fetch artifact neighbors", error);
           return;
         }
-        console.log(data);
-        setNeighbors(data as []);
+        setNeighbors(data as Neighbor[]);
       }
     };
 
