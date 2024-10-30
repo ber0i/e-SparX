@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   getArtifactByNameDataArtifactsNameGet,
   getPipelinesByArtifactPipelinesArtifactNameGet,
+  getNeighborsDataArtifactsNeighborsNameGet,
 } from "@/lib/api";
 import { formatDate } from "@/lib/manual/format_date";
 import type { Artifact } from "@/lib/manual/artifact";
@@ -18,6 +19,7 @@ export default function ArtifactDetailPage({
   const name = params.name;
   const [artifact, setArtifact] = useState<Artifact | null>(null);
   const [pipelines, setPipelines] = useState<Pipeline[]>([]);
+  const [neighbors, setNeighbors] = useState<Artifact[]>([]);
 
   useEffect(() => {
     // Fetch artifact by name
@@ -49,13 +51,32 @@ export default function ArtifactDetailPage({
           console.error("Failed to fetch pipelines", error);
           return;
         }
-
+        console.log(data);
         setPipelines(data as Pipeline[]);
+      }
+    };
+
+    // Fetch neighbors of artifact by artifact name
+    const fetchNeighbors = async () => {
+      if (name) {
+        const decodedName = decodeURIComponent(name as string);
+        const { error, data } =
+          await getNeighborsDataArtifactsNeighborsNameGet({
+            path: { name: decodedName },
+          });
+
+        if (error) {
+          console.error("Failed to fetch artifact neighbors", error);
+          return;
+        }
+        console.log(data);
+        setNeighbors(data as Artifact[]);
       }
     };
 
     fetchArtifactDetails();
     fetchPipelines();
+    fetchNeighbors();
   }, [name]);
 
   if (!artifact) {
@@ -172,6 +193,22 @@ export default function ArtifactDetailPage({
                 <li key={index} className="mr-1">
                   <a href={`/pipelines/${pipeline.name}`}>{pipeline.name}</a>
                   {index < pipelines.length - 1 && ", "}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            "not available"
+          )}
+        </div>
+
+        <p className="key">Neighbors:</p>
+        <div className="value">
+          {neighbors.length > 0 ? (
+            <ul className="inline-flex">
+              {neighbors.map((neighbor, index) => (
+                <li key={index} className="mr-1">
+                  <a href={`/artifacts/${neighbor.name}`}>{neighbor.name}</a>
+                  {index < neighbors.length - 1 && ", "}
                 </li>
               ))}
             </ul>

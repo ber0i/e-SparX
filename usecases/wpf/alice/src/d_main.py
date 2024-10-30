@@ -21,7 +21,7 @@ def main():
         source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/src/d_main.py",
         download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/src/d_main.py?inline=false",
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
-        parent_name="Cleaned Data",
+        source_name="Cleaned Data",
     )
 
     parser = argparse.ArgumentParser(
@@ -261,7 +261,7 @@ def main():
                 "RMSE": np.sqrt(sum(loss_list) / len(loss_list)),
             },
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
-            parent_name="Main",
+            source_name="Main",
         )
         edl.register_results(
             name="Persistence Results",
@@ -273,7 +273,7 @@ def main():
                 ),
             },
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
-            parent_name="Main",
+            source_name="Main",
         )
 
     else:
@@ -298,30 +298,30 @@ def main():
             description=f"Error metric values of the {model_name} model on the test dataset.",
             results=mock_results,
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
-            parent_name="Main",
+            source_name="Main",
         )
         edl.register_results(
             name="Persistence Results",
             description="Error metric values of the persistence model on the test dataset.",
             results=mock_results_persistence,
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
-            parent_name="Main",
+            source_name="Main",
         )
 
     print(">>>>>>>>>>Setting additional pipeline connections in EDL<<<<<<<<<<")
     edl.connect(
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
-        parent_name="Penmanshiel Torch Dataset Class",
+        source_name="Penmanshiel Torch Dataset Class",
         target_name="Main",
     )
     edl.connect(
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
-        parent_name=f"{model_name}",
+        source_name=f"{model_name}",
         target_name="Main",
     )
     edl.connect(
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
-        parent_name=f"{model_name} Hyperparameters",
+        source_name=f"{model_name} Hyperparameters",
         target_name="Main",
     )
 
@@ -342,7 +342,7 @@ def main():
         source_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/models/{model_name}.pth",
         download_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/models/{model_name}.pth?inline=false",  # noqa: E501
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
-        parent_name="Main",
+        source_name="Main",
     )
 
 

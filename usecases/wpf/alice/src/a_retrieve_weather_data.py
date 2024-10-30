@@ -189,7 +189,7 @@ edl.register_data_pandas(
     df=df_hist_forecast,
     source_url="https://open-meteo.com/en/docs/historical-forecast-api",
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
-    parent_name="Retrieve Historical Weather Data",
+    source_name="Retrieve Historical Weather Data",
 )
 edl.register_data_pandas(
     name="Historical Weather Data",
@@ -198,7 +198,7 @@ edl.register_data_pandas(
     df=df_hist_weather,
     source_url="https://open-meteo.com/en/docs/historical-weather-api",
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
-    parent_name="Retrieve Historical Weather Data",
+    source_name="Retrieve Historical Weather Data",
 )
 
 print("Script finished.")

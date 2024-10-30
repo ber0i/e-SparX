@@ -19,7 +19,7 @@ export type Artifact = {
   source_url?: string | null;
   download_url?: string | null;
   pipeline_name?: string | null;
-  parent_name?: string | null;
+  source_name?: string | null;
   num_rows?: number | null;
   num_columns?: number | null;
   data_schema?: Array<ColSpec> | null;

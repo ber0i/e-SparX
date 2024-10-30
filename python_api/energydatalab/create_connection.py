@@ -3,7 +3,7 @@ from ._client import auth_client
 
 def connect(
     pipeline_name: str,
-    parent_name: str,
+    source_name: str,
     target_name: str,
 ):
     """
@@ -13,13 +13,13 @@ def connect(
     ----------
     pipeline_name : str
         The name of the ML pipeline the artifact is used in.
-    parent_name : str
-        The name of the parent artifact in the mentioned pipeline.
+    source_name : str
+        The name of the source artifact in the mentioned pipeline.
     target_name : str
         The name of the target artifact in the mentioned pipeline.
     """
     result = {
-        "source": parent_name,
+        "source": source_name,
         "target": target_name,
         "pipeline": pipeline_name,
     }

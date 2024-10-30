@@ -33,16 +33,16 @@ def main():
         source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/src/c_tft.py",
         download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/src/c_tft.py?inline=false",
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name="Cleaned Data",
+        source_name="Cleaned Data",
     )
     edl.connect(
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name="TFT Tuned Hyperparameters",
+        source_name="TFT Tuned Hyperparameters",
         target_name="TFT Training and Testing",
     )
     edl.connect(
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name="TFT Model",
+        source_name="TFT Model",
         target_name="TFT Training and Testing",
     )
 
@@ -169,7 +169,7 @@ def main():
             description="Results of the TFT model with tuned hyperparameters.",
             results={"MSE": mse_overall, "RMSE": rmse_overall},
             pipeline_name="Wind Power Forecasting - TFT",
-            parent_name="TFT Training and Testing",
+            source_name="TFT Training and Testing",
         )
 
     else:
@@ -181,7 +181,7 @@ def main():
             description="Results of the TFT model with tuned hyperparameters.",
             results=mock_results,
             pipeline_name="Wind Power Forecasting - TFT",
-            parent_name="TFT Training and Testing",
+            source_name="TFT Training and Testing",
         )
 
     edl.register_parameters(
@@ -190,7 +190,7 @@ def main():
         file_type="PKL",
         source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/models/tft/",
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name="TFT Training and Testing",
+        source_name="TFT Training and Testing",
     )
 
 

@@ -21,14 +21,14 @@ async def register_data_artifact(dataset: DataArtifact, session: Session, user: 
 
     entry_data = dataset.model_dump()
     pipeline = entry_data["pipeline_name"] if entry_data["pipeline_name"] else None
-    parent = entry_data["parent_name"] if entry_data["parent_name"] else None
+    source = entry_data["source_name"] if entry_data["source_name"] else None
 
-    if parent and not pipeline:
-        return {"error": "Parent artifact specified without pipeline."}
-    if parent:
-        parent_entry = artifact_collection.find_one({"name": entry_data["parent_name"]})
-        if not parent_entry:
-            return {"error": "Parent artifact does not exist. Create the parent artifact first."}
+    if source and not pipeline:
+        return {"error": "Source artifact specified without pipeline."}
+    if source:
+        source_entry = artifact_collection.find_one({"name": entry_data["source_name"]})
+        if not source_entry:
+            return {"error": "Source artifact does not exist. Create the source artifact first."}
 
     # If artifact does not exist in artifactdb, insert it
     existing_entry = artifact_collection.find_one({"name": entry_data["name"]})
@@ -39,7 +39,7 @@ async def register_data_artifact(dataset: DataArtifact, session: Session, user: 
             entry_data["download_url"] = str(entry_data["download_url"])
         # remove pipeline-related logic
         entry_data.pop("pipeline_name", None)
-        entry_data.pop("parent_name", None)
+        entry_data.pop("source_name", None)
         artifact_collection.insert_one(entry_data)
         print("New artifact inserted successfully in artifactdb.")
     else:
@@ -47,7 +47,7 @@ async def register_data_artifact(dataset: DataArtifact, session: Session, user: 
 
     # Handle dagdb operations (logic is inside the create method)
     node_data = ArtifactCreation(
-        name=entry_data["name"], artifact_type=entry_data["artifact_type"], pipeline=pipeline, parent=parent
+        name=entry_data["name"], artifact_type=entry_data["artifact_type"], pipeline=pipeline, source=source
     )
 
     try:
@@ -61,7 +61,7 @@ async def register_data_artifact(dataset: DataArtifact, session: Session, user: 
 
 @DataArtifactRouter.get("/")
 async def get_artifacts():
-    """Get all artifacts"""
+    """Get all artifacts from the DocumentDB"""
 
     entries = list(artifact_collection.find({}, {"_id": 0}))  # Omit the _id field
     return {"entries": entries}
@@ -95,7 +95,7 @@ async def get_artifact_by_name(name: str):
 
     if not artifact:
         return HTTPException(status.HTTP_404_NOT_FOUND, detail="Artifact not found")
-    
+
     return artifact
 
 
@@ -109,3 +109,23 @@ async def get_artifacts_by_pipeline(pipeline_name: str, session: Session = Sessi
         artifacts = Artifact.get_artifacts_by_pipeline(s, pipeline_name)
         artifacts_dicts = [artifact_to_dict(artifact) for artifact in artifacts]
         return [ArtifactResponse.model_validate(artifact_dict) for artifact_dict in artifacts_dicts]
+
+
+@DataArtifactRouter.get("/neighbors/{name}", response_model=List[ArtifactResponse])
+async def get_neighbors(name: str, session: Session = Session):
+    """Get all neighbors (in any pipeline) of an artifact by artifact name"""
+
+    name = urllib.parse.unquote(name)
+    with session.begin() as s:
+        # get pipelines of the artifact
+        artifact = Artifact.get_artifact_by_name(s, name)
+        connections_as_source = artifact.connections_as_source
+        connections_as_target = artifact.connections_as_target
+        # create list of all artifacts in the connection lists
+        target_neighbors = [connection.target for connection in connections_as_source]
+        source_neighbors = [connection.source for connection in connections_as_target]
+        neighbors = target_neighbors + source_neighbors
+        neighbors_dicts = [artifact_to_dict(neighbor) for neighbor in neighbors]
+        neighbors_response = [ArtifactResponse.model_validate(neighbor_dict) for neighbor_dict in neighbors_dicts]
+        # return {"neighbors": neighbors_response}
+        return neighbors_response

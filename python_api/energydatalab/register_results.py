@@ -2,19 +2,20 @@ from typing import Optional
 
 from ._client import auth_client
 
+
 def register_results(
     name: str,
     description: str,
     results: dict,
     pipeline_name: Optional[str] = None,
-    parent_name: Optional[str] = None,
+    source_name: Optional[str] = None,
 ):
     """
     Registers a results artifact in the Energy Data Lab.
     To add an existing artifact to a pipeline, use the existing artifact name in name and define the pipeline via the pipeline_name.
     If the pipeline does not exist yet, it will be created.
-    Pipeline connections are specified via the parent_name parameter.
-    If your artifact is a source node in the pipeline, set parent_name to None (default).
+    Pipeline connections are specified via the source_name parameter.
+    If your artifact is a source node in the pipeline, set source_name to None (default).
 
     Parameters
     ----------
@@ -27,8 +28,8 @@ def register_results(
         where value must be a float.
     pipeline_name: [Optional] str
         The name of the ML pipeline the code is used in.
-    parent_name: [Optional] str
-        The name of the parent artifact in the mentioned pipeline. If source node, set to None (default).
+    source_name: [Optional] str
+        The name of the source artifact in the mentioned pipeline. If source node, set to None (default).
     """
 
     results_list = [
@@ -42,7 +43,7 @@ def register_results(
         "file_type": "none",
         "results": results_list,
         "pipeline_name": pipeline_name,
-        "parent_name": parent_name,
+        "source_name": source_name,
     }
 
     response = auth_client.post(

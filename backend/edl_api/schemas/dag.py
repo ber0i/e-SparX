@@ -68,8 +68,8 @@ class ArtifactCreation(BaseModel):
     pipeline: Optional[str] = None
     """Pipeline names this artifact should be linked to"""
 
-    parent: Optional[str] = None
-    """Name of the parent artifact in pipeline"""
+    source: Optional[str] = None
+    """Name of the source artifact in pipeline"""
 
 
 class ConnectionCreation(BaseModel):
@@ -143,6 +143,25 @@ class Artifact(Base):
         return session.query(cls).all()
 
     @classmethod
+    def get_artifact_by_name(cls, session: Session, artifact_name: str) -> "Artifact":
+        """Get an artifact by name"""
+
+        return session.query(cls).filter_by(name=artifact_name).first()
+
+    @classmethod
+    def get_artifacts_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Artifact"]:
+        """Get all artifacts in a pipeline"""
+
+        stmt = (
+            select(cls)
+            .options(joinedload(cls.pipelines))
+            .join(artifact_pipelines, cls.id == artifact_pipelines.c.left_id)  # Join artifacts with artifact_pipelines
+            .join(Pipeline, artifact_pipelines.c.right_id == Pipeline.id)  # Join artifact_pipelines with pipelines
+            .where(Pipeline.name == pipeline_name)  # Filter by pipeline name
+        )
+        return session.execute(stmt).unique().scalars().all()
+
+    @classmethod
     def get_results_artifacts_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Artifact"]:
         """Get all results artifacts in a pipeline"""
 
@@ -201,8 +220,8 @@ class Artifact(Base):
                     print(f"Pipeline '{pipeline.name}' found, and it is already linked to artifact '{artifact.name}'.")
                     response += f"Artifact {COLORS['artifact']}{artifact.name}{COLORS['reset']} is already linked to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # Done. # noqa: E501
 
-            if param.parent:
-                parent = session.query(Artifact).filter_by(name=param.parent).first()
+            if param.source:
+                source = session.query(Artifact).filter_by(name=param.source).first()
 
                 # Aliases for clearer joins
                 SourceArtifact = aliased(Artifact, name="source_artifact")
@@ -217,7 +236,7 @@ class Artifact(Base):
                     .join(TargetArtifact, connection_targetartifact.c.right_id == TargetArtifact.id)
                     .filter(
                         and_(
-                            SourceArtifact.id == parent.id,
+                            SourceArtifact.id == source.id,
                             TargetArtifact.id == artifact.id,
                             Connection.pipeline == pipeline,
                         )
@@ -225,27 +244,27 @@ class Artifact(Base):
                     .first()
                 )
                 if not connection:
-                    parent = session.query(Artifact).filter_by(name=param.parent).first()
-                    connection = Connection(source=parent, target=artifact, pipeline=pipeline)
+                    source = session.query(Artifact).filter_by(name=param.source).first()
+                    connection = Connection(source=source, target=artifact, pipeline=pipeline)
                     session.add(connection)
                     session.flush()
                     print(
-                        f"Connection between '{param.parent}' and '{param.name}' created within pipeline '{param.pipeline}'."
+                        f"Connection between '{param.source}' and '{param.name}' created within pipeline '{param.pipeline}'."
                     )
-                    response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} {COLORS['artifact']}{param.parent}{COLORS['reset']} to {COLORS['artifact']}{param.name}{COLORS['reset']} within pipeline {COLORS['pipeline']}{param.pipeline}{COLORS['reset']}.\n"  # noqa: E501
-                    # Check whether the connection parent is linked to the pipeline
-                    if parent not in pipeline.artifacts:
-                        parent.pipelines.append(pipeline)
+                    response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} {COLORS['artifact']}{param.source}{COLORS['reset']} to {COLORS['artifact']}{param.name}{COLORS['reset']} within pipeline {COLORS['pipeline']}{param.pipeline}{COLORS['reset']}.\n"  # noqa: E501
+                    # Check whether the connection source is linked to the pipeline
+                    if source not in pipeline.artifacts:
+                        source.pipelines.append(pipeline)
                         print(
-                            f"For this, the parent artifact '{parent.name}' was linked to pipeline '{pipeline.name}', as this connection had not been established yet."  # noqa: E501
+                            f"For this, the source artifact '{source.name}' was linked to pipeline '{pipeline.name}', as this connection had not been established yet."  # noqa: E501
                         )
-                        response += f"Artifact {COLORS['artifact']}{parent.name}{COLORS['reset']} has not yet been linked to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # noqa: E501
-                        response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} artifact {COLORS['artifact']}{parent.name}{COLORS['reset']} to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # noqa: E501
+                        response += f"Artifact {COLORS['artifact']}{source.name}{COLORS['reset']} has not yet been linked to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # noqa: E501
+                        response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} artifact {COLORS['artifact']}{source.name}{COLORS['reset']} to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # noqa: E501
                 else:
                     print(
-                        f"Connection between '{param.parent}' and '{param.name}' already exists in pipeline '{param.pipeline}'."
+                        f"Connection between '{param.source}' and '{param.name}' already exists in pipeline '{param.pipeline}'."
                     )
-                    response += f"Connection between {COLORS['artifact']}{param.parent}{COLORS['reset']} and {COLORS['artifact']}{param.name}{COLORS['reset']} already exists within pipeline {COLORS['pipeline']}{param.pipeline}{COLORS['reset']}.\n"  # Done. # noqa: E501
+                    response += f"Connection between {COLORS['artifact']}{param.source}{COLORS['reset']} and {COLORS['artifact']}{param.name}{COLORS['reset']} already exists within pipeline {COLORS['pipeline']}{param.pipeline}{COLORS['reset']}.\n"  # Done. # noqa: E501
 
         return response
 
@@ -330,6 +349,21 @@ class Connection(Base):
         """Get all connections"""
 
         return session.query(cls).all()
+
+    @classmethod
+    def get_connections_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Connection"]:
+        """Get all connections in a pipeline"""
+
+        stmt = (
+            select(cls)
+            .options(joinedload(cls.pipeline))
+            .join(
+                connection_pipeline, cls.id == connection_pipeline.c.left_id
+            )  # Join connections with connection_pipeline
+            .join(Pipeline, connection_pipeline.c.right_id == Pipeline.id)  # Join connection_pipelines with pipelines
+            .where(Pipeline.name == pipeline_name)  # Filter by pipeline name
+        )
+        return session.execute(stmt).unique().scalars().all()
 
     @classmethod
     def create(cls, session: Session, param: ConnectionCreation, user_id: str) -> str:

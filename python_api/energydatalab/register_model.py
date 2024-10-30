@@ -23,7 +23,7 @@ def register_model_pytorch(
     source_url: Optional[HttpUrl] = None,
     download_url: Optional[HttpUrl] = None,
     pipeline_name: Optional[str] = None,
-    parent_name: Optional[str] = None,
+    source_name: Optional[str] = None,
 ):
     """
     Register a PyToroch nn.Module as model in the Energy Data Lab.
@@ -46,8 +46,8 @@ def register_model_pytorch(
         The download URL of the underlying file.
     pipeline_name: [Optional] str
         The name of the ML pipeline the dataset is used in.
-    parent_name: [Optional] str
-        The name of the parent artifact in the mentioned pipeline. If source node, set to None (default).
+    source_name: [Optional] str
+        The name of the source artifact in the mentioned pipeline. If source node, set to None (default).
     """
 
     # Reset the MLflow state
@@ -118,8 +118,8 @@ def register_model_pytorch(
         result["download_url"] = download_url
     if pipeline_name is not None:
         result["pipeline_name"] = pipeline_name
-    if parent_name is not None:
-        result["parent_name"] = parent_name
+    if source_name is not None:
+        result["source_name"] = source_name
     response = auth_client.post(
         "/model-artifacts",
         json=result,
@@ -143,7 +143,7 @@ def register_model_free(
     source_url: Optional[HttpUrl] = None,
     download_url: Optional[HttpUrl] = None,
     pipeline_name: Optional[str] = None,
-    parent_name: Optional[str] = None,
+    source_name: Optional[str] = None,
 ):
     """
     Register a PyToroch nn.Module as model in the Energy Data Lab.
@@ -164,8 +164,8 @@ def register_model_free(
         The download URL of the underlying file.
     pipeline_name: [Optional] str
         The name of the ML pipeline the dataset is used in.
-    parent_name: [Optional] str
-        The name of the parent artifact in the mentioned pipeline. If source node, set to None (default).
+    source_name: [Optional] str
+        The name of the source artifact in the mentioned pipeline. If source node, set to None (default).
     """
 
     # Construct the desired JSON structure
@@ -185,8 +185,8 @@ def register_model_free(
         result["download_url"] = download_url
     if pipeline_name is not None:
         result["pipeline_name"] = pipeline_name
-    if parent_name is not None:
-        result["parent_name"] = parent_name
+    if source_name is not None:
+        result["source_name"] = source_name
     response = auth_client.post(
         "/model-artifacts",
         json=result,

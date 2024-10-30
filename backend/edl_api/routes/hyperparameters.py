@@ -13,19 +13,21 @@ artifact_collection.create_index("name", unique=True)
 
 
 @HyperparametersArtifactRouter.post("/")
-async def register_hyperparameters_artifact(hyperparameters: HyperparametersArtifact, session: Session, user: IdentifiedUser):
+async def register_hyperparameters_artifact(
+    hyperparameters: HyperparametersArtifact, session: Session, user: IdentifiedUser
+):
     """Register a hyperparameters artifact."""
 
     entry_data = hyperparameters.model_dump()
     pipeline = entry_data["pipeline_name"] if entry_data["pipeline_name"] else None
-    parent = entry_data["parent_name"] if entry_data["parent_name"] else None
+    source = entry_data["source_name"] if entry_data["source_name"] else None
 
-    if parent and not pipeline:
-        return {"error": "Parent artifact specified without pipeline."}
-    if parent:
-        parent_entry = artifact_collection.find_one({"name": entry_data["parent_name"]})
-        if not parent_entry:
-            return {"error": "Parent artifact does not exist. Create the parent artifact first."}
+    if source and not pipeline:
+        return {"error": "Source artifact specified without pipeline."}
+    if source:
+        source_entry = artifact_collection.find_one({"name": entry_data["source_name"]})
+        if not source_entry:
+            return {"error": "Source artifact does not exist. Create the source artifact first."}
 
     # If artifact does not exist in artifactdb, insert it
     existing_entry = artifact_collection.find_one({"name": entry_data["name"]})
@@ -36,7 +38,7 @@ async def register_hyperparameters_artifact(hyperparameters: HyperparametersArti
             entry_data["download_url"] = str(entry_data["download_url"])
         # remove pipeline-related logic
         entry_data.pop("pipeline_name", None)
-        entry_data.pop("parent_name", None)
+        entry_data.pop("source_name", None)
         artifact_collection.insert_one(entry_data)
         print("New artifact inserted successfully in artifactdb.")
     else:
@@ -44,7 +46,7 @@ async def register_hyperparameters_artifact(hyperparameters: HyperparametersArti
 
     # Handle dagdb operations (logic is inside the create method)
     node_data = ArtifactCreation(
-        name=entry_data["name"], artifact_type=entry_data["artifact_type"], pipeline=pipeline, parent=parent
+        name=entry_data["name"], artifact_type=entry_data["artifact_type"], pipeline=pipeline, source=source
     )
 
     try:

@@ -116,19 +116,19 @@ edl.register_code(
     source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/src/b_preprocess_power_data.py",
     download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/src/b_preprocess_power_data.py?inline=false",
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
-    parent_name="Penmanshiel SCADA 2022 WT01-10",
+    source_name="Penmanshiel SCADA 2022 WT01-10",
 )
 
 # set remaining pipeline connections in EDL
 print(">>>>>>>>>>Setting additional pipeline connections in EDL<<<<<<<<<<")
 edl.connect(
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
-    parent_name="Penmanshiel SCADA 2022 WT11-15",
+    source_name="Penmanshiel SCADA 2022 WT11-15",
     target_name="Preprocess Raw Data",
 )
 edl.connect(
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
-    parent_name="Preprocess Raw Data",
+    source_name="Preprocess Raw Data",
     target_name="Penmanshiel SCADA 2022",
 )
 print("Script finished.")
