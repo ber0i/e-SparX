@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from enum import unique
 from typing import List, Optional
 
 from pydantic import BaseModel
@@ -14,6 +13,16 @@ from sqlalchemy.orm import (
     mapped_column,
     relationship,
 )
+
+# Define ANSI color codes
+COLORS = {
+    "artifact": "\033[94m",  # Blue
+    "pipeline": "\033[95m",  # Magenta
+    "created": "\033[1;92m",  # Green
+    "connected": "\033[1;93m",  # Yellow
+    "deleted": "\033[1;91m",  # Red
+    "reset": "\033[0m",  # Reset color
+}
 
 Base = declarative_base()
 
@@ -133,7 +142,6 @@ class Artifact(Base):
 
         return session.query(cls).all()
 
-
     @classmethod
     def get_results_artifacts_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Artifact"]:
         """Get all results artifacts in a pipeline"""
@@ -152,7 +160,7 @@ class Artifact(Base):
     def create(cls, session: Session, param: ArtifactCreation, user_id: str) -> str:
         """
         Dagdb operation to create an artifact and link it to a pipeline.
-        See Miro graphik for underlying logic.
+        See Miro graphic for underlying logic.
         """
 
         artifact = session.query(Artifact).filter_by(name=param.name).first()
@@ -161,14 +169,14 @@ class Artifact(Base):
             session.add(artifact)
             session.flush()
             print(f"Artifact '{artifact.name}' created.")
-            response = f"Artifact '{artifact.name}' created."
+            response = f"{COLORS['created']}CREATED{COLORS['reset']} artifact {COLORS['artifact']}{artifact.name}{COLORS['reset']}.\n"  # noqa: E501
         else:
             print(f"Artifact '{artifact.name}' already exists.")
-            response = f"Artifact '{artifact.name}' already exists."
+            response = f"Artifact {COLORS['artifact']}{artifact.name}{COLORS['reset']} already exists.\n"
 
         if not param.pipeline:
             print("No pipeline linked.")
-            response += " No pipeline linked."  # Done.
+            response += "No pipeline linked.\n"  # Done.
 
         else:
             pipeline = session.query(Pipeline).filter_by(name=param.pipeline).first()
@@ -177,21 +185,21 @@ class Artifact(Base):
                 session.add(pipeline)
                 session.flush()
                 print(f"Pipeline '{pipeline.name}' created and linked to artifact '{artifact.name}'.")
-                response += f" Pipeline '{pipeline.name}' created and linked to artifact '{artifact.name}'."
+                response += f"{COLORS['created']}CREATED{COLORS['reset']} pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"
+                response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} artifact {COLORS['artifact']}{artifact.name}{COLORS['reset']} to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # noqa: E501
 
             else:
                 if not pipeline.can_modify(user_id):
-                    raise PermissionError("Users can only modify pipelines, they created!")
+                    raise PermissionError("Whoops! Users can only modify pipelines they've created themselves!")
 
+                response += f"Pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']} found.\n"
                 if pipeline not in artifact.pipelines:
                     artifact.pipelines.append(pipeline)
                     print(f"Pipeline '{pipeline.name}' found and linked to artifact '{artifact.name}'.")
-                    response += f" Pipeline '{pipeline.name}' found and linked to artifact '{artifact.name}'."
+                    response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} artifact {COLORS['artifact']}{artifact.name}{COLORS['reset']} to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # noqa: E501
                 else:
                     print(f"Pipeline '{pipeline.name}' found, and it is already linked to artifact '{artifact.name}'.")
-                    response += (
-                        f" Pipeline '{pipeline.name}' found, and it is already linked to artifact '{artifact.name}'."
-                    )
+                    response += f"Artifact {COLORS['artifact']}{artifact.name}{COLORS['reset']} is already linked to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # Done. # noqa: E501
 
             if param.parent:
                 parent = session.query(Artifact).filter_by(name=param.parent).first()
@@ -224,19 +232,20 @@ class Artifact(Base):
                     print(
                         f"Connection between '{param.parent}' and '{param.name}' created within pipeline '{param.pipeline}'."
                     )
-                    response += f" Connection between '{param.parent}' and '{param.name}' created within pipeline '{param.pipeline}'."
+                    response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} {COLORS['artifact']}{param.parent}{COLORS['reset']} to {COLORS['artifact']}{param.name}{COLORS['reset']} within pipeline {COLORS['pipeline']}{param.pipeline}{COLORS['reset']}.\n"  # noqa: E501
                     # Check whether the connection parent is linked to the pipeline
                     if parent not in pipeline.artifacts:
                         parent.pipelines.append(pipeline)
                         print(
                             f"For this, the parent artifact '{parent.name}' was linked to pipeline '{pipeline.name}', as this connection had not been established yet."  # noqa: E501
                         )
-                        response += f" For this, the parent artifact '{parent.name}' was linked to pipeline '{pipeline.name}', as this connection had not been established yet."  # noqa: E501
+                        response += f"Artifact {COLORS['artifact']}{parent.name}{COLORS['reset']} has not yet been linked to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # noqa: E501
+                        response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} artifact {COLORS['artifact']}{parent.name}{COLORS['reset']} to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # noqa: E501
                 else:
                     print(
                         f"Connection between '{param.parent}' and '{param.name}' already exists in pipeline '{param.pipeline}'."
                     )
-                    response += f" Connection between '{param.parent}' and '{param.name}' already exists in pipeline {param.pipeline}."  # Done.
+                    response += f"Connection between {COLORS['artifact']}{param.parent}{COLORS['reset']} and {COLORS['artifact']}{param.name}{COLORS['reset']} already exists within pipeline {COLORS['pipeline']}{param.pipeline}{COLORS['reset']}.\n"  # Done. # noqa: E501
 
         return response
 
@@ -267,7 +276,6 @@ class Pipeline(Base):
         """Checks if a given user is allowed to modify the pipeline"""
 
         return self.owner_id == user_id
-
 
     @classmethod
     def get_all_pipelines(cls, session: Session) -> List["Pipeline"]:
@@ -323,7 +331,6 @@ class Connection(Base):
 
         return session.query(cls).all()
 
-
     @classmethod
     def create(cls, session: Session, param: ConnectionCreation, user_id: str) -> str:
         """
@@ -353,17 +360,19 @@ class Connection(Base):
             print(
                 f"The source artifact '{source_artifact.name}' was not linked to pipeline '{pipeline.name}' yet. This link was now created."
             )
-            response += f"The source artifact '{source_artifact.name}' was not linked to pipeline '{pipeline.name}' yet. This link was now created."
+            response += f"The source artifact {COLORS['artifact']}{source_artifact.name}{COLORS['reset']} was not linked to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']} yet.\n"  # noqa: E501
+            response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} artifact {COLORS['artifact']}{source_artifact.name}{COLORS['reset']} to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # noqa: E501
 
         if pipeline not in target_artifact.pipelines:
             target_artifact.pipelines.append(pipeline)
             print(
                 f"The target artifact '{target_artifact.name}' was not linked to pipeline '{pipeline.name}' yet. This link was now created."
             )
-            response += f"The target artifact '{target_artifact.name}' was not linked to pipeline '{pipeline.name}' yet. This link was now created."
+            response += f"The target artifact {COLORS['artifact']}{target_artifact.name}{COLORS['reset']} was not linked to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']} yet.\n"  # noqa: E501
+            response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} artifact {COLORS['artifact']}{target_artifact.name}{COLORS['reset']} to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # noqa: E501
 
         if not pipeline.can_modify(user_id):
-            raise PermissionError("Users can only modify pipelines, they created!")
+            raise PermissionError("Whoops! Users can only modify pipelines they've created themselves!")
 
         # Aliases for clearer joins
         SourceArtifact = aliased(Artifact, name="source_artifact")
@@ -392,13 +401,11 @@ class Connection(Base):
             print(
                 f"Connection between '{param.source}' and '{param.target}' created within pipeline '{param.pipeline}'."
             )
-            response += (
-                f" Connection between '{param.source}' and '{param.target}' created within pipeline '{param.pipeline}'."
-            )
+            response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} {COLORS['artifact']}{param.source}{COLORS['reset']} to {COLORS['artifact']}{param.target}{COLORS['reset']} within pipeline {COLORS['pipeline']}{param.pipeline}{COLORS['reset']}.\n"  # Done. # noqa: E501
         else:
             print(
                 f"Connection between '{param.source}' and '{param.target}' already exists in pipeline '{param.pipeline}'."
             )
-            response += f" Connection between '{param.source}' and '{param.target}' already exists in pipeline {param.pipeline}."
+            response += f"Connection between {COLORS['artifact']}{param.source}{COLORS['reset']} and {COLORS['artifact']}{param.target}{COLORS['reset']} already exists within pipeline {COLORS['pipeline']}{param.pipeline}{COLORS['reset']}.\n"  # Done. # noqa: E501
 
         return response

@@ -1,4 +1,4 @@
-from ._client import auth_client 
+from ._client import auth_client
 
 
 def connect(
