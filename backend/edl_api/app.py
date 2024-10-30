@@ -47,7 +47,7 @@ def main():
 
     parser = ArgumentParser(description="Energy Data Lab API")
     parser.add_argument("-r", "--reload", action="store_true", help="Enables auto-reload")
-    parser.add_argument("-p", "--port", type=int, help="Port on which the API will listen", default=8000)
+    parser.add_argument("-p", "--port", type=int, help="Port on which the API will listen", default=8080)
     parser.add_argument("-s", "--share", action="store_true", help="Allow API access from other devices")
     # store true means that argument will be set to True when the flag
     # is given and to False otherwise

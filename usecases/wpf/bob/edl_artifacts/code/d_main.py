@@ -20,7 +20,7 @@ def main():
         description="Script to train and evaluate a model for wind power forecasting.",
         file_type="PY",
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name="Cleaned Data",
+        source_name="Cleaned Data",
     )
 
     parser = argparse.ArgumentParser(
@@ -201,7 +201,7 @@ def main():
                 "RMSE": np.sqrt(sum(loss_list) / len(loss_list)),
             },
             pipeline_name="Wind Power Forecasting - TFT",
-            parent_name="Main",
+            source_name="Main",
         )
 
     else:
@@ -223,28 +223,28 @@ def main():
             description=f"Error metric values of the {model_name} model on the test dataset after hyperparameter tuning.",
             results=mock_results,
             pipeline_name="Wind Power Forecasting - TFT",
-            parent_name="Main",
+            source_name="Main",
         )
 
     print(">>>>>>>>>>Setting additional pipeline connections in EDL<<<<<<<<<<")
     edl.connect(
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name="Penmanshiel Torch Dataset Class",
+        source_name="Penmanshiel Torch Dataset Class",
         target_name="Main",
     )
     edl.connect(
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name=f"{model_name}",
+        source_name=f"{model_name}",
         target_name="Main",
     )
     edl.connect(
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name=f"{model_name} Tuned Hyperparameters",
+        source_name=f"{model_name} Tuned Hyperparameters",
         target_name="Main",
     )
     edl.connect(
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name="Main",
+        source_name="Main",
         target_name="Persistence Results",
     )
 
@@ -265,7 +265,7 @@ def main():
         source_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/models/{model_name}_tuned.pth",
         download_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/models/{model_name}_tuned.pth?inline=false",  # noqa: E501
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name="Main",
+        source_name="Main",
     )
 
 

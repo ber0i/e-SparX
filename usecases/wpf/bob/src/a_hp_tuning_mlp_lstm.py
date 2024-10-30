@@ -190,16 +190,16 @@ def main():
         source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/src/a_hp_tuning.py",
         download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/src/a_hp_tuning.py?inline=false",
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name="Cleaned Data",
+        source_name="Cleaned Data",
     )
     edl.connect(
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name="Penmanshiel Torch Dataset Class",
+        source_name="Penmanshiel Torch Dataset Class",
         target_name="MLP/LSTM Hyperparameter Tuning",
     )
     edl.connect(
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name=f"{model_name}",
+        source_name=f"{model_name}",
         target_name="MLP/LSTM Hyperparameter Tuning",
     )
 
@@ -319,7 +319,7 @@ def main():
         source_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/hyperparameters/{args.model}_tuned.py",
         download_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/hyperparameters/{args.model}_tuned.py?inline=false",  # noqa: E501
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name="MLP/LSTM Hyperparameter Tuning",
+        source_name="MLP/LSTM Hyperparameter Tuning",
     )
 
 

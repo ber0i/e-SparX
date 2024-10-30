@@ -19,14 +19,14 @@ def register_data_free(
     source_url: Optional[HttpUrl] = None,
     download_url: Optional[HttpUrl] = None,
     pipeline_name: Optional[str] = None,
-    parent_name: Optional[str] = None,
+    source_name: Optional[str] = None,
 ):
     """
     Registers a free-form dataset artifact in the Energy Data Lab.
     To add an existing artifact to a pipeline, use the existing artifact name in name and define the pipeline via the pipeline_name.
     If the pipeline does not exist yet, it will be created.
-    Pipeline connections are specified via the parent_name parameter.
-    If your artifact is a source node in the pipeline, set parent_name to None (default).
+    Pipeline connections are specified via the source_name parameter.
+    If your artifact is a source node in the pipeline, set source_name to None (default).
 
     Parameters
     ----------
@@ -42,8 +42,8 @@ def register_data_free(
         The download URL of the underlying file.
     pipeline_name: [Optional] str
         The name of the ML pipeline the dataset is used in.
-    parent_name: [Optional] str
-        The name of the parent artifact in the mentioned pipeline. If source node, set to None (default).
+    source_name: [Optional] str
+        The name of the source artifact in the mentioned pipeline. If source node, set to None (default).
     """
     result = {
         "name": name,
@@ -54,7 +54,7 @@ def register_data_free(
         "source_url": source_url,
         "download_url": download_url,
         "pipeline_name": pipeline_name,
-        "parent_name": parent_name,
+        "source_name": source_name,
     }
 
     response = auth_client.post(
@@ -77,7 +77,7 @@ def register_data_pandas(
     source_url: Optional[HttpUrl] = None,
     download_url: Optional[HttpUrl] = None,
     pipeline_name: Optional[str] = None,
-    parent_name: Optional[str] = None,
+    source_name: Optional[str] = None,
 ):
     """
     Register a pandas DataFrame as a dataset artifact in the Energy Data Lab.
@@ -98,8 +98,8 @@ def register_data_pandas(
         The download URL of the underlying file.
     pipeline_name: [Optional] str
         The name of the ML pipeline the dataset is used in.
-    parent_name: [Optional] str
-        The name of the parent artifact in the mentioned pipeline. If source node, set to None (default).
+    source_name: [Optional] str
+        The name of the source artifact in the mentioned pipeline. If source node, set to None (default).
     """
 
     # Reset the MLflow state
@@ -163,8 +163,8 @@ def register_data_pandas(
                 result["download_url"] = download_url
             if pipeline_name is not None:
                 result["pipeline_name"] = pipeline_name
-            if parent_name is not None:
-                result["parent_name"] = parent_name
+            if source_name is not None:
+                result["source_name"] = source_name
             response = auth_client.post(
                 "/data-artifacts",
                 json=result,

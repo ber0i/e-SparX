@@ -34,7 +34,7 @@ def main():
         source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/src/b_hp_tuning_tft.py",
         download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/src/b_hp_tuning_tft.py?inline=false",
         pipeline_name="Wind Power Forecasting - TFT",
-        parent_name="Cleaned Data",
+        source_name="Cleaned Data",
     )
 
     project_base_path = os.getcwd()
@@ -185,7 +185,7 @@ def main():
             source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/hyperparameters/tft_tuned.json",
             download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/hyperparameters/tft_tuned.json?inline=false",
             pipeline_name="Wind Power Forecasting - TFT",
-            parent_name="TFT Hyperparameter Tuning",
+            source_name="TFT Hyperparameter Tuning",
         )
 
         print(f"Best MSE: {best_mse}")
@@ -216,7 +216,7 @@ def main():
             source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/hyperparameters/tft_tuned.json",
             download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/hyperparameters/tft_tuned.json?inline=false",
             pipeline_name="Wind Power Forecasting - TFT",
-            parent_name="TFT Hyperparameter Tuning",
+            source_name="TFT Hyperparameter Tuning",
         )
 
         edl.register_model_free(
@@ -228,7 +228,7 @@ def main():
         )
         edl.connect(
             pipeline_name="Wind Power Forecasting - TFT",
-            parent_name="TFT Model",
+            source_name="TFT Model",
             target_name="TFT Hyperparameter Tuning",
         )
 

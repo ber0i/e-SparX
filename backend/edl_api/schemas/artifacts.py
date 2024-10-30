@@ -52,7 +52,7 @@ class DataArtifact(BaseModel):
     source_url: Optional[HttpUrl] = None
     download_url: Optional[HttpUrl] = None
     pipeline_name: Optional[str] = None
-    parent_name: Optional[str] = None
+    source_name: Optional[str] = None
     num_rows: Optional[int] = None
     num_columns: Optional[int] = None
     data_schema: Optional[List[ColSpec]] = None
@@ -71,7 +71,7 @@ class CodeArtifact(BaseModel):
     source_url: Optional[HttpUrl] = None
     download_url: Optional[HttpUrl] = None
     pipeline_name: Optional[str] = None
-    parent_name: Optional[str] = None
+    source_name: Optional[str] = None
 
 
 class ModelArtifact(BaseModel):
@@ -86,7 +86,7 @@ class ModelArtifact(BaseModel):
     source_url: Optional[HttpUrl] = None
     download_url: Optional[HttpUrl] = None
     pipeline_name: Optional[str] = None
-    parent_name: Optional[str] = None
+    source_name: Optional[str] = None
     dependencies: Optional[List[str]] = None
     input_format: Optional[List[PyTorchFormat]] = None
     output_format: Optional[List[PyTorchFormat]] = None
@@ -104,7 +104,7 @@ class HyperparametersArtifact(BaseModel):
     download_url: Optional[HttpUrl] = None
     hyperparameters: List[Hyperparameter]
     pipeline_name: Optional[str] = None
-    parent_name: Optional[str] = None
+    source_name: Optional[str] = None
 
 
 class ParametersArtifact(BaseModel):
@@ -118,7 +118,7 @@ class ParametersArtifact(BaseModel):
     source_url: Optional[HttpUrl] = None
     download_url: Optional[HttpUrl] = None
     pipeline_name: Optional[str] = None
-    parent_name: Optional[str] = None
+    source_name: Optional[str] = None
 
 
 class ResultsArtifact(BaseModel):
@@ -131,4 +131,4 @@ class ResultsArtifact(BaseModel):
     results: List[Result]
     created_at: datetime = datetime.now()
     pipeline_name: Optional[str] = None
-    parent_name: Optional[str] = None
+    source_name: Optional[str] = None

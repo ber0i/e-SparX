@@ -22,7 +22,7 @@ export type CodeArtifact = {
     source_url?: (string | null);
     download_url?: (string | null);
     pipeline_name?: (string | null);
-    parent_name?: (string | null);
+    source_name?: (string | null);
 };
 
 /**
@@ -61,7 +61,7 @@ export type DataArtifact = {
     source_url?: (string | null);
     download_url?: (string | null);
     pipeline_name?: (string | null);
-    parent_name?: (string | null);
+    source_name?: (string | null);
     num_rows?: (number | null);
     num_columns?: (number | null);
     data_schema?: (Array<ColSpec> | null);
@@ -94,7 +94,7 @@ export type HyperparametersArtifact = {
     download_url?: (string | null);
     hyperparameters: Array<Hyperparameter>;
     pipeline_name?: (string | null);
-    parent_name?: (string | null);
+    source_name?: (string | null);
 };
 
 /**
@@ -110,7 +110,7 @@ export type ModelArtifact = {
     source_url?: (string | null);
     download_url?: (string | null);
     pipeline_name?: (string | null);
-    parent_name?: (string | null);
+    source_name?: (string | null);
     dependencies?: (Array<(string)> | null);
     input_format?: (Array<PyTorchFormat> | null);
     output_format?: (Array<PyTorchFormat> | null);
@@ -128,7 +128,7 @@ export type ParametersArtifact = {
     source_url?: (string | null);
     download_url?: (string | null);
     pipeline_name?: (string | null);
-    parent_name?: (string | null);
+    source_name?: (string | null);
 };
 
 /**
@@ -158,7 +158,7 @@ export type ResultsArtifact = {
     results: Array<Result>;
     created_at?: string;
     pipeline_name?: (string | null);
-    parent_name?: (string | null);
+    source_name?: (string | null);
 };
 
 /**
@@ -175,17 +175,23 @@ export type ValidationError = {
     type: string;
 };
 
-export type GetArtifactsDataArtifactsGetResponse = (unknown);
-
-export type GetArtifactsDataArtifactsGetError = unknown;
-
 export type RegisterDataArtifactDataArtifactsPostData = {
     body: DataArtifact;
+    headers: {
+        /**
+         * User ID of the acting user. Used to identify the user
+         */
+        'x-user-id': string;
+    };
 };
 
 export type RegisterDataArtifactDataArtifactsPostResponse = (unknown);
 
 export type RegisterDataArtifactDataArtifactsPostError = (HTTPValidationError);
+
+export type GetArtifactsDataArtifactsGetResponse = (unknown);
+
+export type GetArtifactsDataArtifactsGetError = unknown;
 
 export type GetArtifactsForGlobalViewDataArtifactsGlobalGetResponse = (Array<ArtifactResponse>);
 
@@ -210,6 +216,16 @@ export type GetArtifactsByPipelineDataArtifactsPipelinePipelineNameGetData = {
 export type GetArtifactsByPipelineDataArtifactsPipelinePipelineNameGetResponse = (Array<ArtifactResponse>);
 
 export type GetArtifactsByPipelineDataArtifactsPipelinePipelineNameGetError = (HTTPValidationError);
+
+export type GetNeighborsDataArtifactsNeighborsNameGetData = {
+    path: {
+        name: string;
+    };
+};
+
+export type GetNeighborsDataArtifactsNeighborsNameGetResponse = (Array<ArtifactResponse>);
+
+export type GetNeighborsDataArtifactsNeighborsNameGetError = (HTTPValidationError);
 
 export type GetPipelinesPipelinesGetResponse = (unknown);
 
@@ -237,6 +253,12 @@ export type GetConnectionsByPipelineConnectionsPipelinePipelineNameGetError = (H
 
 export type CreateConnectionConnectionsCreatePostData = {
     body: ConnectionCreation;
+    headers: {
+        /**
+         * User ID of the acting user. Used to identify the user
+         */
+        'x-user-id': string;
+    };
 };
 
 export type CreateConnectionConnectionsCreatePostResponse = (unknown);
@@ -249,6 +271,12 @@ export type GetConnectionsConnectionsGetError = unknown;
 
 export type RegisterCodeArtifactCodeArtifactsPostData = {
     body: CodeArtifact;
+    headers: {
+        /**
+         * User ID of the acting user. Used to identify the user
+         */
+        'x-user-id': string;
+    };
 };
 
 export type RegisterCodeArtifactCodeArtifactsPostResponse = (unknown);
@@ -257,6 +285,12 @@ export type RegisterCodeArtifactCodeArtifactsPostError = (HTTPValidationError);
 
 export type RegisterModelArtifactModelArtifactsPostData = {
     body: ModelArtifact;
+    headers: {
+        /**
+         * User ID of the acting user. Used to identify the user
+         */
+        'x-user-id': string;
+    };
 };
 
 export type RegisterModelArtifactModelArtifactsPostResponse = (unknown);
@@ -265,6 +299,12 @@ export type RegisterModelArtifactModelArtifactsPostError = (HTTPValidationError)
 
 export type RegisterHyperparametersArtifactHyperparametersArtifactsPostData = {
     body: HyperparametersArtifact;
+    headers: {
+        /**
+         * User ID of the acting user. Used to identify the user
+         */
+        'x-user-id': string;
+    };
 };
 
 export type RegisterHyperparametersArtifactHyperparametersArtifactsPostResponse = (unknown);
@@ -273,6 +313,12 @@ export type RegisterHyperparametersArtifactHyperparametersArtifactsPostError = (
 
 export type RegisterParametersArtifactParametersArtifactsPostData = {
     body: ParametersArtifact;
+    headers: {
+        /**
+         * User ID of the acting user. Used to identify the user
+         */
+        'x-user-id': string;
+    };
 };
 
 export type RegisterParametersArtifactParametersArtifactsPostResponse = (unknown);
@@ -281,6 +327,12 @@ export type RegisterParametersArtifactParametersArtifactsPostError = (HTTPValida
 
 export type RegisterResultsArtifactResultsArtifactsPostData = {
     body: ResultsArtifact;
+    headers: {
+        /**
+         * User ID of the acting user. Used to identify the user
+         */
+        'x-user-id': string;
+    };
 };
 
 export type RegisterResultsArtifactResultsArtifactsPostResponse = (unknown);
