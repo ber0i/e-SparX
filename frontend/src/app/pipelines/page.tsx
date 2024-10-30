@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Pipeline } from "@/lib/manual/pipeline";
 import { getPipelinesPipelinesGet } from "@/lib/api";
+import { Pipe } from "stream";
 
 export default function PipelinesPage() {
-  const [Pipelines, setPipelines] = useState<Pipeline[]>([]);
+  const [pipelines, setPipelines] = useState<Pipeline[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -30,9 +32,25 @@ export default function PipelinesPage() {
     router.push(`/pipelines/${name}`); // Navigate to /pipelines/[name]
   };
 
+  // Filter artifacts based on search term
+  const filteredPipelines = pipelines.filter((pipeline: Pipeline) =>
+    pipeline.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="p-5 ">
       <h1>Pipelines Overview</h1>
+
+      {/* Search bar */}
+      <div className="mt-5">
+        <input
+          type="text"
+          placeholder="Search by name or description"
+          className="w-full p-2 border border-brand-smoke rounded-md"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
 
       <section className="mb-8">
         <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
@@ -46,7 +64,7 @@ export default function PipelinesPage() {
                 </tr>
               </thead>
               <tbody>
-                {Pipelines.map((pipeline) => (
+                {filteredPipelines.map((pipeline: Pipeline) => (
                   <tr
                     key={pipeline.name}
                     className="cursor-pointer"

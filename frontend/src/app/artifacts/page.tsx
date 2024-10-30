@@ -6,7 +6,9 @@ import { formatDate } from "@/lib/manual/format_date";
 import { DataArtifact, getArtifactsDataArtifactsGet } from "@/lib/api";
 
 export default function ArtifactsPage() {
-  const [Artifacts, setArtifacts] = useState<DataArtifact[]>([]);
+  const [artifacts, setArtifacts] = useState<DataArtifact[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [artifactType, setArtifactType] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -30,9 +32,45 @@ export default function ArtifactsPage() {
     router.push(`/artifacts/${name}`); // Navigate to /artifacts/[name]
   };
 
+  // Filter artifacts based on search term
+  const filteredArtifacts = artifacts.filter((artifact: DataArtifact) =>
+    (artifact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    artifact.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
+    (artifactType === "" || artifact.artifact_type === artifactType)
+  );
+
   return (
     <div className="p-5 ">
       <h1>Artifacts Overview</h1>
+
+      {/* Search bar */}
+      <div className="mt-5">
+        <input
+          type="text"
+          placeholder="Search by name or description"
+          className="w-full p-2 border border-brand-smoke rounded-md"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      {/* Artifact type dropdown filter */}
+      <div className="mt-5 flex items-center space-x-2">
+        <label className="text-contrast w-32">Artifact Type:</label> {/* Label for dropdown */}
+        <select
+          className="dropdown w-1/8"
+          value={artifactType}
+          onChange={(e) => setArtifactType(e.target.value)}
+        >
+          <option value="">all</option>
+          <option value="dataset">dataset</option>
+          <option value="code">code</option>
+          <option value="hyperparameters">hyperparameters</option>
+          <option value="model">model</option>
+          <option value="results">results</option>
+          <option value="parameters">parameters</option>
+        </select>
+      </div>
 
       <section className="mb-8">
         <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
@@ -58,7 +96,7 @@ export default function ArtifactsPage() {
                 </tr>
               </thead>
               <tbody>
-                {Artifacts.map((artifact) => (
+                {filteredArtifacts.map((artifact: DataArtifact) => (
                   <tr
                     key={artifact.name}
                     className="cursor-pointer"

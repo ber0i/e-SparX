@@ -106,4 +106,10 @@
   .artifact-info .value {
     text-align: left;
   }
+
+  .dropdown {
+    @apply p-2 border border-brand-smoke rounded-md text-white;
+    background-color: rgb(var(--color-accent));
+    color: rgb(var(--color-contrast));
+  }
 }
