@@ -70,7 +70,7 @@ export default function ArtifactDetailPage({
           return;
         }
         console.log(data);
-        setNeighbors(data as Artifact[]);
+        setNeighbors(data as []);
       }
     };
 
