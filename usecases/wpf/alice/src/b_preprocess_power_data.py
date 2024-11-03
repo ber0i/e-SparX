@@ -16,7 +16,7 @@ processed_data_path = "usecases/wpf/alice/data/processed"
 
 # register raw data in EDL
 print(">>>>>>>>>>Registering raw data in EDL<<<<<<<<<<")
-edl.register_data_free(
+edl.register_dataset_free(
     name="Penmanshiel SCADA 2022 WT01-10",
     description="Raw Penmanshiel SCADA data from 2022, Turbine 01 to 10, downloaded from Zenodo as ZIP file.",
     file_type="ZIP",
@@ -24,7 +24,7 @@ edl.register_data_free(
     download_url="https://zenodo.org/records/8253010/files/Penmanshiel_SCADA_2022_WT01-10_4462.zip?download=1",
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
 )
-edl.register_data_free(
+edl.register_dataset_free(
     name="Penmanshiel SCADA 2022 WT11-15",
     description="Raw Penmanshiel SCADA data from 2022, Turbine 11 to 15, downloaded from Zenodo as ZIP file.",
     file_type="ZIP",
@@ -98,7 +98,7 @@ else:
 
 # register processed data in EDL
 print(">>>>>>>>>>Registering processed data in EDL<<<<<<<<<<")
-edl.register_data_pandas(
+edl.register_dataset_pandas(
     name="Penmanshiel SCADA 2022",
     description="Processed Penmanshiel SCADA data from 2022, all turbines.",
     file_type="CSV",

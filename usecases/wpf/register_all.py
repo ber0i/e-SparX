@@ -48,7 +48,7 @@ edl.register_code(
     download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/src/a_retrieve_weather_data.py?inline=false",
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
 )
-edl.register_data_pandas(
+edl.register_dataset_pandas(
     name="Historical Weather Forecast Data",
     description="Historical weather forecasts (Model: GFS Global) at the Penmanshiel wind farm in 2022.",
     file_type="CSV",
@@ -57,7 +57,7 @@ edl.register_data_pandas(
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
     source_name="Retrieve Historical Weather Data",
 )
-edl.register_data_pandas(
+edl.register_dataset_pandas(
     name="Historical Weather Data",
     description="Historical weather data at the Penmanshiel wind farm in 2022.",
     file_type="CSV",
@@ -66,7 +66,7 @@ edl.register_data_pandas(
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
     source_name="Retrieve Historical Weather Data",
 )
-edl.register_data_free(
+edl.register_dataset_free(
     name="Penmanshiel SCADA 2022 WT01-10",
     description="Raw Penmanshiel SCADA data from 2022, Turbine 01 to 10, downloaded from Zenodo as ZIP file.",
     file_type="ZIP",
@@ -74,7 +74,7 @@ edl.register_data_free(
     download_url="https://zenodo.org/records/8253010/files/Penmanshiel_SCADA_2022_WT01-10_4462.zip?download=1",
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
 )
-edl.register_data_free(
+edl.register_dataset_free(
     name="Penmanshiel SCADA 2022 WT11-15",
     description="Raw Penmanshiel SCADA data from 2022, Turbine 11 to 15, downloaded from Zenodo as ZIP file.",
     file_type="ZIP",
@@ -82,7 +82,7 @@ edl.register_data_free(
     download_url="https://zenodo.org/records/8253010/files/Penmanshiel_SCADA_2022_WT11-15_4463.zip?download=1",
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
 )
-edl.register_data_pandas(
+edl.register_dataset_pandas(
     name="Penmanshiel SCADA 2022",
     description="Processed Penmanshiel SCADA data from 2022, all turbines.",
     file_type="CSV",
@@ -127,7 +127,7 @@ edl.connect(
     source_name="Historical Weather Data",
     target_name="Clean and Normalize Data",
 )
-edl.register_data_pandas(
+edl.register_dataset_pandas(
     name="Cleaned Data",
     description="Contains features and target, cleaned and normalized.",
     file_type="CSV",

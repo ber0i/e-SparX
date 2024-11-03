@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import {
-  getArtifactByNameDataArtifactsNameGet,
-  getPipelinesByArtifactPipelinesArtifactNameGet,
-  getNeighborsDataArtifactsNeighborsNameGet,
+  getArtifactByNameArtifactsNameNameGet,
+  getPipelinesByArtifactPipelinesArtifactArtifactNameGet,
+  getNeighborsArtifactsNeighborsNameGet,
 } from "@/lib/api";
 import { formatDate } from "@/lib/manual/format_date";
 import type { Artifact } from "@/lib/manual/artifact";
@@ -26,7 +26,7 @@ export default function ArtifactDetailPage({
     // Fetch artifact by name
     const fetchArtifactDetails = async () => {
       if (name) {
-        const { error, data } = await getArtifactByNameDataArtifactsNameGet({
+        const { error, data } = await getArtifactByNameArtifactsNameNameGet({
           path: { name: name },
         });
 
@@ -44,7 +44,7 @@ export default function ArtifactDetailPage({
       if (name) {
         const decodedName = decodeURIComponent(name as string);
         const { error, data } =
-          await getPipelinesByArtifactPipelinesArtifactNameGet({
+          await getPipelinesByArtifactPipelinesArtifactArtifactNameGet({
             path: { artifact_name: decodedName },
           });
 
@@ -60,10 +60,9 @@ export default function ArtifactDetailPage({
     const fetchNeighbors = async () => {
       if (name) {
         const decodedName = decodeURIComponent(name as string);
-        const { error, data } =
-          await getNeighborsDataArtifactsNeighborsNameGet({
-            path: { name: decodedName },
-          });
+        const { error, data } = await getNeighborsArtifactsNeighborsNameGet({
+          path: { name: decodedName },
+        });
 
         if (error) {
           console.error("Failed to fetch artifact neighbors", error);

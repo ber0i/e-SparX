@@ -105,7 +105,6 @@ def register_model_pytorch(
     result = {
         "name": name,
         "description": description,
-        "artifact_type": "model",
         "flavor": "PyTorch",
         "file_type": file_type,
         "dependencies": requirements,
@@ -121,7 +120,7 @@ def register_model_pytorch(
     if source_name is not None:
         result["source_name"] = source_name
     response = auth_client.post(
-        "/model-artifacts",
+        "/register/model",
         json=result,
     )
     if response.status_code == 200:
@@ -172,7 +171,6 @@ def register_model_free(
     result = {
         "name": name,
         "description": description,
-        "artifact_type": "model",
         "file_type": file_type,
     }
     if flavor is not None:
@@ -188,7 +186,7 @@ def register_model_free(
     if source_name is not None:
         result["source_name"] = source_name
     response = auth_client.post(
-        "/model-artifacts",
+        "/register/model",
         json=result,
     )
     if response.status_code == 200:

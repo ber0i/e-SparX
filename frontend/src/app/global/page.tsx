@@ -12,7 +12,7 @@ import { getNodeStyle } from "@/lib/manual/get_node_style";
 import {
   ArtifactResponse,
   ConnectionResponse,
-  getArtifactsForGlobalViewDataArtifactsGlobalGet,
+  getArtifactsForGlobalViewArtifactsGlobalGet,
   getConnectionsConnectionsGet,
 } from "@/lib/api";
 
@@ -34,7 +34,7 @@ const DAGFlow = () => {
     const fetchArtifacts = async () => {
       // Fetch all artifacts and connections
       const { error: fetchArtifactsError, data: fetchedArtifacts } =
-        await getArtifactsForGlobalViewDataArtifactsGlobalGet();
+        await getArtifactsForGlobalViewArtifactsGlobalGet();
 
       if (fetchArtifactsError) {
         console.error("Failed to fetch Artifacts", fetchArtifactsError);

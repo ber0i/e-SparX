@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Pipeline } from "@/lib/manual/pipeline";
 import { getPipelinesPipelinesGet } from "@/lib/api";
-import { Pipe } from "stream";
 
 export default function PipelinesPage() {
   const [pipelines, setPipelines] = useState<Pipeline[]>([]);
@@ -34,7 +33,7 @@ export default function PipelinesPage() {
 
   // Filter artifacts based on search term
   const filteredPipelines = pipelines.filter((pipeline: Pipeline) =>
-    pipeline.name.toLowerCase().includes(searchTerm.toLowerCase())
+    pipeline.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (

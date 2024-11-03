@@ -14,7 +14,7 @@ import { getNodeStyle } from "@/lib/manual/get_node_style";
 import {
   ArtifactResponse,
   ConnectionResponse,
-  getArtifactsByPipelineDataArtifactsPipelinePipelineNameGet,
+  getArtifactsByPipelineArtifactsPipelinePipelineNameGet,
   getConnectionsByPipelineConnectionsPipelinePipelineNameGet,
 } from "@/lib/api";
 
@@ -38,7 +38,7 @@ const DAGFlow = ({ name }: { name: string }) => {
         try {
           // Fetch artifacts and connections by pipeline name
           const { error: fetchArtifactsError, data: fetchedArtifacts } =
-            await getArtifactsByPipelineDataArtifactsPipelinePipelineNameGet({
+            await getArtifactsByPipelineArtifactsPipelinePipelineNameGet({
               path: { pipeline_name: name },
             });
 

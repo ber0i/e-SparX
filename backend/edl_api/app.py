@@ -5,15 +5,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from edl_api.routes import (
-    CodeArtifactRouter,
     ConnectionRouter,
-    DataArtifactRouter,
-    HyperparametersArtifactRouter,
-    ModelArtifactRouter,
-    ParametersArtifactRouter,
+    ArtifactRouter,
     PipelineRouter,
-    ResultsArtifactRouter,
 )
+from edl_api.routes import ArtifactRegisterRouter
 
 app = FastAPI(
     title="EDL Registry API",
@@ -25,14 +21,10 @@ app.add_middleware(
 )
 
 
-app.include_router(DataArtifactRouter, prefix="/data-artifacts")
+app.include_router(ArtifactRegisterRouter, prefix="/register")
+app.include_router(ArtifactRouter, prefix="/artifacts")
 app.include_router(PipelineRouter, prefix="/pipelines")
 app.include_router(ConnectionRouter, prefix="/connections")
-app.include_router(CodeArtifactRouter, prefix="/code-artifacts")
-app.include_router(ModelArtifactRouter, prefix="/model-artifacts")
-app.include_router(HyperparametersArtifactRouter, prefix="/hyperparameters-artifacts")
-app.include_router(ParametersArtifactRouter, prefix="/parameters-artifacts")
-app.include_router(ResultsArtifactRouter, prefix="/results-artifacts")
 
 
 @app.get("/", tags=["Welcome"])  # tags are used to group the endpoints in the documentation

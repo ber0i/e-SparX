@@ -5,7 +5,7 @@ try:
 except FileNotFoundError:
     write_default_user_config(get_user_config_path())
 
-from .register_data import register_data_free, register_data_pandas
+from .register_dataset import register_dataset_free, register_dataset_pandas
 from .create_connection import connect
 from .register_code import register_code
 from .register_model import register_model_pytorch, register_model_free

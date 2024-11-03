@@ -51,7 +51,6 @@ def register_hyperparameters(
         "name": name,
         "description": description,
         "file_type": file_type,
-        "artifact_type": "hyperparameters",
         "hyperparameters": hyperparameters_list,
         "source_url": source_url,
         "download_url": download_url,
@@ -60,7 +59,7 @@ def register_hyperparameters(
     }
 
     response = auth_client.post(
-        "/hyperparameters-artifacts",
+        "/register/hyperparameters",
         json=result,
     )
     if response.status_code == 200:

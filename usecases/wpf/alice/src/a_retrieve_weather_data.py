@@ -182,7 +182,7 @@ edl.register_code(
 
 # register data in EDL
 print(">>>>>>>>>>Registering data in EDL<<<<<<<<<<")
-edl.register_data_pandas(
+edl.register_dataset_pandas(
     name="Historical Weather Forecast Data",
     description="Historical weather forecasts (Model: GFS Global) at the Penmanshiel wind farm in 2022.",
     file_type="CSV",
@@ -191,7 +191,7 @@ edl.register_data_pandas(
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
     source_name="Retrieve Historical Weather Data",
 )
-edl.register_data_pandas(
+edl.register_dataset_pandas(
     name="Historical Weather Data",
     description="Historical weather data at the Penmanshiel wind farm in 2022.",
     file_type="CSV",
