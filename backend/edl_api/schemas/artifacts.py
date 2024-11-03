@@ -1,16 +1,19 @@
-from datetime import datetime
 import enum
+from datetime import datetime
 from typing import List, Literal, Optional
 
+import pytz
 from pydantic import BaseModel, HttpUrl
 
+
 class ArtifactType(enum.Enum):
-    CODE='code'
-    HYPERPARAMETERS='hyperparameters'
-    MODEL='model'
-    PARAMETERS='parameters'
-    DATASET='dataset'
-    RESULTS='results'
+    CODE = "code"
+    HYPERPARAMETERS = "hyperparameters"
+    MODEL = "model"
+    PARAMETERS = "parameters"
+    DATASET = "dataset"
+    RESULTS = "results"
+
 
 class ColSpec(BaseModel):
     """Schema for a column specification used in pandas dataset artifacts."""
@@ -53,10 +56,10 @@ class DatasetArtifact(BaseModel):
 
     name: str
     description: str
-    artifact_type: Literal['dataset'] = ArtifactType.DATASET.value
+    artifact_type: Literal["dataset"] = ArtifactType.DATASET.value
     artifact_subtype: str
     file_type: str
-    created_at: datetime = datetime.now()
+    created_at: datetime = datetime.now(pytz.timezone("Europe/Berlin"))
     source_url: Optional[HttpUrl] = None
     download_url: Optional[HttpUrl] = None
     pipeline_name: Optional[str] = None
@@ -73,9 +76,9 @@ class CodeArtifact(BaseModel):
 
     name: str
     description: str
-    artifact_type: Literal['code'] = ArtifactType.CODE.value
+    artifact_type: Literal["code"] = ArtifactType.CODE.value
     file_type: str
-    created_at: datetime = datetime.now()
+    created_at: datetime = datetime.now(pytz.timezone("Europe/Berlin"))
     source_url: Optional[HttpUrl] = None
     download_url: Optional[HttpUrl] = None
     pipeline_name: Optional[str] = None
@@ -87,10 +90,10 @@ class ModelArtifact(BaseModel):
 
     name: str
     description: str
-    artifact_type: Literal['model'] = ArtifactType.MODEL.value
+    artifact_type: Literal["model"] = ArtifactType.MODEL.value
     file_type: str
     flavor: str
-    created_at: datetime = datetime.now()
+    created_at: datetime = datetime.now(pytz.timezone("Europe/Berlin"))
     source_url: Optional[HttpUrl] = None
     download_url: Optional[HttpUrl] = None
     pipeline_name: Optional[str] = None
@@ -105,9 +108,9 @@ class HyperparametersArtifact(BaseModel):
 
     name: str
     description: str
-    artifact_type: Literal['hyperparameters'] = ArtifactType.HYPERPARAMETERS.value
+    artifact_type: Literal["hyperparameters"] = ArtifactType.HYPERPARAMETERS.value
     file_type: str
-    created_at: datetime = datetime.now()
+    created_at: datetime = datetime.now(pytz.timezone("Europe/Berlin"))
     source_url: Optional[HttpUrl] = None
     download_url: Optional[HttpUrl] = None
     hyperparameters: List[Hyperparameter]
@@ -120,9 +123,9 @@ class ParametersArtifact(BaseModel):
 
     name: str
     description: str
-    artifact_type: Literal['parameters'] = ArtifactType.PARAMETERS.value
+    artifact_type: Literal["parameters"] = ArtifactType.PARAMETERS.value
     file_type: str
-    created_at: datetime = datetime.now()
+    created_at: datetime = datetime.now(pytz.timezone("Europe/Berlin"))
     source_url: Optional[HttpUrl] = None
     download_url: Optional[HttpUrl] = None
     pipeline_name: Optional[str] = None
@@ -134,9 +137,9 @@ class ResultsArtifact(BaseModel):
 
     name: str
     description: str
-    artifact_type: Literal['results'] = ArtifactType.RESULTS.value
+    artifact_type: Literal["results"] = ArtifactType.RESULTS.value
     file_type: str
     results: List[Result]
-    created_at: datetime = datetime.now()
+    created_at: datetime = datetime.now(pytz.timezone("Europe/Berlin"))
     pipeline_name: Optional[str] = None
     source_name: Optional[str] = None

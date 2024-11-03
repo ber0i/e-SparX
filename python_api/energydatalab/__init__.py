@@ -1,4 +1,10 @@
-from ._user_config import user_config, get_user_config_path, write_default_user_config, write_user_config, load_user_config
+from ._user_config import (
+    user_config,
+    get_user_config_path,
+    write_default_user_config,
+    write_user_config,
+    load_user_config,
+)
 
 try:
     load_user_config(get_user_config_path())
@@ -12,6 +18,4 @@ from .register_model import register_model_pytorch, register_model_free
 from .register_hyperparameters import register_hyperparameters
 from .register_parameters import register_parameters
 from .register_results import register_results
-
-
-
+from .delete_artifact import delete_artifact

@@ -119,7 +119,7 @@ export default function ArtifactDetailPage({
           <></>
         )}
 
-        <p className="key">Created At:</p>
+        <p className="key">Created/Updated:</p>
         <p className="value">{formatDate(artifact.created_at)}</p>
 
         {artifact.artifact_type === "model" ? (

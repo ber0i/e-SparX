@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException, status
 from edl_api.dagdb import Session
 from edl_api.dependencies.auth import IdentifiedUser
 from edl_api.documentdb import DocumentDBClient
-from edl_api.schemas import Artifact, ArtifactResponse 
+from edl_api.schemas import Artifact, ArtifactResponse
 
 ArtifactRouter = APIRouter(tags=["Artifacts"])
 
@@ -86,6 +86,7 @@ async def get_artifact_by_name(name: str):
 
     return artifact
 
+
 @ArtifactRouter.delete("/name/{name}")
 async def remove_artifact_by_name(name: str, session: Session, user: IdentifiedUser):
     """Remove a single artifact by name"""
@@ -95,10 +96,10 @@ async def remove_artifact_by_name(name: str, session: Session, user: IdentifiedU
 
     try:
         with session.begin() as s:
-            Artifact.remove(s, name, user.id)
+            response = Artifact.remove(s, name, user.id)
     except ValueError as err:
         raise HTTPException(status.HTTP_404_NOT_FOUND, str(err))
     except PermissionError as err:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, str(err))
 
-    return { "message": "Artifact deleted successfully!"}
+    return {"message": response}
