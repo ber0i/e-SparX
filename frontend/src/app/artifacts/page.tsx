@@ -95,7 +95,7 @@ export default function ArtifactsPage() {
                     File Type
                   </th>
                   <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
-                    Created At
+                    Created/Updated At
                   </th>
                 </tr>
               </thead>
