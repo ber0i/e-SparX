@@ -1,10 +1,11 @@
 from .artifacts import (
-    DataArtifact,
+    DatasetArtifact,
     CodeArtifact,
     ModelArtifact,
     HyperparametersArtifact,
     ParametersArtifact,
     ResultsArtifact,
+    ArtifactType
 )
 from .dag import (
     Base,

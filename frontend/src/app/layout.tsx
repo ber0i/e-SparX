@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Energy Data Lab",
-  description: "Manage your datasets, models and projects",
+  description: "Share your ML model pipelines and accelerate your ML research.",
 };
 
 export default function RootLayout({

@@ -44,7 +44,6 @@ def register_parameters(
         "name": name,
         "description": description,
         "file_type": file_type,
-        "artifact_type": "parameters",
         "source_url": source_url,
         "download_url": download_url,
         "pipeline_name": pipeline_name,
@@ -52,7 +51,7 @@ def register_parameters(
     }
 
     response = auth_client.post(
-        "/parameters-artifacts",
+        "/register/parameters",
         json=result,
     )
     if response.status_code == 200:

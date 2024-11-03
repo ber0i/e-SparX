@@ -10,7 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { useEffect, useState } from "react";
-import { getResultsArtifactsByPipelineResultsArtifactsPipelinePipelineNameGet } from "@/lib/api";
+import { getResultsArtifactsByPipelinePipelinesResultsPipelineNameGet } from "@/lib/api";
 
 // Register chart.js components
 ChartJS.register(
@@ -57,9 +57,9 @@ export default function ArtifactDetailPage({
     const fetchResults = async () => {
       if (name) {
         const { error, data } =
-          await getResultsArtifactsByPipelineResultsArtifactsPipelinePipelineNameGet(
-            { path: { pipeline_name: name } },
-          );
+          await getResultsArtifactsByPipelinePipelinesResultsPipelineNameGet({
+            path: { pipeline_name: name },
+          });
 
         if (error) {
           console.error("Failed to fetch artifact details", error);

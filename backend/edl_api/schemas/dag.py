@@ -14,6 +14,7 @@ from sqlalchemy.orm import (
     relationship,
 )
 
+
 # Define ANSI color codes
 COLORS = {
     "artifact": "\033[94m",  # Blue
@@ -30,29 +31,43 @@ Base = declarative_base()
 artifact_pipelines = Table(
     "artifact_pipelines",
     Base.metadata,
-    Column("left_id", ForeignKey("artifacts.id", ondelete="CASCADE"), primary_key=True),
-    Column("right_id", ForeignKey("pipelines.id", ondelete="CASCADE"), primary_key=True),
+    Column("left_id", ForeignKey("artifacts.id"), primary_key=True),
+    Column(
+        "right_id", ForeignKey("pipelines.id"), primary_key=True
+    ),
 )
 
 connection_sourceartifact = Table(
     "connection_sourceartifact",
     Base.metadata,
-    Column("left_id", ForeignKey("connections.id", ondelete="CASCADE"), primary_key=True),
-    Column("right_id", ForeignKey("artifacts.id", ondelete="CASCADE"), primary_key=True),
+    Column(
+        "left_id", ForeignKey("connections.id", ondelete="SET NULL"), primary_key=True
+    ),
+    Column(
+        "right_id", ForeignKey("artifacts.id", ondelete="CASCADE"), primary_key=True
+    ),
 )
 
 connection_targetartifact = Table(
     "connection_targetartifact",
     Base.metadata,
-    Column("left_id", ForeignKey("connections.id", ondelete="CASCADE"), primary_key=True),
-    Column("right_id", ForeignKey("artifacts.id", ondelete="CASCADE"), primary_key=True),
+    Column(
+        "left_id", ForeignKey("connections.id", ondelete="SET NULL"), primary_key=True
+    ),
+    Column(
+        "right_id", ForeignKey("artifacts.id", ondelete="CASCADE"), primary_key=True
+    ),
 )
 
 connection_pipeline = Table(
     "connection_pipeline",
     Base.metadata,
-    Column("left_id", ForeignKey("connections.id", ondelete="CASCADE"), primary_key=True),
-    Column("right_id", ForeignKey("pipelines.id", ondelete="CASCADE"), primary_key=True),
+    Column(
+        "left_id", ForeignKey("connections.id"), primary_key=True
+    ),
+    Column(
+        "right_id", ForeignKey("pipelines.id"), primary_key=True
+    ),
 )
 
 
@@ -63,7 +78,7 @@ class ArtifactCreation(BaseModel):
     """Name of the artifact"""
 
     artifact_type: str
-    """Type of the artifact. Can be "dataset" or "code"."""
+    """Type of the artifact. Can be "dataset", "code", "model", "hyperparameters", "parameters", or "results"."""
 
     pipeline: Optional[str] = None
     """Pipeline names this artifact should be linked to"""
@@ -103,10 +118,14 @@ class Artifact(Base):
 
     __tablename__ = "artifacts"
 
-    id: Mapped[int] = mapped_column("id", Integer, primary_key=True, unique=True, autoincrement=True, nullable=False)
+    id: Mapped[int] = mapped_column(
+        "id", Integer, primary_key=True, unique=True, autoincrement=True, nullable=False
+    )
     """unique identifier of the artifact"""
 
-    owner_id: Mapped[str] = mapped_column("owner_id", String, unique=False, nullable=False)
+    owner_id: Mapped[str] = mapped_column(
+        "owner_id", String, unique=False, nullable=False
+    )
     """unique identifier of the owner of the artifact"""
 
     name: Mapped[str] = mapped_column("name", String, unique=True, nullable=False)
@@ -116,7 +135,7 @@ class Artifact(Base):
     """Type of the artifact."""
 
     pipelines: Mapped[List[Pipeline]] = relationship(
-        secondary=artifact_pipelines, back_populates="artifacts", cascade="all, delete"
+        secondary=artifact_pipelines, back_populates="artifacts"
     )
     """
     List of pipelines the artifact is part of.
@@ -124,11 +143,15 @@ class Artifact(Base):
     """
 
     connections_as_source: Mapped[List[Connection]] = relationship(
-        secondary=connection_sourceartifact, back_populates="source", cascade="all, delete"
+        secondary=connection_sourceartifact,
+        back_populates="source",
+        cascade="delete",
     )
 
     connections_as_target: Mapped[List[Connection]] = relationship(
-        secondary=connection_targetartifact, back_populates="target", cascade="all, delete"
+        secondary=connection_targetartifact,
+        back_populates="target",
+        cascade="delete",
     )
 
     def can_modify(self, user_id: str) -> bool:
@@ -143,33 +166,45 @@ class Artifact(Base):
         return session.query(cls).all()
 
     @classmethod
-    def get_artifact_by_name(cls, session: Session, artifact_name: str) -> "Artifact":
+    def get_artifact_by_name(cls, session: Session, artifact_name: str) -> Artifact:
         """Get an artifact by name"""
 
         return session.query(cls).filter_by(name=artifact_name).first()
 
     @classmethod
-    def get_artifacts_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Artifact"]:
+    def get_artifacts_by_pipeline(
+        cls, session: Session, pipeline_name: str
+    ) -> List["Artifact"]:
         """Get all artifacts in a pipeline"""
 
         stmt = (
             select(cls)
             .options(joinedload(cls.pipelines))
-            .join(artifact_pipelines, cls.id == artifact_pipelines.c.left_id)  # Join artifacts with artifact_pipelines
-            .join(Pipeline, artifact_pipelines.c.right_id == Pipeline.id)  # Join artifact_pipelines with pipelines
+            .join(
+                artifact_pipelines, cls.id == artifact_pipelines.c.left_id
+            )  # Join artifacts with artifact_pipelines
+            .join(
+                Pipeline, artifact_pipelines.c.right_id == Pipeline.id
+            )  # Join artifact_pipelines with pipelines
             .where(Pipeline.name == pipeline_name)  # Filter by pipeline name
         )
         return session.execute(stmt).unique().scalars().all()
 
     @classmethod
-    def get_results_artifacts_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Artifact"]:
+    def get_results_artifacts_by_pipeline(
+        cls, session: Session, pipeline_name: str
+    ) -> List["Artifact"]:
         """Get all results artifacts in a pipeline"""
 
         stmt = (
             select(cls)
             .options(joinedload(cls.pipelines))
-            .join(artifact_pipelines, cls.id == artifact_pipelines.c.left_id)  # Join artifacts with artifact_pipelines
-            .join(Pipeline, artifact_pipelines.c.right_id == Pipeline.id)  # Join artifact_pipelines with pipelines
+            .join(
+                artifact_pipelines, cls.id == artifact_pipelines.c.left_id
+            )  # Join artifacts with artifact_pipelines
+            .join(
+                Pipeline, artifact_pipelines.c.right_id == Pipeline.id
+            )  # Join artifact_pipelines with pipelines
             .where(Pipeline.name == pipeline_name)  # Filter by pipeline name
             .where(cls.artifact_type == "results")  # Filter by artifact type
         )
@@ -184,7 +219,11 @@ class Artifact(Base):
 
         artifact = session.query(Artifact).filter_by(name=param.name).first()
         if not artifact:
-            artifact = Artifact(name=param.name, artifact_type=param.artifact_type, owner_id=user_id)
+            artifact = Artifact(
+                name=param.name,
+                artifact_type=param.artifact_type,
+                owner_id=user_id,
+            )
             session.add(artifact)
             session.flush()
             print(f"Artifact '{artifact.name}' created.")
@@ -200,24 +239,34 @@ class Artifact(Base):
         else:
             pipeline = session.query(Pipeline).filter_by(name=param.pipeline).first()
             if not pipeline:
-                pipeline = Pipeline(name=param.pipeline, artifacts=[artifact], owner_id=user_id)
+                pipeline = Pipeline(
+                    name=param.pipeline, artifacts=[artifact], owner_id=user_id
+                )
                 session.add(pipeline)
                 session.flush()
-                print(f"Pipeline '{pipeline.name}' created and linked to artifact '{artifact.name}'.")
+                print(
+                    f"Pipeline '{pipeline.name}' created and linked to artifact '{artifact.name}'."
+                )
                 response += f"{COLORS['created']}CREATED{COLORS['reset']} pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"
                 response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} artifact {COLORS['artifact']}{artifact.name}{COLORS['reset']} to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # noqa: E501
 
             else:
                 if not pipeline.can_modify(user_id):
-                    raise PermissionError("Whoops! Users can only modify pipelines they've created themselves!")
+                    raise PermissionError(
+                        "Whoops! Users can only modify pipelines they've created themselves!"
+                    )
 
                 response += f"Pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']} found.\n"
                 if pipeline not in artifact.pipelines:
                     artifact.pipelines.append(pipeline)
-                    print(f"Pipeline '{pipeline.name}' found and linked to artifact '{artifact.name}'.")
+                    print(
+                        f"Pipeline '{pipeline.name}' found and linked to artifact '{artifact.name}'."
+                    )
                     response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} artifact {COLORS['artifact']}{artifact.name}{COLORS['reset']} to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # noqa: E501
                 else:
-                    print(f"Pipeline '{pipeline.name}' found, and it is already linked to artifact '{artifact.name}'.")
+                    print(
+                        f"Pipeline '{pipeline.name}' found, and it is already linked to artifact '{artifact.name}'."
+                    )
                     response += f"Artifact {COLORS['artifact']}{artifact.name}{COLORS['reset']} is already linked to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # Done. # noqa: E501
 
             if param.source:
@@ -230,10 +279,22 @@ class Artifact(Base):
                 # Query for existing connection
                 connection = (
                     session.query(Connection)
-                    .join(connection_sourceartifact, connection_sourceartifact.c.left_id == Connection.id)
-                    .join(SourceArtifact, connection_sourceartifact.c.right_id == SourceArtifact.id)
-                    .join(connection_targetartifact, connection_targetartifact.c.left_id == Connection.id)
-                    .join(TargetArtifact, connection_targetartifact.c.right_id == TargetArtifact.id)
+                    .join(
+                        connection_sourceartifact,
+                        connection_sourceartifact.c.left_id == Connection.id,
+                    )
+                    .join(
+                        SourceArtifact,
+                        connection_sourceartifact.c.right_id == SourceArtifact.id,
+                    )
+                    .join(
+                        connection_targetartifact,
+                        connection_targetartifact.c.left_id == Connection.id,
+                    )
+                    .join(
+                        TargetArtifact,
+                        connection_targetartifact.c.right_id == TargetArtifact.id,
+                    )
                     .filter(
                         and_(
                             SourceArtifact.id == source.id,
@@ -244,8 +305,12 @@ class Artifact(Base):
                     .first()
                 )
                 if not connection:
-                    source = session.query(Artifact).filter_by(name=param.source).first()
-                    connection = Connection(source=source, target=artifact, pipeline=pipeline)
+                    source = (
+                        session.query(Artifact).filter_by(name=param.source).first()
+                    )
+                    connection = Connection(
+                        source=source, target=artifact, pipeline=pipeline
+                    )
                     session.add(connection)
                     session.flush()
                     print(
@@ -268,16 +333,34 @@ class Artifact(Base):
 
         return response
 
+    @classmethod
+    def remove(cls, session: Session, name: str, user_id: str):
+        """Remove an artifact by its name"""
+
+        artifact = cls.get_artifact_by_name(session, name)
+
+        if not artifact:
+            raise ValueError("Oh no! The artifact could not be found!")
+
+        if not artifact.can_modify(user_id):
+            raise PermissionError("Whoops! Users can only delete artifacts they've created themselves!")
+
+        session.delete(artifact)
+
 
 class Pipeline(Base):
     """Represenation of a pipeline in the SQL/DAG database"""
 
     __tablename__ = "pipelines"
 
-    id: Mapped[int] = mapped_column("id", Integer, primary_key=True, unique=True, autoincrement=True, nullable=False)
+    id: Mapped[int] = mapped_column(
+        "id", Integer, primary_key=True, unique=True, autoincrement=True, nullable=False
+    )
     """unique identifier of the pipeline"""
 
-    owner_id: Mapped[str] = mapped_column("owner_id", String, unique=False, nullable=False)
+    owner_id: Mapped[str] = mapped_column(
+        "owner_id", String, unique=False, nullable=False
+    )
     """unique identifier of the owner of the artifact"""
 
     name: Mapped[str] = mapped_column("name", String, unique=True, nullable=False)
@@ -303,14 +386,20 @@ class Pipeline(Base):
         return session.query(cls).all()
 
     @classmethod
-    def get_pipelines_by_artifact(cls, session: Session, artifact_name: str) -> List["Pipeline"]:
+    def get_pipelines_by_artifact(
+        cls, session: Session, artifact_name: str
+    ) -> List["Pipeline"]:
         """Get all pipelines that contain a specific artifact"""
 
         stmt = (
             select(cls)
             .options(joinedload(cls.artifacts))
-            .join(artifact_pipelines, cls.id == artifact_pipelines.c.right_id)  # Join pipelines with artifact_pipelines
-            .join(Artifact, artifact_pipelines.c.left_id == Artifact.id)  # Join artifact_pipelines with artifacts
+            .join(
+                artifact_pipelines, cls.id == artifact_pipelines.c.right_id
+            )  # Join pipelines with artifact_pipelines
+            .join(
+                Artifact, artifact_pipelines.c.left_id == Artifact.id
+            )  # Join artifact_pipelines with artifacts
             .where(Artifact.name == artifact_name)  # Filter by artifact name
         )
         return session.execute(stmt).unique().scalars().all()
@@ -321,21 +410,26 @@ class Connection(Base):
 
     __tablename__ = "connections"
 
-    id: Mapped[int] = mapped_column("id", Integer, primary_key=True, unique=True, autoincrement=True, nullable=False)
+    id: Mapped[int] = mapped_column(
+        "id", Integer, primary_key=True, unique=True, autoincrement=True, nullable=False
+    )
     """unique identifier of the connection"""
 
     source: Mapped[Artifact] = relationship(
-        secondary=connection_sourceartifact, back_populates="connections_as_source", cascade="all, delete"
+        secondary=connection_sourceartifact,
+        back_populates="connections_as_source",
     )
     """source artifact"""
 
     target: Mapped[Artifact] = relationship(
-        secondary=connection_targetartifact, back_populates="connections_as_target", cascade="all, delete"
+        secondary=connection_targetartifact,
+        back_populates="connections_as_target",
     )
     """target artifact"""
 
     pipeline: Mapped[Pipeline] = relationship(
-        secondary=connection_pipeline, back_populates="connections", cascade="all, delete"
+        secondary=connection_pipeline,
+        back_populates="connections",
     )
     """corresponding pipeline"""
 
@@ -351,7 +445,9 @@ class Connection(Base):
         return session.query(cls).all()
 
     @classmethod
-    def get_connections_by_pipeline(cls, session: Session, pipeline_name: str) -> List["Connection"]:
+    def get_connections_by_pipeline(
+        cls, session: Session, pipeline_name: str
+    ) -> List["Connection"]:
         """Get all connections in a pipeline"""
 
         stmt = (
@@ -360,7 +456,9 @@ class Connection(Base):
             .join(
                 connection_pipeline, cls.id == connection_pipeline.c.left_id
             )  # Join connections with connection_pipeline
-            .join(Pipeline, connection_pipeline.c.right_id == Pipeline.id)  # Join connection_pipelines with pipelines
+            .join(
+                Pipeline, connection_pipeline.c.right_id == Pipeline.id
+            )  # Join connection_pipelines with pipelines
             .where(Pipeline.name == pipeline_name)  # Filter by pipeline name
         )
         return session.execute(stmt).unique().scalars().all()
@@ -387,8 +485,12 @@ class Connection(Base):
             print(f"Pipeline '{param.pipeline}' not found.")
             raise ValueError(f"Pipeline '{param.pipeline}' not found.")
 
-        response = ""
+        if not pipeline.can_modify(user_id):
+            raise PermissionError(
+                "Whoops! Users can only modify pipelines they've created themselves!"
+            )
 
+        response = ""
         if pipeline not in source_artifact.pipelines:
             source_artifact.pipelines.append(pipeline)
             print(
@@ -405,9 +507,6 @@ class Connection(Base):
             response += f"The target artifact {COLORS['artifact']}{target_artifact.name}{COLORS['reset']} was not linked to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']} yet.\n"  # noqa: E501
             response += f"{COLORS['connected']}CONNECTED{COLORS['reset']} artifact {COLORS['artifact']}{target_artifact.name}{COLORS['reset']} to pipeline {COLORS['pipeline']}{pipeline.name}{COLORS['reset']}.\n"  # noqa: E501
 
-        if not pipeline.can_modify(user_id):
-            raise PermissionError("Whoops! Users can only modify pipelines they've created themselves!")
-
         # Aliases for clearer joins
         SourceArtifact = aliased(Artifact, name="source_artifact")
         TargetArtifact = aliased(Artifact, name="target_artifact")
@@ -415,10 +514,22 @@ class Connection(Base):
         # Query for existing connection
         connection = (
             session.query(Connection)
-            .join(connection_sourceartifact, connection_sourceartifact.c.left_id == Connection.id)
-            .join(SourceArtifact, connection_sourceartifact.c.right_id == SourceArtifact.id)
-            .join(connection_targetartifact, connection_targetartifact.c.left_id == Connection.id)
-            .join(TargetArtifact, connection_targetartifact.c.right_id == TargetArtifact.id)
+            .join(
+                connection_sourceartifact,
+                connection_sourceartifact.c.left_id == Connection.id,
+            )
+            .join(
+                SourceArtifact,
+                connection_sourceartifact.c.right_id == SourceArtifact.id,
+            )
+            .join(
+                connection_targetartifact,
+                connection_targetartifact.c.left_id == Connection.id,
+            )
+            .join(
+                TargetArtifact,
+                connection_targetartifact.c.right_id == TargetArtifact.id,
+            )
             .filter(
                 and_(
                     SourceArtifact.id == source_artifact.id,
@@ -429,7 +540,9 @@ class Connection(Base):
             .first()
         )
         if not connection:
-            connection = Connection(source=source_artifact, target=target_artifact, pipeline=pipeline)
+            connection = Connection(
+                source=source_artifact, target=target_artifact, pipeline=pipeline
+            )
             session.add(connection)
             session.flush()
             print(
@@ -443,3 +556,4 @@ class Connection(Base):
             response += f"Connection between {COLORS['artifact']}{param.source}{COLORS['reset']} and {COLORS['artifact']}{param.target}{COLORS['reset']} already exists within pipeline {COLORS['pipeline']}{param.pipeline}{COLORS['reset']}.\n"  # Done. # noqa: E501
 
         return response
+

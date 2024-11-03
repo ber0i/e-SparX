@@ -12,7 +12,7 @@ from pydantic import HttpUrl
 from ._client import auth_client
 
 
-def register_data_free(
+def register_dataset_free(
     name: str,
     description: str,
     file_type: str,
@@ -49,7 +49,6 @@ def register_data_free(
         "name": name,
         "description": description,
         "file_type": file_type,
-        "artifact_type": "dataset",
         "artifact_subtype": "free-form",
         "source_url": source_url,
         "download_url": download_url,
@@ -58,7 +57,7 @@ def register_data_free(
     }
 
     response = auth_client.post(
-        "/data-artifacts",
+        "/register/dataset",
         json=result,
     )
     if response.status_code == 200:
@@ -69,7 +68,7 @@ def register_data_free(
         print("Failed to register entry:", response.text)
 
 
-def register_data_pandas(
+def register_dataset_pandas(
     name: str,
     description: str,
     file_type: str,
@@ -149,7 +148,6 @@ def register_data_pandas(
                 "name": name,
                 "description": description,
                 "file_type": file_type,
-                "artifact_type": "dataset",
                 "artifact_subtype": "pandas.DataFrame",
                 "num_rows": num_rows,
                 "num_columns": num_columns,
@@ -166,7 +164,7 @@ def register_data_pandas(
             if source_name is not None:
                 result["source_name"] = source_name
             response = auth_client.post(
-                "/data-artifacts",
+                "/register/dataset",
                 json=result,
             )
             if response.status_code == 200:

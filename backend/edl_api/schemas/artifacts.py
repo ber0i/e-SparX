@@ -1,11 +1,19 @@
 from datetime import datetime
-from typing import List, Optional
+import enum
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel, HttpUrl
 
+class ArtifactType(enum.Enum):
+    CODE='code'
+    HYPERPARAMETERS='hyperparameters'
+    MODEL='model'
+    PARAMETERS='parameters'
+    DATASET='dataset'
+    RESULTS='results'
 
 class ColSpec(BaseModel):
-    """Schema for a column specification used in pandas data artifacts."""
+    """Schema for a column specification used in pandas dataset artifacts."""
 
     type: str
     name: str
@@ -40,12 +48,12 @@ class Result(BaseModel):
     value: float
 
 
-class DataArtifact(BaseModel):
-    """Schema for a data artifact"""
+class DatasetArtifact(BaseModel):
+    """Schema for a dataset artifact"""
 
     name: str
     description: str
-    artifact_type: str
+    artifact_type: Literal['dataset'] = ArtifactType.DATASET.value
     artifact_subtype: str
     file_type: str
     created_at: datetime = datetime.now()
@@ -65,7 +73,7 @@ class CodeArtifact(BaseModel):
 
     name: str
     description: str
-    artifact_type: str
+    artifact_type: Literal['code'] = ArtifactType.CODE.value
     file_type: str
     created_at: datetime = datetime.now()
     source_url: Optional[HttpUrl] = None
@@ -79,7 +87,7 @@ class ModelArtifact(BaseModel):
 
     name: str
     description: str
-    artifact_type: str
+    artifact_type: Literal['model'] = ArtifactType.MODEL.value
     file_type: str
     flavor: str
     created_at: datetime = datetime.now()
@@ -97,7 +105,7 @@ class HyperparametersArtifact(BaseModel):
 
     name: str
     description: str
-    artifact_type: str
+    artifact_type: Literal['hyperparameters'] = ArtifactType.HYPERPARAMETERS.value
     file_type: str
     created_at: datetime = datetime.now()
     source_url: Optional[HttpUrl] = None
@@ -112,7 +120,7 @@ class ParametersArtifact(BaseModel):
 
     name: str
     description: str
-    artifact_type: str
+    artifact_type: Literal['parameters'] = ArtifactType.PARAMETERS.value
     file_type: str
     created_at: datetime = datetime.now()
     source_url: Optional[HttpUrl] = None
@@ -126,7 +134,7 @@ class ResultsArtifact(BaseModel):
 
     name: str
     description: str
-    artifact_type: str
+    artifact_type: Literal['results'] = ArtifactType.RESULTS.value
     file_type: str
     results: List[Result]
     created_at: datetime = datetime.now()

@@ -16,7 +16,7 @@ export type ArtifactResponseForConnections = {
 export type CodeArtifact = {
     name: string;
     description: string;
-    artifact_type: string;
+    artifact_type?: 'code';
     file_type: string;
     created_at?: string;
     source_url?: (string | null);
@@ -25,8 +25,12 @@ export type CodeArtifact = {
     source_name?: (string | null);
 };
 
+export enum artifact_type {
+    CODE = 'code'
+}
+
 /**
- * Schema for a column specification used in pandas data artifacts.
+ * Schema for a column specification used in pandas dataset artifacts.
  */
 export type ColSpec = {
     type: string;
@@ -49,12 +53,12 @@ export type ConnectionResponse = {
 };
 
 /**
- * Schema for a data artifact
+ * Schema for a dataset artifact
  */
-export type DataArtifact = {
+export type DatasetArtifact = {
     name: string;
     description: string;
-    artifact_type: string;
+    artifact_type?: 'dataset';
     artifact_subtype: string;
     file_type: string;
     created_at?: string;
@@ -68,6 +72,10 @@ export type DataArtifact = {
     index_name?: (string | null);
     index_dtype?: (string | null);
 };
+
+export enum artifact_type2 {
+    DATASET = 'dataset'
+}
 
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
@@ -87,7 +95,7 @@ export type Hyperparameter = {
 export type HyperparametersArtifact = {
     name: string;
     description: string;
-    artifact_type: string;
+    artifact_type?: 'hyperparameters';
     file_type: string;
     created_at?: string;
     source_url?: (string | null);
@@ -97,13 +105,17 @@ export type HyperparametersArtifact = {
     source_name?: (string | null);
 };
 
+export enum artifact_type3 {
+    HYPERPARAMETERS = 'hyperparameters'
+}
+
 /**
  * Schema for a model artifact
  */
 export type ModelArtifact = {
     name: string;
     description: string;
-    artifact_type: string;
+    artifact_type?: 'model';
     file_type: string;
     flavor: string;
     created_at?: string;
@@ -116,13 +128,17 @@ export type ModelArtifact = {
     output_format?: (Array<PyTorchFormat> | null);
 };
 
+export enum artifact_type4 {
+    MODEL = 'model'
+}
+
 /**
  * Schema for a parameters artifact
  */
 export type ParametersArtifact = {
     name: string;
     description: string;
-    artifact_type: string;
+    artifact_type?: 'parameters';
     file_type: string;
     created_at?: string;
     source_url?: (string | null);
@@ -130,6 +146,10 @@ export type ParametersArtifact = {
     pipeline_name?: (string | null);
     source_name?: (string | null);
 };
+
+export enum artifact_type5 {
+    PARAMETERS = 'parameters'
+}
 
 /**
  * Schema for an input/output format used in PyTorch model artifacts.
@@ -153,13 +173,17 @@ export type Result = {
 export type ResultsArtifact = {
     name: string;
     description: string;
-    artifact_type: string;
+    artifact_type?: 'results';
     file_type: string;
     results: Array<Result>;
     created_at?: string;
     pipeline_name?: (string | null);
     source_name?: (string | null);
 };
+
+export enum artifact_type6 {
+    RESULTS = 'results'
+}
 
 /**
  * Schema for a tensor specification used in PyTorch model artifacts.
@@ -175,8 +199,8 @@ export type ValidationError = {
     type: string;
 };
 
-export type RegisterDataArtifactDataArtifactsPostData = {
-    body: DataArtifact;
+export type RegisterCodeArtifactRegisterCodePostData = {
+    body: CodeArtifact;
     headers: {
         /**
          * User ID of the acting user. Used to identify the user
@@ -185,61 +209,157 @@ export type RegisterDataArtifactDataArtifactsPostData = {
     };
 };
 
-export type RegisterDataArtifactDataArtifactsPostResponse = (unknown);
+export type RegisterCodeArtifactRegisterCodePostResponse = (unknown);
 
-export type RegisterDataArtifactDataArtifactsPostError = (HTTPValidationError);
+export type RegisterCodeArtifactRegisterCodePostError = (HTTPValidationError);
 
-export type GetArtifactsDataArtifactsGetResponse = (unknown);
-
-export type GetArtifactsDataArtifactsGetError = unknown;
-
-export type GetArtifactsForGlobalViewDataArtifactsGlobalGetResponse = (Array<ArtifactResponse>);
-
-export type GetArtifactsForGlobalViewDataArtifactsGlobalGetError = unknown;
-
-export type GetArtifactByNameDataArtifactsNameGetData = {
-    path: {
-        name: string;
+export type RegisterHyperparametersArtifactRegisterHyperparametersPostData = {
+    body: HyperparametersArtifact;
+    headers: {
+        /**
+         * User ID of the acting user. Used to identify the user
+         */
+        'x-user-id': string;
     };
 };
 
-export type GetArtifactByNameDataArtifactsNameGetResponse = (unknown);
+export type RegisterHyperparametersArtifactRegisterHyperparametersPostResponse = (unknown);
 
-export type GetArtifactByNameDataArtifactsNameGetError = (HTTPValidationError);
+export type RegisterHyperparametersArtifactRegisterHyperparametersPostError = (HTTPValidationError);
 
-export type GetArtifactsByPipelineDataArtifactsPipelinePipelineNameGetData = {
+export type RegisterDatasetArtifactRegisterDatasetPostData = {
+    body: DatasetArtifact;
+    headers: {
+        /**
+         * User ID of the acting user. Used to identify the user
+         */
+        'x-user-id': string;
+    };
+};
+
+export type RegisterDatasetArtifactRegisterDatasetPostResponse = (unknown);
+
+export type RegisterDatasetArtifactRegisterDatasetPostError = (HTTPValidationError);
+
+export type RegisterModelArtifactRegisterModelPostData = {
+    body: ModelArtifact;
+    headers: {
+        /**
+         * User ID of the acting user. Used to identify the user
+         */
+        'x-user-id': string;
+    };
+};
+
+export type RegisterModelArtifactRegisterModelPostResponse = (unknown);
+
+export type RegisterModelArtifactRegisterModelPostError = (HTTPValidationError);
+
+export type RegisterParametersArtifactRegisterParametersPostData = {
+    body: ParametersArtifact;
+    headers: {
+        /**
+         * User ID of the acting user. Used to identify the user
+         */
+        'x-user-id': string;
+    };
+};
+
+export type RegisterParametersArtifactRegisterParametersPostResponse = (unknown);
+
+export type RegisterParametersArtifactRegisterParametersPostError = (HTTPValidationError);
+
+export type RegisterResultsArtifactRegisterResultsPostData = {
+    body: ResultsArtifact;
+    headers: {
+        /**
+         * User ID of the acting user. Used to identify the user
+         */
+        'x-user-id': string;
+    };
+};
+
+export type RegisterResultsArtifactRegisterResultsPostResponse = (unknown);
+
+export type RegisterResultsArtifactRegisterResultsPostError = (HTTPValidationError);
+
+export type GetArtifactsArtifactsGetResponse = (unknown);
+
+export type GetArtifactsArtifactsGetError = unknown;
+
+export type GetArtifactsForGlobalViewArtifactsGlobalGetResponse = (Array<ArtifactResponse>);
+
+export type GetArtifactsForGlobalViewArtifactsGlobalGetError = unknown;
+
+export type GetArtifactsByPipelineArtifactsPipelinePipelineNameGetData = {
     path: {
         pipeline_name: string;
     };
 };
 
-export type GetArtifactsByPipelineDataArtifactsPipelinePipelineNameGetResponse = (Array<ArtifactResponse>);
+export type GetArtifactsByPipelineArtifactsPipelinePipelineNameGetResponse = (Array<ArtifactResponse>);
 
-export type GetArtifactsByPipelineDataArtifactsPipelinePipelineNameGetError = (HTTPValidationError);
+export type GetArtifactsByPipelineArtifactsPipelinePipelineNameGetError = (HTTPValidationError);
 
-export type GetNeighborsDataArtifactsNeighborsNameGetData = {
+export type GetNeighborsArtifactsNeighborsNameGetData = {
     path: {
         name: string;
     };
 };
 
-export type GetNeighborsDataArtifactsNeighborsNameGetResponse = (Array<ArtifactResponse>);
+export type GetNeighborsArtifactsNeighborsNameGetResponse = (Array<ArtifactResponse>);
 
-export type GetNeighborsDataArtifactsNeighborsNameGetError = (HTTPValidationError);
+export type GetNeighborsArtifactsNeighborsNameGetError = (HTTPValidationError);
+
+export type GetArtifactByNameArtifactsNameNameGetData = {
+    path: {
+        name: string;
+    };
+};
+
+export type GetArtifactByNameArtifactsNameNameGetResponse = (unknown);
+
+export type GetArtifactByNameArtifactsNameNameGetError = (HTTPValidationError);
+
+export type RemoveArtifactByNameArtifactsNameNameDeleteData = {
+    headers: {
+        /**
+         * User ID of the acting user. Used to identify the user
+         */
+        'x-user-id': string;
+    };
+    path: {
+        name: string;
+    };
+};
+
+export type RemoveArtifactByNameArtifactsNameNameDeleteResponse = (unknown);
+
+export type RemoveArtifactByNameArtifactsNameNameDeleteError = (HTTPValidationError);
 
 export type GetPipelinesPipelinesGetResponse = (unknown);
 
 export type GetPipelinesPipelinesGetError = unknown;
 
-export type GetPipelinesByArtifactPipelinesArtifactNameGetData = {
+export type GetPipelinesByArtifactPipelinesArtifactArtifactNameGetData = {
     path: {
         artifact_name: string;
     };
 };
 
-export type GetPipelinesByArtifactPipelinesArtifactNameGetResponse = (unknown);
+export type GetPipelinesByArtifactPipelinesArtifactArtifactNameGetResponse = (unknown);
 
-export type GetPipelinesByArtifactPipelinesArtifactNameGetError = (HTTPValidationError);
+export type GetPipelinesByArtifactPipelinesArtifactArtifactNameGetError = (HTTPValidationError);
+
+export type GetResultsArtifactsByPipelinePipelinesResultsPipelineNameGetData = {
+    path: {
+        pipeline_name: string;
+    };
+};
+
+export type GetResultsArtifactsByPipelinePipelinesResultsPipelineNameGetResponse = (unknown);
+
+export type GetResultsArtifactsByPipelinePipelinesResultsPipelineNameGetError = (HTTPValidationError);
 
 export type GetConnectionsByPipelineConnectionsPipelinePipelineNameGetData = {
     path: {
@@ -268,86 +388,6 @@ export type CreateConnectionConnectionsCreatePostError = (HTTPValidationError);
 export type GetConnectionsConnectionsGetResponse = (Array<ConnectionResponse>);
 
 export type GetConnectionsConnectionsGetError = unknown;
-
-export type RegisterCodeArtifactCodeArtifactsPostData = {
-    body: CodeArtifact;
-    headers: {
-        /**
-         * User ID of the acting user. Used to identify the user
-         */
-        'x-user-id': string;
-    };
-};
-
-export type RegisterCodeArtifactCodeArtifactsPostResponse = (unknown);
-
-export type RegisterCodeArtifactCodeArtifactsPostError = (HTTPValidationError);
-
-export type RegisterModelArtifactModelArtifactsPostData = {
-    body: ModelArtifact;
-    headers: {
-        /**
-         * User ID of the acting user. Used to identify the user
-         */
-        'x-user-id': string;
-    };
-};
-
-export type RegisterModelArtifactModelArtifactsPostResponse = (unknown);
-
-export type RegisterModelArtifactModelArtifactsPostError = (HTTPValidationError);
-
-export type RegisterHyperparametersArtifactHyperparametersArtifactsPostData = {
-    body: HyperparametersArtifact;
-    headers: {
-        /**
-         * User ID of the acting user. Used to identify the user
-         */
-        'x-user-id': string;
-    };
-};
-
-export type RegisterHyperparametersArtifactHyperparametersArtifactsPostResponse = (unknown);
-
-export type RegisterHyperparametersArtifactHyperparametersArtifactsPostError = (HTTPValidationError);
-
-export type RegisterParametersArtifactParametersArtifactsPostData = {
-    body: ParametersArtifact;
-    headers: {
-        /**
-         * User ID of the acting user. Used to identify the user
-         */
-        'x-user-id': string;
-    };
-};
-
-export type RegisterParametersArtifactParametersArtifactsPostResponse = (unknown);
-
-export type RegisterParametersArtifactParametersArtifactsPostError = (HTTPValidationError);
-
-export type RegisterResultsArtifactResultsArtifactsPostData = {
-    body: ResultsArtifact;
-    headers: {
-        /**
-         * User ID of the acting user. Used to identify the user
-         */
-        'x-user-id': string;
-    };
-};
-
-export type RegisterResultsArtifactResultsArtifactsPostResponse = (unknown);
-
-export type RegisterResultsArtifactResultsArtifactsPostError = (HTTPValidationError);
-
-export type GetResultsArtifactsByPipelineResultsArtifactsPipelinePipelineNameGetData = {
-    path: {
-        pipeline_name: string;
-    };
-};
-
-export type GetResultsArtifactsByPipelineResultsArtifactsPipelinePipelineNameGetResponse = (unknown);
-
-export type GetResultsArtifactsByPipelineResultsArtifactsPipelinePipelineNameGetError = (HTTPValidationError);
 
 export type RootGetResponse = (unknown);
 

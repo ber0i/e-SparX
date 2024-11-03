@@ -39,7 +39,6 @@ def register_results(
     result = {
         "name": name,
         "description": description,
-        "artifact_type": "results",
         "file_type": "none",
         "results": results_list,
         "pipeline_name": pipeline_name,
@@ -47,7 +46,7 @@ def register_results(
     }
 
     response = auth_client.post(
-        "/results-artifacts",
+        "/register/results",
         json=result,
     )
     if response.status_code == 200:

@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/lib/manual/format_date";
-import { DataArtifact, getArtifactsDataArtifactsGet } from "@/lib/api";
+import { DatasetArtifact, getArtifactsArtifactsGet } from "@/lib/api";
 
 export default function ArtifactsPage() {
-  const [artifacts, setArtifacts] = useState<DataArtifact[]>([]);
+  const [artifacts, setArtifacts] = useState<DatasetArtifact[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [artifactType, setArtifactType] = useState("");
   const router = useRouter();
@@ -14,14 +14,14 @@ export default function ArtifactsPage() {
   useEffect(() => {
     // Fetch all artifacts
     const fetchArtifacts = async () => {
-      const { error, data } = await getArtifactsDataArtifactsGet();
+      const { error, data } = await getArtifactsArtifactsGet();
 
       if (error) {
         console.error("Failed to fetch datasets", error);
         return;
       }
 
-      setArtifacts((data as { entries: DataArtifact[] }).entries);
+      setArtifacts((data as { entries: DatasetArtifact[] }).entries);
     };
 
     fetchArtifacts();
@@ -33,10 +33,13 @@ export default function ArtifactsPage() {
   };
 
   // Filter artifacts based on search term
-  const filteredArtifacts = artifacts.filter((artifact: DataArtifact) =>
-    (artifact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    artifact.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (artifactType === "" || artifact.artifact_type === artifactType)
+  const filteredArtifacts = artifacts.filter(
+    (artifact: DatasetArtifact) =>
+      (artifact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        artifact.description
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())) &&
+      (artifactType === "" || artifact.artifact_type === artifactType),
   );
 
   return (
@@ -56,7 +59,8 @@ export default function ArtifactsPage() {
 
       {/* Artifact type dropdown filter */}
       <div className="mt-5 flex items-center space-x-2">
-        <label className="text-contrast w-32">Artifact Type:</label> {/* Label for dropdown */}
+        <label className="text-contrast w-32">Artifact Type:</label>{" "}
+        {/* Label for dropdown */}
         <select
           className="dropdown w-1/8"
           value={artifactType}
@@ -96,7 +100,7 @@ export default function ArtifactsPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredArtifacts.map((artifact: DataArtifact) => (
+                {filteredArtifacts.map((artifact: DatasetArtifact) => (
                   <tr
                     key={artifact.name}
                     className="cursor-pointer"

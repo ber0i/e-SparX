@@ -42,7 +42,6 @@ def register_code(
         "name": name,
         "description": description,
         "file_type": file_type,
-        "artifact_type": "code",
         "source_url": source_url,
         "download_url": download_url,
         "pipeline_name": pipeline_name,
@@ -50,7 +49,7 @@ def register_code(
     }
 
     response = auth_client.post(
-        "/code-artifacts",
+        "/register/code",
         json=result,
     )
     if response.status_code == 200:
