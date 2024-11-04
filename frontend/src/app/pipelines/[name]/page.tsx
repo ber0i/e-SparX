@@ -2,9 +2,8 @@
 
 import React from "react";
 import { ReactFlow, useNodesState, useEdgesState } from "@xyflow/react";
+import type { Node, Position } from "@xyflow/react";
 import { useRouter, usePathname } from "next/navigation";
-import Image from "next/image";
-import DagLegend from "../../daglegend.svg";
 
 import "@xyflow/react/dist/style.css";
 
@@ -47,7 +46,6 @@ const DAGFlow = ({ name }: { name: string }) => {
             return;
           }
 
-          console.log(fetchedArtifacts);
           setArtifacts(fetchedArtifacts as ArtifactResponse[]);
 
           const { error: fetchConnectionsError, data: fetchedConnections } =
@@ -104,7 +102,7 @@ const DAGFlow = ({ name }: { name: string }) => {
               id: nodeName,
               data: { label: nodeName },
               position: {
-                x: 100 + maxLevel * 250 - level * 250,
+                x: 24 + maxLevel * 250 - level * 250,
                 y: 100 + yPos,
               }, // Horizontal position by level, vertical by node count at the level
               sourcePosition: "right",
@@ -165,62 +163,69 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
 
   const name = params.name;
 
-  const legendNodes = [
+  const legendNodes: Node[] = [
     {
       id: "1",
       position: { x: 100, y: 0 },
       data: { label: "Dataset" },
       style: { backgroundColor: "rgb(63, 161, 241)" },
-      sourcePosition: "right",
-      targetPosition: "left",
+      sourcePosition: 'right' as Position,
+      targetPosition: 'left' as Position,
+      draggable: false,
+      selectable: false,
+      connectable: false,
     },
     {
       id: "2",
       position: { x: 100 + 1 * 180, y: 0 },
       data: { label: "Code" },
       style: { backgroundColor: "gray", color: "white" },
-      sourcePosition: "right",
-      targetPosition: "left",
+      sourcePosition: 'right' as Position,
+      targetPosition: 'left' as Position,
+      draggable: false,
+      selectable: false,
+      connectable: false,
     },
     {
       id: "3",
       position: { x: 100 + 2 * 180, y: 0 },
       data: { label: "Model" },
       style: { backgroundColor: "rgb(12, 167, 137)" },
-      sourcePosition: "right",
-      targetPosition: "left",
+      sourcePosition: 'right' as Position,
+      targetPosition: 'left' as Position,
+      draggable: false,
+      selectable: false,
+      connectable: false,
     },
     {
       id: "4",
       position: { x: 100 + 3 * 180, y: 0 },
       data: { label: "(Hyper-)Parameters" },
       style: { backgroundColor: "rgba(12, 167, 137, 0.6)" },
-      sourcePosition: "right",
-      targetPosition: "left",
+      sourcePosition: 'right' as Position,
+      targetPosition: 'left' as Position,
+      draggable: false,
+      selectable: false,
+      connectable: false,
     },
     {
       id: "5",
       position: { x: 100 + 4 * 180, y: 0 },
       data: { label: "Results" },
       style: { backgroundColor: "rgba(8, 102, 84, 0.8)", color: "white" },
-      sourcePosition: "right",
-      targetPosition: "left",
+      sourcePosition: 'right' as Position,
+      targetPosition: 'left' as Position,
+      draggable: false,
+      selectable: false,
+      connectable: false,
     },
   ];
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
-      {/* TODO: Remove image once you have a better solution */}
-      <div style={{ marginLeft: "100px" }}>
-        <Image
-          src={DagLegend}
-          alt="DAG Legend"
-          width={229 * 2.5}
-          height={30 * 2.5}
-          layout="fixed"
-        />
-      </div>
-      <div style={{ position: "absolute", top: "110px", right: "200px" }}>
+
+      {/* 'Compare Results' button */}
+      <div style={{ position: "absolute", top: "110px", right: "24px" }}>
         <button
           onClick={handleCompareClick}
           style={{
@@ -243,9 +248,31 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
           Compare Results
         </button>
       </div>
-      {/* TODO: The legend is not displaying nicely, there is a huge space underneath */}
-      {/* <ReactFlow nodes={legendNodes} edges={[]} style={{ height: 'mincontent' }} /> */}
+
+      {/* Legend */}
+      <div style={{ position: "absolute", top: "120px", left: "24px" }}>
+        <h2>Legend</h2>
+      </div>
+      <div style={{ position: "absolute", top: "110px", left: "50px", width: "80vw", height: "100vh" }}>
+        <ReactFlow
+          nodes={legendNodes}
+          edges={[]}
+          style={{ height: 'mincontent', width: 'mincontent' }}
+          zoomOnScroll={false}
+          panOnDrag={false}
+          zoomOnPinch={false}
+          zoomOnDoubleClick={false}
+          elementsSelectable={false}
+        />
+      </div>
+
+      {/* Horizontal line */}
+      <div style={{ position: "absolute", top: "180px", left: "0", width: "100vw", height: "1px", backgroundColor: "#000000" }}></div>
+      
+      {/* DAG */}
+      <div style={{ position: "absolute", top: "180px", left: "50px", width: "100vw", height: "100vh" }}>
       <DAGFlow name={name} />
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Button from "@/components/Button";
 
 export default function NotFound() {
@@ -17,7 +18,8 @@ export default function NotFound() {
       </div>
 
       <div className="flex flex-col items-center justify-center">
-        <img src="favicon.ico" alt="404_icon" />
+        <Image src="/favicon.ico" alt="404_icon" width={200} height={200} />
+        {/*<img src="favicon.ico" alt="404_icon" /> */}
       </div>
     </div>
   );

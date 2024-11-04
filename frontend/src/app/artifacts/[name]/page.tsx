@@ -240,7 +240,7 @@ export default function ArtifactDetailPage({
                   {artifact.index_name} (data type: {artifact.index_dtype})
                 </p>
               </div>
-              <table className="min-w-full leading-normal border">
+              <table className="leading-normal border w-1/2">
                 <thead>
                   <tr>
                     <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
@@ -249,9 +249,11 @@ export default function ArtifactDetailPage({
                     <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
                       Data Type
                     </th>
+                    {/*
                     <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
                       Required
                     </th>
+                    */}
                   </tr>
                 </thead>
                 <tbody>
@@ -265,9 +267,11 @@ export default function ArtifactDetailPage({
                       <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
                         {colSpec.type}
                       </td>
+                      {/*
                       <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
                         {colSpec.required ? "Yes" : "No"}
                       </td>
+                      */}
                     </tr>
                   ))}
                 </tbody>
