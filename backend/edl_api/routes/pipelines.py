@@ -1,10 +1,11 @@
 import urllib.parse
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 
 from edl_api.dagdb import Session
+from edl_api.dependencies.auth import IdentifiedUser
 from edl_api.documentdb import DocumentDBClient
-from edl_api.schemas import Pipeline, Artifact
+from edl_api.schemas import Artifact, Pipeline
 
 PipelineRouter = APIRouter(tags=["Pipelines"])
 
@@ -90,3 +91,20 @@ async def get_results_artifacts_by_pipeline(pipeline_name: str, session: Session
     print(results_artifacts_name_list)
 
     return response
+
+
+@PipelineRouter.delete("/name/{name}")
+async def remove_pipeline_by_name(name: str, session: Session, user: IdentifiedUser):
+    """Remove a pipeline by name. Only possible if pipeline is empty."""
+
+    name = urllib.parse.unquote(name)
+
+    try:
+        with session.begin() as s:
+            response = Pipeline.remove(s, name, user.id)
+    except ValueError as err:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, str(err))
+    except PermissionError as err:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, str(err))
+
+    return {"message": response}

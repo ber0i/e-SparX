@@ -352,6 +352,29 @@ class Pipeline(Base):
         )
         return session.execute(stmt).unique().scalars().all()
 
+    @classmethod
+    def remove(cls, session: Session, name: str, user_id: str):
+        """Remove pipeline by its name. Only possible if pipeline is empty."""
+
+        pipeline = session.query(cls).filter_by(name=name).first()
+
+        if not pipeline:
+            raise ValueError("Oh no! The pipeline could not be found!")
+
+        if not pipeline.can_modify(user_id):
+            raise PermissionError("Whoops! Users can only delete pipelines they've created themselves!")
+
+        # check if pipeline is empty
+        if pipeline.artifacts:
+            raise ValueError("Whoops! The pipeline is not empty and can therefore not be deleted!")
+
+        session.delete(pipeline)
+        print(f"Pipeline '{name}' deleted.")
+        response = (
+            f"{COLORS['deleted']}DELETED{COLORS['reset']} pipeline {COLORS['pipeline']}{name}{COLORS['reset']}.\n"
+        )
+        return response
+
 
 class Connection(Base):
     """Represenation of a connection between two artifacts in the SQL/DAG database"""
