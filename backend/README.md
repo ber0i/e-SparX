@@ -29,7 +29,7 @@ edl-api --reload
 
 The `--reload` flag is optional and is recommended during development.
 
-The API is now running on [http://localhost:8000](http://localhost:8000).
+The API is now running on [http://localhost:8080](http://localhost:8080).
 
 When running the entire project with docker compose, the backend will run in the api container.
 
