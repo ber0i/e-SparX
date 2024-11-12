@@ -1,4 +1,5 @@
-import Image from "next/legacy/image";
+import Image from "next/image";
+import tumLogo from "../../public/tum-logo.png";
 
 const Header = () => {
   const pages = [
@@ -9,23 +10,22 @@ const Header = () => {
   //  let mobile_menu_open = false;
 
   return (
-    <div className="bg-accent dark:bg-brand-gray">
+    <div className="bg-brand-darkblue">
       <nav
         className="mx-auto flex items-center justify-between p-6 lg:px-8"
         aria-label="Global"
       >
 
         {/* Logo */}
-        <div className="flex lg:flex-1">
-          <a href="/" className="-m-1.5 p-1.5">
-            <span className="sr-only">EDL</span>
+        <div className="mx-auto flex items-start space-x-4 lg:flex-1">
+          <a href="/">
             <Image
-              src="/favicon.ico"
+              src={tumLogo}
               alt="EDL Logo"
-              width={32}
-              height={32}
-              layout="fixed"
             />
+          </a>
+          <a href="/" className="text-4xl font-semibold text-brand-white">
+            EDL
           </a>
         </div>
 
@@ -33,7 +33,7 @@ const Header = () => {
         <div className="group flex lg:hidden">
           <button
             type="button"
-            className="peer -m-2.5 inline-flex items-center justify-center rounded-md p-2 text-contrast group-hover:text-primary group-focus-within:text-primary"
+            className="peer -m-2.5 inline-flex items-center justify-center rounded-md p-2 text-brand-white group-hover:text-brand-linkhover group-focus-within:text-brand-darkblue"
           >
             <span className="sr-only">Open main menu</span>
             <svg
@@ -51,10 +51,10 @@ const Header = () => {
               />
             </svg>
           </button>
-          <ul className="invisible group-focus-within:visible group-hover:visible absolute bg-canvas rounded-lg shadow-xl border border-brand-smoke dark:border-primary -translate-x-[calc(100%-24px)] translate-y-[24px] overflow-hidden">
+          <ul className="invisible group-focus-within:visible group-hover:visible absolute bg-brand-darkblue rounded-lg shadow-xl border border-brand-darkblue -translate-x-[calc(100%-24px)] translate-y-[24px] overflow-hidden">
             {pages.map(({ url, title }) => (
-              <li key={url} className="hover:bg-accent p-2">
-                <a href={url} className="font-semibold text-contrast">
+              <li key={url} className="p-2">
+                <a href={url} className="font-semibold text-brand-white hover:text-brand-linkhover">
                   {title}
                 </a>
               </li>
@@ -66,7 +66,7 @@ const Header = () => {
             <a
               key={url}
               href={url}
-              className="text-sm font-semibold leading-6 text-contrast"
+              className="text-lg leading-6 text-brand-white hover:text-brand-linkhover"
             >
               {title}
             </a>

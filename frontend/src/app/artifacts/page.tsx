@@ -4,12 +4,23 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/lib/manual/format_date";
 import { DatasetArtifact, getArtifactsArtifactsGet } from "@/lib/api";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDatabase, faFileCode, faCircleNodes, faSliders, faSquarePollVertical } from '@fortawesome/free-solid-svg-icons';
 
 export default function ArtifactsPage() {
   const [artifacts, setArtifacts] = useState<DatasetArtifact[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [artifactType, setArtifactType] = useState("");
   const router = useRouter();
+
+  const artifactTypeMap: Record<string, { icon: any; label: string }> = {
+    dataset: { icon: faDatabase, label: "Dataset" },
+    code: { icon: faFileCode, label: "Code" },
+    model: { icon: faCircleNodes, label: "Model" },
+    hyperparameters: { icon: faSliders, label: "Hyperparameters" },
+    parameters: { icon: faSliders, label: "Parameters" },
+    results: { icon: faSquarePollVertical, label: "Results" },
+  };
 
   useEffect(() => {
     // Fetch all artifacts
@@ -43,7 +54,7 @@ export default function ArtifactsPage() {
   );
 
   return (
-    <div className="p-5 ">
+    <div className="p-5">
       <h1>Artifacts Overview</h1>
 
       {/* Search bar */}
@@ -51,7 +62,7 @@ export default function ArtifactsPage() {
         <input
           type="text"
           placeholder="Search by name or description"
-          className="w-full p-2 border border-brand-smoke rounded-md"
+          className="w-full text-brand-darkblue bg-brand-linkhover p-2 border border-brand-linkhover rounded-md placeholder:text-brand-gray focus:outline-none focus:ring-brand-darkblue"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -59,10 +70,10 @@ export default function ArtifactsPage() {
 
       {/* Artifact type dropdown filter */}
       <div className="mt-5 flex items-center space-x-2">
-        <label className="text-contrast w-32">Artifact Type:</label>{" "}
+        <label className="text-brand-darkblue font-semibold p-2">Artifact Type:</label>{" "}
         {/* Label for dropdown */}
         <select
-          className="dropdown w-1/8"
+          className="dropdown w-1/8 text-brand-darkblue bg-brand-linkhover focus:outline-brand-darkblue"
           value={artifactType}
           onChange={(e) => setArtifactType(e.target.value)}
         >
@@ -76,25 +87,26 @@ export default function ArtifactsPage() {
         </select>
       </div>
 
+      {/* Artifact table */}
       <section className="mb-8">
         <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
           <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
             <table className="min-w-full leading-normal">
               <thead>
                 <tr>
-                  <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                  <th>
                     Name
                   </th>
-                  <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                  <th>
                     Description
                   </th>
-                  <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                  <th>
                     Artifact Type
                   </th>
-                  <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                  <th>
                     File Type
                   </th>
-                  <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                  <th>
                     Created/Updated At
                   </th>
                 </tr>
@@ -106,28 +118,35 @@ export default function ArtifactsPage() {
                     className="cursor-pointer"
                     onClick={() => handleRowClick(artifact.name)}
                   >
-                    <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                      <div className="text-contrast whitespace-no-wrap">
+                    <td>
+                      <div className="text-brand-darkblue whitespace-no-wrap">
                         {artifact.name}
                       </div>
                     </td>
-                    <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                      <div className="text-contrast whitespace-no-wrap">
+                    <td>
+                      <div className="text-brand-darkblue whitespace-no-wrap">
                         {artifact.description}
                       </div>
                     </td>
-                    <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                      <div className="text-contrast whitespace-no-wrap">
-                        {artifact.artifact_type}
+                    <td>
+                      {artifact.artifact_type && artifactTypeMap[artifact.artifact_type] && (
+                        <div className="flex w-full items-center">
+                          <div className="text-brand-darkblue whitespace-no-wrap">
+                            <FontAwesomeIcon icon={artifactTypeMap[artifact.artifact_type].icon} className="text-brand-darkblue" size="2x" />
+                          </div>
+                          <div className="text-ms text-brand-darkblue pl-2">
+                            {artifactTypeMap[artifact.artifact_type].label}
+                          </div>
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      <div className="text-brand-darkblue whitespace-no-wrap">
+                      {artifact.file_type}
                       </div>
                     </td>
-                    <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                      <div className="text-contrast whitespace-no-wrap">
-                        {artifact.file_type}
-                      </div>
-                    </td>
-                    <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                      <div className="text-contrast whitespace-no-wrap">
+                    <td>
+                      <div className="text-brand-darkblue whitespace-no-wrap">
                         {formatDate(artifact.created_at)}
                       </div>
                     </td>

@@ -10,3 +10,5 @@ infrastructure/*/data/
 archive/
 
 .cache.sqlite
+
+trash/

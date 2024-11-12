@@ -83,19 +83,19 @@ export default function ArtifactDetailPage({
 
   return (
     <div className="p-5">
-      <h1>Artifact Details: {artifact.name}</h1>
+      <h1>Artifact &quot;{artifact.name}&quot;</h1>
 
       <div className="artifact-info">
-        <p className="key">Description:</p>
-        <p className="value">{artifact.description}</p>
+        <p className="key text-brand-darkblue text-lg uppercase p-1">Description:</p>
+        <p className="value text-brand-darkblue text-lg p-1">{artifact.description}</p>
 
-        <p className="key">Artifact Type:</p>
-        <p className="value">{artifact.artifact_type}</p>
+        <p className="key text-brand-darkblue text-lg uppercase p-1">Artifact Type:</p>
+        <p className="value text-brand-darkblue text-lg p-1">{artifact.artifact_type}</p>
 
         {artifact.artifact_type === "dataset" ? (
           <>
-            <p className="key">Subtype:</p>
-            <p className="value">{artifact.artifact_subtype}</p>
+            <p className="key text-brand-darkblue text-lg uppercase p-1">Subtype:</p>
+            <p className="value text-brand-darkblue text-lg p-1">{artifact.artifact_subtype}</p>
           </>
         ) : (
           <></>
@@ -103,8 +103,8 @@ export default function ArtifactDetailPage({
 
         {artifact.artifact_type === "model" ? (
           <>
-            <p className="key">Model Flavor:</p>
-            <p className="value">{artifact.flavor}</p>
+            <p className="key text-brand-darkblue text-lg uppercase p-1">Model Flavor:</p>
+            <p className="value text-brand-darkblue text-lg p-1">{artifact.flavor}</p>
           </>
         ) : (
           <></>
@@ -112,20 +112,20 @@ export default function ArtifactDetailPage({
 
         {artifact.artifact_type !== "results" ? (
           <>
-            <p className="key">File Type:</p>
-            <p className="value">{artifact.file_type}</p>
+            <p className="key text-brand-darkblue text-lg uppercase p-1">File Type:</p>
+            <p className="value text-brand-darkblue text-lg p-1">{artifact.file_type}</p>
           </>
         ) : (
           <></>
         )}
 
-        <p className="key">Created/Updated:</p>
-        <p className="value">{formatDate(artifact.created_at)}</p>
+        <p className="key text-brand-darkblue text-lg uppercase p-1">Created/Updated:</p>
+        <p className="value text-brand-darkblue text-lg p-1">{formatDate(artifact.created_at)}</p>
 
         {artifact.artifact_type === "model" ? (
           <>
-            <p className="key">Dependencies:</p>
-            <div className="value">
+            <p className="key text-brand-darkblue text-lg uppercase p-1">Dependencies:</p>
+            <div className="value text-brand-darkblue text-lg p-1">
               <ul className="inline-flex">
                 {artifact.dependencies && artifact.dependencies.length > 0 ? (
                   artifact.dependencies.map((dependency, index) => (
@@ -147,8 +147,8 @@ export default function ArtifactDetailPage({
 
         {artifact.artifact_type !== "results" ? (
           <>
-            <p className="key">URL:</p>
-            <p className="value">
+            <p className="key text-brand-darkblue text-lg uppercase p-1">URL:</p>
+            <p className="value text-brand-darkblue text-lg p-1">
               {artifact.source_url ? (
                 <a
                   href={artifact.source_url}
@@ -163,8 +163,8 @@ export default function ArtifactDetailPage({
               )}
             </p>
 
-            <p className="key">Download URL:</p>
-            <p className="value">
+            <p className="key text-brand-darkblue text-lg uppercase p-1">Download URL:</p>
+            <p className="value text-brand-darkblue text-lg p-1">
               {artifact.download_url ? (
                 <a
                   href={artifact.download_url}
@@ -183,8 +183,8 @@ export default function ArtifactDetailPage({
           <></>
         )}
 
-        <p className="key">Pipelines:</p>
-        <div className="value">
+        <p className="key text-brand-darkblue text-lg uppercase p-1">Pipelines:</p>
+        <div className="value text-brand-darkblue text-lg p-1">
           {pipelines.length > 0 ? (
             <ul className="inline-flex">
               {pipelines.map((pipeline, index) => (
@@ -199,8 +199,8 @@ export default function ArtifactDetailPage({
           )}
         </div>
 
-        <p className="key">Neighbors:</p>
-        <div className="value">
+        <p className="key text-brand-darkblue text-lg uppercase p-1">Neighbors:</p>
+        <div className="value text-brand-darkblue text-lg p-1">
           {neighbors.length > 0 ? (
             <ul className="inline-flex">
               {neighbors.map((neighbor, index) => (
@@ -223,34 +223,34 @@ export default function ArtifactDetailPage({
               <h2>Dataset Schema</h2>
 
               <div className="artifact-info">
-                <p className="key">Number of Rows:</p>
-                <p className="value">
+                <p className="key text-brand-darkblue text-lg uppercase p-1">Number of Rows:</p>
+                <p className="value text-brand-darkblue text-lg p-1">
                   {artifact.num_rows ? artifact.num_rows : "not available"}
                 </p>
 
-                <p className="key">Number of Columns:</p>
-                <p className="value">
+                <p className="key text-brand-darkblue text-lg uppercase p-1">Number of Columns:</p>
+                <p className="value text-brand-darkblue text-lg p-1">
                   {artifact.num_columns
                     ? artifact.num_columns
                     : "not available"}
                 </p>
 
-                <p className="key">Index:</p>
-                <p className="value">
+                <p className="key text-brand-darkblue text-lg uppercase p-1">Index:</p>
+                <p className="value text-brand-darkblue text-lg p-1">
                   {artifact.index_name} (data type: {artifact.index_dtype})
                 </p>
               </div>
               <table className="leading-normal border w-1/2">
                 <thead>
                   <tr>
-                    <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                    <th>
                       Column Name
                     </th>
-                    <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                    <th>
                       Data Type
                     </th>
                     {/*
-                    <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                    <th>
                       Required
                     </th>
                     */}
@@ -259,16 +259,18 @@ export default function ArtifactDetailPage({
                 <tbody>
                   {artifact.data_schema.map((colSpec, index) => (
                     <tr key={index}>
-                      <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                        <div className="text-contrast whitespace-no-wrap">
+                      <td>
+                        <div className="text-brand-darkblue whitespace-no-wrap">
                           {colSpec.name}
                         </div>
                       </td>
-                      <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                        {colSpec.type}
+                      <td>
+                        <div className="text-brand-darkblue whitespace-no-wrap">
+                          {colSpec.type}
+                        </div>
                       </td>
                       {/*
-                      <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
+                      <td>
                         {colSpec.required ? "Yes" : "No"}
                       </td>
                       */}
@@ -278,7 +280,7 @@ export default function ArtifactDetailPage({
               </table>
             </div>
           ) : (
-            <p>No schema available for this artifact.</p>
+            <p></p>
           )}
         </>
       )}
@@ -293,10 +295,10 @@ export default function ArtifactDetailPage({
                 <table className="leading-normal border w-full">
                   <thead>
                     <tr>
-                      <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                      <th>
                         Name
                       </th>
-                      <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                      <th>
                         Value
                       </th>
                     </tr>
@@ -304,13 +306,15 @@ export default function ArtifactDetailPage({
                   <tbody>
                     {artifact.hyperparameters.map((hyperparameter, index) => (
                       <tr key={index}>
-                        <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                          <div className="text-contrast whitespace-no-wrap">
+                        <td>
+                          <div className="text-brand-darkblue whitespace-no-wrap">
                             {hyperparameter.name}
                           </div>
                         </td>
-                        <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                          {hyperparameter.value}
+                        <td>
+                          <div className="text-brand-darkblue whitespace-no-wrap">
+                            {hyperparameter.value}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -333,10 +337,10 @@ export default function ArtifactDetailPage({
                 <table className="leading-normal border w-full">
                   <thead>
                     <tr>
-                      <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                      <th>
                         Metric
                       </th>
-                      <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                      <th>
                         Value
                       </th>
                     </tr>
@@ -344,13 +348,15 @@ export default function ArtifactDetailPage({
                   <tbody>
                     {artifact.results.map((result, index) => (
                       <tr key={index}>
-                        <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                          <div className="text-contrast whitespace-no-wrap">
+                        <td>
+                          <div className="text-brand-darkblue whitespace-no-wrap">
                             {result.metric}
                           </div>
                         </td>
-                        <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                          {result.value}
+                        <td>
+                          <div className="text-brand-darkblue whitespace-no-wrap">
+                            {result.value}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -374,10 +380,10 @@ export default function ArtifactDetailPage({
                 <table className="leading-normal border w-full">
                   <thead>
                     <tr>
-                      <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                      <th>
                         Data Type
                       </th>
-                      <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                      <th>
                         Shape
                       </th>
                     </tr>
@@ -385,28 +391,30 @@ export default function ArtifactDetailPage({
                   <tbody>
                     {artifact.input_format.map((format, index) => (
                       <tr key={index}>
-                        <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                          <div className="text-contrast whitespace-no-wrap">
+                        <td>
+                          <div className="text-brand-darkblue whitespace-no-wrap">
                             {format.tensor_spec.dtype}
                           </div>
                         </td>
-                        <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                          {JSON.stringify(format.tensor_spec.shape)}
+                        <td>
+                          <div className="text-brand-darkblue whitespace-no-wrap">
+                            {JSON.stringify(format.tensor_spec.shape)}
+                          </div>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <h2 className="mt-4">Output Format</h2>
+              <p className="text-3xl p-1 pt-4 font-semibold mb-4 text-brand-tumdark">Output Format</p>
               <div className="w-1/2">
                 <table className="leading-normal border w-full">
                   <thead>
                     <tr>
-                      <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                      <th>
                         Data Type
                       </th>
-                      <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                      <th>
                         Shape
                       </th>
                     </tr>
@@ -415,13 +423,15 @@ export default function ArtifactDetailPage({
                     {/* @ts-ignore */}
                     {artifact.output_format.map((format, index) => (
                       <tr key={index}>
-                        <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                          <div className="text-contrast whitespace-no-wrap">
+                        <td>
+                          <div className="text-brand-darkblue whitespace-no-wrap">
                             {format.tensor_spec.dtype}
                           </div>
                         </td>
-                        <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                          {JSON.stringify(format.tensor_spec.shape)}
+                        <td>
+                          <div className="text-brand-darkblue whitespace-no-wrap">
+                            {JSON.stringify(format.tensor_spec.shape)}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -430,7 +440,7 @@ export default function ArtifactDetailPage({
               </div>
             </div>
           ) : (
-            <p>No input and output formats available for this artifact.</p>
+            <p></p>
           )}
         </>
       )}

@@ -1,21 +1,111 @@
 "use client";
-
-import React from "react";
-import { ReactFlow, useNodesState, useEdgesState } from "@xyflow/react";
-import type { Node, Position } from "@xyflow/react";
+import React, { memo, useState, useEffect } from 'react';
 import { useRouter, usePathname } from "next/navigation";
-
-import "@xyflow/react/dist/style.css";
-
-import { useEffect, useState } from "react";
+import {
+  ReactFlow,
+  useNodesState,
+  useEdgesState,
+  Handle,
+  Position,
+  Node,
+} from "@xyflow/react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faDatabase,
+  faFileCode,
+  faCircleNodes,
+  faSliders,
+  faSquarePollVertical,
+  faAngleLeft,
+  faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { topologicalSort } from "@/lib/manual/topological_sort";
-import { getNodeStyle } from "@/lib/manual/get_node_style";
 import {
   ArtifactResponse,
   ConnectionResponse,
   getArtifactsByPipelineArtifactsPipelinePipelineNameGet,
   getConnectionsByPipelineConnectionsPipelinePipelineNameGet,
 } from "@/lib/api";
+import Button from "@/components/Button";
+ 
+import '@xyflow/react/dist/base.css';
+import '../../../../tailwind.config';
+
+const artifactStyles = {
+  dataset: {
+    bgColor: 'bg-brand-tumbluelight',
+    borderColor: 'border-brand-darkblue',
+    icon: faDatabase,
+    iconColor: 'text-brand-darkblue',
+    textColor: 'text-brand-darkblue',
+  },
+  code: {
+    bgColor: 'bg-brand-tumdark',
+    borderColor: 'border-black',
+    icon: faFileCode,
+    iconColor: 'text-brand-white',
+    textColor: 'text-brand-white',
+  },
+  model: {
+    bgColor: 'bg-brand-green',
+    borderColor: 'border-brand-darkblue',
+    icon: faCircleNodes,
+    iconColor: 'text-brand-darkblue',
+    textColor: 'text-brand-darkblue',
+  },
+  hyperparameters: {
+    bgColor: 'bg-brand-green',
+    borderColor: 'border-brand-darkblue',
+    icon: faSliders,
+    iconColor: 'text-brand-darkblue',
+    textColor: 'text-brand-darkblue',
+  },
+  parameters: {
+    bgColor: 'bg-brand-green',
+    borderColor: 'border-brand-darkblue',
+    icon: faSliders,
+    iconColor: 'text-brand-darkblue',
+    textColor: 'text-brand-darkblue',
+  },
+  results: {
+    bgColor: 'bg-brand-orange',
+    borderColor: 'border-brand-darkblue',
+    icon: faSquarePollVertical,
+    iconColor: 'text-brand-darkblue',
+    textColor: 'text-brand-darkblue',
+  },
+};
+
+// Define the expected data structure
+interface NodeData {
+  artifact_type: 'dataset' | 'code' | 'model' | 'hyperparameters' | 'parameters' | 'results';
+  name: string;
+}
+ 
+function CustomNode({ data }: { data: NodeData }) {
+  const style = artifactStyles[data.artifact_type] || {};
+  
+  return (
+    <div
+      className={`flex items-center pl-1 pr-9 rounded-md ${style.bgColor} border-2 ${style.borderColor}`}
+      style={{ width: '210px' }}
+    >
+      <div className="flex w-full items-center">
+        <div className={`flex-shrink-0 rounded-full w-12 h-12 flex justify-center items-center ${style.bgColor}`}>
+          <FontAwesomeIcon icon={style.icon} className={style.iconColor} size="2x" />
+        </div>
+        <div className="flex-grow text-center">
+          <div className={`text-ms ${style.textColor}`}>{data.name}</div>
+        </div>
+      </div>
+      <Handle type="target" position={Position.Left} className="invisible" />
+      <Handle type="source" position={Position.Right} className="invisible" />
+    </div>
+  );
+}
+ 
+const nodeTypes = {
+  custom: memo(CustomNode),
+};
 
 // Define the DAG component
 const DAGFlow = ({ name }: { name: string }) => {
@@ -51,7 +141,7 @@ const DAGFlow = ({ name }: { name: string }) => {
           const { error: fetchConnectionsError, data: fetchedConnections } =
             await getConnectionsByPipelineConnectionsPipelinePipelineNameGet({
               path: { pipeline_name: name },
-            });
+            });  
 
           if (fetchConnectionsError) {
             console.error("Unable to fetch Connections", fetchConnectionsError);
@@ -97,17 +187,15 @@ const DAGFlow = ({ name }: { name: string }) => {
 
             // Increment the count for this level
             levelNodeCounts.set(level, levelNodeCounts.get(level)! + 1);
-
+            
             return {
               id: nodeName,
-              data: { label: nodeName },
+              type: 'custom',
+              data: { name: nodeName, artifact_type: artifact_type },
               position: {
                 x: 24 + maxLevel * 250 - level * 250,
                 y: 100 + yPos,
               }, // Horizontal position by level, vertical by node count at the level
-              sourcePosition: "right",
-              targetPosition: "left",
-              style: getNodeStyle(artifact_type),
             };
           });
           {
@@ -147,113 +235,120 @@ const DAGFlow = ({ name }: { name: string }) => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={handleNodeClick}
+        nodeTypes={nodeTypes}
       />
     </div>
   );
 };
 
+const initLegendNodes: Node[] = [
+  {
+    id: "1",
+    type: 'custom',
+    data: { name: 'Dataset', artifact_type: 'dataset', color: 'bg-brand-tumblue'},
+    position: { x: 100, y: 0 },
+    draggable: false,
+    selectable: false,
+    connectable: false,
+  },
+  {
+    id: "2",
+    type: 'custom',
+    data: { name: 'Code', artifact_type: 'code'},
+    position: { x: 100 + 1 * 225, y: 0 },
+    draggable: false,
+    selectable: false,
+    connectable: false,
+  },
+  {
+    id: "3",
+    type: 'custom',
+    data: { name: 'Model', artifact_type: 'model'},
+    position: { x: 100 + 2 * 225, y: 0 },
+    draggable: false,
+    selectable: false,
+    connectable: false,
+  },
+  {
+    id: "4",
+    type: 'custom',
+    data: { name: '(Hyper-)Parameters', artifact_type: 'parameters'},
+    position: { x: 100 + 3 * 225, y: 0 },
+    draggable: false,
+    selectable: false,
+    connectable: false,
+  },
+  {
+    id: "5",
+    type: 'custom',
+    data: { name: 'Results', artifact_type: 'results'},
+    position: { x: 100 + 4 * 225, y: 0 },
+    draggable: false,
+    selectable: false,
+    connectable: false,
+  },
+];
+
 export default function PipelinePage({ params }: { params: { name: string } }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [legendNodes, setLegendNodes, onLegendNodesChange] = useNodesState(initLegendNodes);
+  const [legendVisible, setLegendVisible] = useState(false);
 
-  // Function to handle button click
+  const name = params.name;
+
+  const toggleLegend = () => {
+    setLegendVisible(prev => !prev);
+  };
+
+  // Function to handle compare button click
   const handleCompareClick = () => {
     router.push(`${pathname}/compare`); // Navigate to the compare page
   };
 
-  const name = params.name;
+  // Making sure that legend button is only displayed once the icon is rendered correctly
+  const [isVisible, setIsVisible] = useState(false);
 
-  const legendNodes: Node[] = [
-    {
-      id: "1",
-      position: { x: 100, y: 0 },
-      data: { label: "Dataset" },
-      style: { backgroundColor: "rgb(63, 161, 241)" },
-      sourcePosition: 'right' as Position,
-      targetPosition: 'left' as Position,
-      draggable: false,
-      selectable: false,
-      connectable: false,
-    },
-    {
-      id: "2",
-      position: { x: 100 + 1 * 180, y: 0 },
-      data: { label: "Code" },
-      style: { backgroundColor: "gray", color: "white" },
-      sourcePosition: 'right' as Position,
-      targetPosition: 'left' as Position,
-      draggable: false,
-      selectable: false,
-      connectable: false,
-    },
-    {
-      id: "3",
-      position: { x: 100 + 2 * 180, y: 0 },
-      data: { label: "Model" },
-      style: { backgroundColor: "rgb(12, 167, 137)" },
-      sourcePosition: 'right' as Position,
-      targetPosition: 'left' as Position,
-      draggable: false,
-      selectable: false,
-      connectable: false,
-    },
-    {
-      id: "4",
-      position: { x: 100 + 3 * 180, y: 0 },
-      data: { label: "(Hyper-)Parameters" },
-      style: { backgroundColor: "rgba(12, 167, 137, 0.6)" },
-      sourcePosition: 'right' as Position,
-      targetPosition: 'left' as Position,
-      draggable: false,
-      selectable: false,
-      connectable: false,
-    },
-    {
-      id: "5",
-      position: { x: 100 + 4 * 180, y: 0 },
-      data: { label: "Results" },
-      style: { backgroundColor: "rgba(8, 102, 84, 0.8)", color: "white" },
-      sourcePosition: 'right' as Position,
-      targetPosition: 'left' as Position,
-      draggable: false,
-      selectable: false,
-      connectable: false,
-    },
-  ];
+  useEffect(() => {
+    // Wait for the component to mount and styles to be applied
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 50); // Small delay to ensure icon is rendered correctly
 
+    return () => clearTimeout(timer);
+  }, []);
+ 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
 
-      {/* 'Compare Results' button */}
-      <div style={{ position: "absolute", top: "110px", right: "24px" }}>
-        <button
-          onClick={handleCompareClick}
-          style={{
-            padding: "10px 20px",
-            fontSize: "16px",
-            cursor: "pointer",
-            backgroundColor: "rgba(8, 102, 84, 0.8)", // Dark green background
-            color: "#ffffff", // White text
-            border: "none",
-            borderRadius: "5px", // Optional: rounded corners
-            transition: "background-color 0.3s", // Optional: smooth transition for hover effect
-          }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.backgroundColor = "#007f00")
-          } // Lighter green on hover
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor = "#005f00")
-          } // Revert to dark green
-        >
-          Compare Results
-        </button>
+      {/* Legend Button */}
+      <div className="button-container" style={{ position: "absolute", top: "115px", left: "24px", zIndex: 10 }}>
+        <Button variant="secondary" onClick={toggleLegend}>
+          {isVisible ? (
+            legendVisible ? (
+              <>Legend <FontAwesomeIcon icon={faAngleLeft} size="lg" /></>
+            ) : (
+              <>Legend <FontAwesomeIcon icon={faAngleRight} size="lg" /></>
+            )
+          ) : (
+            <span style={{ visibility: "hidden" }}>Legend</span> // Hide before icon is visible
+          )}
+        </Button>
       </div>
-
-      {/* Legend */}
-      <div style={{ position: "absolute", top: "120px", left: "24px" }}>
-        <h2>Legend</h2>
-      </div>
-      <div style={{ position: "absolute", top: "110px", left: "50px", width: "80vw", height: "100vh" }}>
+      
+      {/* Legend*/}
+      <div 
+        className={`legend-container ${legendVisible ? 'fade-in' : 'fade-out'}`} 
+        style={{ 
+          position: "absolute", 
+          top: "110px", 
+          left: "50px", // Adjust to prevent overlap with the button
+          height: "100vh",
+          overflow: "hidden", // Hide content while fading out
+          transition: "width 0.5s ease, opacity 0.5s ease",
+          opacity: legendVisible ? '1' : '0'
+        }}
+      >
         <ReactFlow
           nodes={legendNodes}
           edges={[]}
@@ -263,16 +358,40 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
           zoomOnPinch={false}
           zoomOnDoubleClick={false}
           elementsSelectable={false}
+          nodeTypes={nodeTypes}
         />
       </div>
 
-      {/* Horizontal line */}
-      <div style={{ position: "absolute", top: "180px", left: "0", width: "100vw", height: "1px", backgroundColor: "#000000" }}></div>
+      {/* 'Compare Results' button */}
+      { !legendVisible ? (
+      <div className="button-container" style={{ position: "absolute", top: "113px", right: "24px" }}>
+        <Button
+          variant="action"
+          onClick={handleCompareClick}
+        >
+          Compare Results
+        </Button>
+      </div>
+      ) : (<></>)}
       
+
+      {/* Horizontal line */}
+      <div
+        style={{
+          position: "absolute",
+          top: "183px",
+          left: "0",
+          width: "100vw",
+          height: "2px",
+          backgroundColor: "#072140",
+        }}
+      ></div>
+
       {/* DAG */}
       <div style={{ position: "absolute", top: "180px", left: "50px", width: "100vw", height: "100vh" }}>
-      <DAGFlow name={name} />
+        <DAGFlow name={name}/>
       </div>
+      
     </div>
   );
-}
+};
