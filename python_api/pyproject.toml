@@ -17,3 +17,7 @@ dependencies = [
     "pydantic",
     "platformdirs"
 ]
+
+[project.scripts]
+edl-pipeline-init = "energydatalab.init_pipeline:init_pipeline_cli"
+

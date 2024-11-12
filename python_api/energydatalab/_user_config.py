@@ -9,7 +9,7 @@ user_config: "UserConfigModel" = None
 @dataclass
 class UserConfigModel:
     user_id: str
-    api_base: str = "http://localhost:8080"
+    api_base: str = "http://10.152.14.197:8080"
 
 def get_user_config_path():
     """Resolve the path to the user config file depending on the OS

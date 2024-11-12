@@ -73,7 +73,7 @@ async def get_neighbors(name: str, session: Session):
         return neighbors_response
 
 
-@ArtifactRouter.get("/name/{name}")
+@ArtifactRouter.get("/name/{name:path}")
 async def get_artifact_by_name(name: str):
     """Get a single artifact by name"""
 

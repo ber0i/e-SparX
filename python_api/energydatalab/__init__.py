@@ -19,3 +19,4 @@ from .register_hyperparameters import register_hyperparameters
 from .register_parameters import register_parameters
 from .register_results import register_results
 from .delete import delete_artifact, delete_pipeline
+from .init_pipeline import init_pipeline
