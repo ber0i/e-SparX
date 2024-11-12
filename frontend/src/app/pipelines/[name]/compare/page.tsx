@@ -37,10 +37,11 @@ export default function ArtifactDetailPage({
   const [valuelists, setValuelists] = useState<number[][]>([]);
 
   // define color list for the chart
+  // TODO: Update colors to TUM colors
   const colorList = [
-    "rgb(63, 161, 241, 0.6)",
-    "rgb(12, 167, 137, 0.6)",
-    "rgba(255, 159, 64, 0.6)",
+    "rgb(48, 112, 179, 0.6)", // TUM blue
+    "rgb(160, 175, 0, 0.6)", // TUM green
+    "rgba(227, 114, 34, 0.6)", // TUM orange
     "rgba(255, 99, 132, 0.6)",
     "rgba(54, 162, 235, 0.6)",
     "rgba(255, 206, 86, 0.6)",
@@ -115,7 +116,7 @@ export default function ArtifactDetailPage({
   };
 
   return (
-    <div style={{ width: "100%", height: "500px", padding: "0 80px" }}>
+    <div style={{ width: "100%", height: "470px", padding: "0 80px" }}>
       <h1>Model Error Metrics</h1>
       {/* @ts-ignore */}
       <Bar data={data} options={options} />

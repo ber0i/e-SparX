@@ -24,13 +24,22 @@ const config: Config = {
         accent: "rgb(var(--color-accent))", //accent background
 
         brand: {
-          gray: "#1A1F29", //colors independent of dark/light mode
-          white: "#FFFFFF", //eg: text inside buttons
-          blue: "#1D4ED8",
+          gray: "#777777", //colors independent of dark/light mode, TUM gray
+          white: "#ffffff", //eg: text inside buttons, TUM white
+          darkblue: "#072140",
+          darkbluehover: "#0d3a73",
+          tumblue: "#3070b3",
+          tumbluelight: "#4889ce",
+          tumdark: "#333333",
           red: "#EF4444",
-          green: "#00C55E",
-          orange: "#F97316",
+          green: "#a0af00", // TUM green
+          darkgreen: "#515700",
+          orange: "#e37222", // TUM orange
+          orangehover: "#c7611c",
           smoke: "#E5E7EB", //eg: borders
+          linkhover: "#c2d7ef",
+          tablecolor: "#e6e6e6",
+          tableborder: "#dadada",
         },
       },
       fontSize: {

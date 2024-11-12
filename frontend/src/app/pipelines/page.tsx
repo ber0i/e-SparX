@@ -37,7 +37,7 @@ export default function PipelinesPage() {
   );
 
   return (
-    <div className="p-5 ">
+    <div className="p-5">
       <h1>Pipelines Overview</h1>
 
       {/* Search bar */}
@@ -45,7 +45,7 @@ export default function PipelinesPage() {
         <input
           type="text"
           placeholder="Search by name or description"
-          className="w-full p-2 border border-brand-smoke rounded-md"
+          className="w-full text-brand-darkblue bg-brand-linkhover p-2 border border-brand-linkhover rounded-md placeholder:text-brand-gray focus:outline-none focus:ring-brand-darkblue"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -57,7 +57,7 @@ export default function PipelinesPage() {
             <table className="min-w-full leading-normal">
               <thead>
                 <tr>
-                  <th className="px-5 py-3 border-b-2 border-brand-smoke bg-accent text-left text-xs font-semibold text-contrast uppercase tracking-wider ">
+                <th>
                     Name
                   </th>
                 </tr>
@@ -69,8 +69,8 @@ export default function PipelinesPage() {
                     className="cursor-pointer"
                     onClick={() => handleRowClick(pipeline.name)}
                   >
-                    <td className="px-5 py-5 border-b border-brand-smoke bg-canvas text-sm dark:bg-accent dark:border-primary">
-                      <div className="text-contrast whitespace-no-wrap">
+                    <td>
+                      <div className="text-brand-darkblue whitespace-no-wrap">
                         {pipeline.name}
                       </div>
                     </td>
