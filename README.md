@@ -20,7 +20,7 @@ pip install .
 
 Now, you can head over to our [starter notebook](starter_notebook.ipynb) to familiarise yourself with the basic usage of the package and build your first small pipeline!
 
-In the following section, we will explain the essential functionalities you will need to use the package seamlessly in your ML projects. To see the EDL in action in comprehensive ML projects of different nature, check out the usecases for **Wind Power Forecasting** and **Storage Control**! You might have seen the resulting pipelines on the website earlier. The usecases have their own README inside their corresponding folder within the `usecases` folder.
+In the following section, we will explain the essential functionalities you will need to use the package seamlessly in your ML projects. To see the EDL in action in comprehensive ML projects of different nature, check out the usecases for **Wind Power Forecasting** and **Storage Control**! You might have seen the resulting pipelines on the website earlier. The usecases have their own README inside the `usecases` folder.
 
 ## The Essentials at a Glance
 
@@ -41,19 +41,19 @@ For details on required and optional arguments in each method, check out the met
 
 ### Setting Connections
 
-There are two ways to define connection: Specifying the source artifact in the register method (see starter tutorial), or using `edl.connect`. In `edl.connect`, you only need to specify the pipeline you're addressing and the source and target artifact you want to connect.
+There are two ways to define pipeline connections: Specifying the source artifact in the register method (see starter tutorial), or using `edl.connect`. In `edl.connect`, you only need to specify the pipeline you're addressing and the source and target artifact you want to connect.
 
 ### Updating and Deleting Artifacts, Deleting Pipelines
 
-- You can update an artifact via calling the correct `edl.register` method again, using the updated metadata. You cannot change an artifact type or the name of an artifact.
-- You can delete artifacts using `delete_artifact`. You can only delete artifacts that you created yourself.
-- You can delete a pipeline once it is completely empty using `delete_pipeline`. You can only delete pipelines that you created yourself.
+- You can update an artifact via calling the correct `edl.register` method again, passing the updated metadata. You cannot change an artifact type or the name of an artifact. You can only update artifacts you've created yourself.
+- You can delete artifacts using `delete_artifact`. You can only delete artifacts that you've created yourself.
+- You can delete a pipeline once it is completely empty using `delete_pipeline`. You can only delete pipelines that you've created yourself.
 
 ### Reusing a Pipeline Fast
 
-You can download all artifacts from a pipeline to your repository directly, using the Python method `init_pipeline` or the CLI command `edl-pipeline-init`. Check their docstring for more details.
+You can download all artifacts from a pipeline to your files directly, using the Python method `init_pipeline` or the CLI command `edl-pipeline-init`. Check their docstring for more details.
 
-> **NOTE**: The current links to artifacts on GitLab will not work, as a Login is required to see the code on GitLab. You will be informed about this when executing the method. This will not break the function and you will safely download the remaining artifacts.
+> **NOTE**: The current links to artifacts on GitLab will not work in the download process, as a Login is required to see the code on GitLab. You will be informed about this when executing the method. This will not break the function and you will safely download the remaining artifacts.
 
 ### User Management and "Safety"
 
