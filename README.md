@@ -12,7 +12,7 @@ Eager to start sharing your own ML projects? So let's get started and look at ho
 
 ## Getting Started
 
-Create a virtual environment (with Python version < 3.13). Next, navigate inside the folder `python_api` within this repository and run
+Clone this repository and create a virtual Python environment (with Python version < 3.13). Next, navigate inside the folder `python_api` within this repository and run the following in your command prompt
 
 ```bash
 pip install .
