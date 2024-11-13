@@ -107,10 +107,7 @@ export default function ArtifactDetailPage({
         type: "category",
       },
       y: {
-        beginAtZero: true,
-        ticks: {
-          stepSize: 0.01,
-        },
+        beginAtZero: false,
       },
     },
   };

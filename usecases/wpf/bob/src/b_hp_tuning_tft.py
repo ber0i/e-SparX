@@ -220,7 +220,7 @@ def main():
         )
 
         edl.register_model_free(
-            name="TFT Model",
+            name="TFT",
             description="Transformer-based time series forecasting model for wind power forecasting.",
             file_type="none",
             flavor="Darts",
