@@ -5,7 +5,7 @@ services:
 
   artifactdb:
     container_name: artifactdb
-    image: mongo
+    image: mongo:4.4
     restart: on-failure
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
