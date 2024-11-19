@@ -54,8 +54,6 @@ services:
     ports:
       - ${API_PORT:-8080}:80
     depends_on:
-      artifactdb:
-        condition: service_healthy
       dagdb:
         condition: service_healthy
 
@@ -82,9 +80,6 @@ services:
       ME_CONFIG_MONGODB_SERVER: artifactdb
     ports:
       - "8081:8081"
-    depends_on:
-      artifactdb:
-        condition: service_healthy
 
   dagdbgui:
     container_name: dagdbgui
