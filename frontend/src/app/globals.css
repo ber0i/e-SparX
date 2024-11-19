@@ -17,13 +17,13 @@
   /* Dark mode */
   @media (prefers-color-scheme: dark) {
     :root {
-      --color-primary: 94 190 226;
-      --color-secondary: 52 122 204;
-      --color-contrast: 255 255 255;
-      --color-canvas: 34 41 54;
-      --color-accent: 45 55 72;
-      --color-primary-shade: 89 179 212;
-      --color-secondary-shade: 50 113 191;
+      --color-primary: 63 161 241;
+      --color-secondary: 58 186 222;
+      --color-contrast: 39 47 61;
+      --color-canvas: 255 255 255;
+      --color-accent: 224 242 254;
+      --color-primary-shade: 58 148 222;
+      --color-secondary-shade: 57 170 204;
     }
   }
 }
