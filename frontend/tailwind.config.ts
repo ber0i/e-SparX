@@ -29,12 +29,12 @@ const config: Config = {
           darkblue: "#072140",
           darkbluehover: "#0d3a73",
           tumblue: "#3070b3",
-          tumbluelight: "#4889ce",
+          tumbluelight: "rgb(72, 137, 206, 1)",
           tumdark: "#333333",
           red: "#EF4444",
-          green: "#a0af00", // TUM green
+          green: "rgb(160, 175, 0, 0.8)", // TUM green
           darkgreen: "#515700",
-          orange: "#e37222", // TUM orange
+          orange: "rgb(227, 114, 34, 0.85)", // TUM orange
           orangehover: "#c7611c",
           smoke: "#E5E7EB", //eg: borders
           linkhover: "#c2d7ef",

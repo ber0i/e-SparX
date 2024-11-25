@@ -21,7 +21,7 @@ const Button: React.FC<ButtonProps> = ({
     primary: `bg-brand-tumblue hover:bg-brand-tumbluelight border-brand-darkblue text-brand-white ${baseStyle}`,
     secondary: `bg-brand-darkblue hover:bg-brand-darkbluehover border-brand-tumdark text-brand-white ${baseStyle}`,
     disabled: `bg-brand-smoke text-brand-gray cursor-not-allowed opacity-50 ${baseStyle}`,
-    action: `bg-brand-orange hover:bg-brand-orangehover border-brand-darkblue text-black ${baseStyle}`,
+    action: `bg-brand-orange hover:bg-brand-orangehover border-brand-darkblue text-brand-darkblue ${baseStyle}`,
   };
 
   // giving disabled variant the disabled attribute

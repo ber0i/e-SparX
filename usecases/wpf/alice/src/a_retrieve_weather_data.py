@@ -172,7 +172,7 @@ else:
 # register this script in e-SparX
 print(">>>>>>>>>>Registering this data retrieval script in e-SparX<<<<<<<<<<")
 esparx.register_code(
-    name="Retrieve Historical Weather Data",
+    name="Retrieve Open-Meteo Weather Data",
     description="Retrieve historical weather data and historical weather forecast data from the Open-Meteo.com Weather API and save to CSV.",
     file_type="PY",
     source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/src/a_retrieve_weather_data.py",
@@ -183,22 +183,22 @@ esparx.register_code(
 # register data in e-SparX
 print(">>>>>>>>>>Registering data in e-SparX<<<<<<<<<<")
 esparx.register_dataset_pandas(
-    name="Historical Weather Forecast Data",
+    name="Historical Weather Forecasts 2022",
     description="Historical weather forecasts (Model: GFS Global) at the Penmanshiel wind farm in 2022.",
     file_type="CSV",
     df=df_hist_forecast,
     source_url="https://open-meteo.com/en/docs/historical-forecast-api",
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
-    source_name="Retrieve Historical Weather Data",
+    source_name="Retrieve Open-Meteo Weather Data",
 )
 esparx.register_dataset_pandas(
-    name="Historical Weather Data",
+    name="Historical Weather 2022",
     description="Historical weather data at the Penmanshiel wind farm in 2022.",
     file_type="CSV",
     df=df_hist_weather,
     source_url="https://open-meteo.com/en/docs/historical-weather-api",
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
-    source_name="Retrieve Historical Weather Data",
+    source_name="Retrieve Open-Meteo Weather Data",
 )
 
 print("Script finished.")

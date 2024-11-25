@@ -34,7 +34,7 @@ def main():
         source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/src/b_hp_tuning_tft.py",
         download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/src/b_hp_tuning_tft.py?inline=false",
         pipeline_name="Wind Power Forecasting - TFT",
-        source_name="Cleaned Data",
+        source_name="Cleaned SCADA and Weather Data",
     )
 
     project_base_path = os.getcwd()
@@ -228,7 +228,7 @@ def main():
         )
         esparx.connect(
             pipeline_name="Wind Power Forecasting - TFT",
-            source_name="TFT Model",
+            source_name="TFT",
             target_name="TFT Hyperparameter Tuning",
         )
 

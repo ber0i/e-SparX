@@ -48,7 +48,7 @@ else:
 # register this script in e-SparX
 print(">>>>>>>>>>Registering this data retrieval script in e-SparX<<<<<<<<<<")
 esparx.register_code(
-    name="Retrieve Price Data",
+    name="Retrieve ENTSO-E Price Data",
     description="Retrieve Irish day-ahead electricity prices from the ENTSO-E Transparency Platform.",
     file_type="PY",
     source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/ess_control/src/a_retrieve_price_data.py",
@@ -59,11 +59,11 @@ esparx.register_code(
 # register data in e-SparX
 print(">>>>>>>>>>Registering data in e-SparX<<<<<<<<<<")
 esparx.register_dataset_pandas(
-    name="Day-Ahead Price Data",
+    name="Day-Ahead Electricity Price Data",
     description="Hourly day-ahead electricity prices for the Irish SEM bidding zone.",
     file_type="CSV",
     df=df,
     source_url="https://newtransparency.entsoe.eu/market/energyPrices",
     pipeline_name="Wind Farm ESS Control",
-    source_name="Retrieve Price Data",
+    source_name="Retrieve ENTSO-E Price Data",
 )
