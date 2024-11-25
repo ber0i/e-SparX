@@ -1,22 +1,17 @@
 from typing import Optional
 
-from pydantic import HttpUrl
-
 from ._client import auth_client
 
 
-def register_parameters(
+def register_results(
     name: str,
     description: str,
-    file_type: str,
-    source_url: Optional[HttpUrl] = None,
-    download_url: Optional[HttpUrl] = None,
+    results: dict,
     pipeline_name: Optional[str] = None,
     source_name: Optional[str] = None,
 ):
     """
-    Registers a parameters artifact in the Energy Data Lab.
-    A parameters artifact is a set of parameters obtained from model training.
+    Registers a results artifact in e-SparX.
     To add an existing artifact to a pipeline, use the existing artifact name in name and define the pipeline via the pipeline_name.
     If the pipeline does not exist yet, it will be created.
     Pipeline connections are specified via the source_name parameter.
@@ -28,30 +23,30 @@ def register_parameters(
         The name of the code.
     description : str
         The description of the code.
-    file_type : str
-        The type of the underlying file, as "JSON", "YAML", etc.
-    source_url: [Optional] str
-        The URL on where to find the underlying file.
-    download_url: [Optional] str
-        The download URL of the underlying file.
+    results : dict
+        Dictionary of metrics and their value. Expected format: {"metric_name": value, ...},
+        where value must be a float.
     pipeline_name: [Optional] str
         The name of the ML pipeline the code is used in.
     source_name: [Optional] str
         The name of the source artifact in the mentioned pipeline. If source node, set to None (default).
     """
 
+    results_list = [
+        {"metric": metric, "value": value} for metric, value in results.items()
+    ]
+
     result = {
         "name": name,
         "description": description,
-        "file_type": file_type,
-        "source_url": source_url,
-        "download_url": download_url,
+        "file_type": "none",
+        "results": results_list,
         "pipeline_name": pipeline_name,
         "source_name": source_name,
     }
 
     response = auth_client.post(
-        "/register/parameters",
+        "/register/results",
         json=result,
     )
     if response.status_code == 200:

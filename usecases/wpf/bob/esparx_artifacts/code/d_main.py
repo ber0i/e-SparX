@@ -2,7 +2,7 @@ import argparse
 import json
 import os
 
-import energydatalab as edl
+import esparx
 import lstm
 import mlp
 import numpy as np
@@ -14,8 +14,8 @@ from torch.utils.data import DataLoader, Subset
 
 def main():
 
-    print(">>>>>>>>>>Registering this script in EDL<<<<<<<<<<")
-    edl.register_code(
+    print(">>>>>>>>>>Registering this script in e-SparX<<<<<<<<<<")
+    esparx.register_code(
         name="Main",
         description="Script to train and evaluate a model for wind power forecasting.",
         file_type="PY",
@@ -83,7 +83,7 @@ def main():
     # Data Preparation
 
     dataset = PenmanshielDataset(
-        data_file="usecases/wpf/bob/edl_artifacts/datasets/Cleaned_Data.csv",
+        data_file="usecases/wpf/bob/esparx_artifacts/datasets/Cleaned_Data.csv",
         lookback_timesteps=args.lookback_timesteps,
         forecast_timesteps=args.forecast_timesteps,
     )
@@ -192,8 +192,8 @@ def main():
             wandb.log({"test_rmse": np.sqrt(sum(loss_list) / len(loss_list))})
             wandb.finish()
 
-        print(">>>>>>>>>>Registering results in EDL<<<<<<<<<<")
-        edl.register_results(
+        print(">>>>>>>>>>Registering results in e-SparX<<<<<<<<<<")
+        esparx.register_results(
             name=f"{model_name} Results Tuned",
             description=f"Error metric values of the {model_name} model on the test dataset after hyperparameter tuning.",
             results={
@@ -218,7 +218,7 @@ def main():
                 "MSE": 0.0136,
                 "RMSE": 0.11662,
             }
-        edl.register_results(
+        esparx.register_results(
             name=f"{model_name} Results Tuned",
             description=f"Error metric values of the {model_name} model on the test dataset after hyperparameter tuning.",
             results=mock_results,
@@ -226,23 +226,23 @@ def main():
             source_name="Main",
         )
 
-    print(">>>>>>>>>>Setting additional pipeline connections in EDL<<<<<<<<<<")
-    edl.connect(
+    print(">>>>>>>>>>Setting additional pipeline connections in e-SparX<<<<<<<<<<")
+    esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="Penmanshiel Torch Dataset Class",
         target_name="Main",
     )
-    edl.connect(
+    esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
         source_name=f"{model_name}",
         target_name="Main",
     )
-    edl.connect(
+    esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
         source_name=f"{model_name} Tuned Hyperparameters",
         target_name="Main",
     )
-    edl.connect(
+    esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="Main",
         target_name="Persistence Results",
@@ -257,8 +257,8 @@ def main():
         )
         print("Model parameters saved.")
 
-    print(">>>>>>>>>>Registering parameters in EDL<<<<<<<<<<")
-    edl.register_parameters(
+    print(">>>>>>>>>>Registering parameters in e-SparX<<<<<<<<<<")
+    esparx.register_parameters(
         name=f"{model_name} Parameters Tuned",
         description=f"Trained parameters of the {model_name} model with tuned hyperparameters.",
         file_type="PTH",

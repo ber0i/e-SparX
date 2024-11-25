@@ -6,6 +6,6 @@ When an instance of the client is created, it establishes a connection to the do
 
 import pymongo
 
-from edl_api import settings
+from esparx_api import settings
 
 DocumentDBClient = pymongo.MongoClient(f"mongodb://{settings.ARTIFACTDB_ENDPOINT}", tz_aware=True)

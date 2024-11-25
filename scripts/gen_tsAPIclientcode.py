@@ -14,7 +14,7 @@ from pathlib import Path
 
 from fastapi.openapi.utils import get_openapi
 
-from edl_api import app
+from esparx_api import app
 
 ROOT_DIRECTORY = Path(__file__).parent.parent
 FRONTEND_PATHS = {
@@ -35,7 +35,7 @@ def generate_openapi_json(verbose: bool = False):
     """Create openapi.json for api documentation"""
 
     openapi_schema = get_openapi(
-        title="EDL Registry API",
+        title="e-SparX API",
         version="0.0.1",
         routes=app.routes,
     )

@@ -1,6 +1,6 @@
-# EDL Registry MVP - Backend
+# e-SparX - Backend
 
-This is the Backend for the Energy Data Lab Registry MVP based on [FastAPI](https://fastapi.tiangolo.com).
+This is the e-SparX backend based on [FastAPI](https://fastapi.tiangolo.com).
 
 ## Getting Started
 
@@ -24,7 +24,7 @@ For managing your virtual environments, you can use [Miniconda](https://docs.ana
 After installing all dependencies as described above, you can start the API as follows:
 
 ```bash
-edl-api --reload
+esparx-api --reload
 ```
 
 The `--reload` flag is optional and is recommended during development.

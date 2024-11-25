@@ -18,7 +18,7 @@ export default function NotFound() {
       </div>
 
       <div className="flex flex-col items-center justify-center">
-        <p className="text-8xl text-brand-darkblue">EDL</p>
+        <p className="text-8xl text-brand-darkblue">e-SparX</p>
         {/*<Image src="/favicon.ico" alt="404_icon" width={200} height={200} />*/}
         {/*<img src="favicon.ico" alt="404_icon" /> */}
       </div>

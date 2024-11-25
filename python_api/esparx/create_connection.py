@@ -7,7 +7,7 @@ def connect(
     target_name: str,
 ):
     """
-    Connect two artifacts in the Energy Data Lab.
+    Connect two artifacts.
 
     Parameters
     ----------

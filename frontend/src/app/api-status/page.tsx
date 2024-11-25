@@ -22,7 +22,7 @@ export default function StatusPage() {
     <div className="flex justify-center">
       <div className="flex flex-col items-center">
         <h1>
-          Energy Data Lab API Status:{" "}
+        e-SparX API Status:{" "}
           <span
             className={clsx({
               "text-brand-green": status.status === "online",

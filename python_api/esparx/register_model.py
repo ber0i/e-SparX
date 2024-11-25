@@ -26,7 +26,7 @@ def register_model_pytorch(
     source_name: Optional[str] = None,
 ):
     """
-    Register a PyToroch nn.Module as model in the Energy Data Lab.
+    Register a PyToroch nn.Module as model in e-SparX.
 
     Parameters
     ----------
@@ -145,7 +145,7 @@ def register_model_free(
     source_name: Optional[str] = None,
 ):
     """
-    Register a PyToroch nn.Module as model in the Energy Data Lab.
+    Register a PyToroch nn.Module as model in e-SparX.
 
     Parameters
     ----------

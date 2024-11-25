@@ -1,6 +1,6 @@
-# EDL Registry MVP
+# e-SparX Developer Guide
 
-Welcome to the EDL Artifact Registry - Developer README! Here's where you learn what to do to start the EDL locally and contribute.
+Welcome to the e-SparX developer README! Here's where you learn what to do to start e-SparX locally and contribute.
 
 ## Getting Started
 

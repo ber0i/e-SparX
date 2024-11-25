@@ -1,4 +1,4 @@
-# energydatalab (not on PyPI yet)
+# esparx (not on PyPI yet)
 openmeteo_requests
 requests_cache
 retry_requests

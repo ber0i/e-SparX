@@ -28,5 +28,5 @@ COPY --from=install /app/.venv ./.venv
 COPY backend/ .
 RUN python -m pip install .
 
-CMD ["edl-api", "--share", "--port", "80"]
+CMD ["esparx-api", "--share", "--port", "80"]
 EXPOSE 80

@@ -1,6 +1,6 @@
-# EDL Use Cases
+# e-SparX Use Cases
 
-This folder holds two usecases from energy research with real data. All models where actually trained and results are real. This will give you an understanding of how you can use the EDL in realistic ML projects!
+This folder holds two usecases from energy research with real data. All models where actually trained and results are real. This will give you an understanding of how you can use e-SparX in realistic ML projects!
 
 ## Wind Power Forecasting (WPF)
 

@@ -6,7 +6,7 @@ import "./globals.css";
 const inter = Inter({ weight: "400", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Energy Data Lab",
+  title: " e-SparX | The Space for Artifact Exchange in ML Research",
   description: "Share your ML model pipelines and accelerate your ML research.",
 };
 

@@ -7,16 +7,16 @@ and saves it to a CSV file.
 import os
 import zipfile
 
-import energydatalab as edl
+import esparx
 import pandas as pd
 
 raw_data_path = "usecases/wpf/alice/data/raw"
 unpack_path = os.path.join(raw_data_path, "unpacked")
 processed_data_path = "usecases/wpf/alice/data/processed"
 
-# register raw data in EDL
-print(">>>>>>>>>>Registering raw data in EDL<<<<<<<<<<")
-edl.register_dataset_free(
+# register raw data in e-SparX
+print(">>>>>>>>>>Registering raw data in e-SparX<<<<<<<<<<")
+esparx.register_dataset_free(
     name="Penmanshiel SCADA 2022 WT01-10",
     description="Raw Penmanshiel SCADA data from 2022, Turbine 01 to 10, downloaded from Zenodo as ZIP file.",
     file_type="ZIP",
@@ -24,7 +24,7 @@ edl.register_dataset_free(
     download_url="https://zenodo.org/records/8253010/files/Penmanshiel_SCADA_2022_WT01-10_4462.zip?download=1",
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
 )
-edl.register_dataset_free(
+esparx.register_dataset_free(
     name="Penmanshiel SCADA 2022 WT11-15",
     description="Raw Penmanshiel SCADA data from 2022, Turbine 11 to 15, downloaded from Zenodo as ZIP file.",
     file_type="ZIP",
@@ -96,9 +96,9 @@ else:
     df.to_csv(os.path.join(processed_data_path, "Penmanshiel_SCADA_2022.csv"))
     print("Done.")
 
-# register processed data in EDL
-print(">>>>>>>>>>Registering processed data in EDL<<<<<<<<<<")
-edl.register_dataset_pandas(
+# register processed data in e-SparX
+print(">>>>>>>>>>Registering processed data in e-SparX<<<<<<<<<<")
+esparx.register_dataset_pandas(
     name="Penmanshiel SCADA 2022",
     description="Processed Penmanshiel SCADA data from 2022, all turbines.",
     file_type="CSV",
@@ -107,9 +107,9 @@ edl.register_dataset_pandas(
 )
 
 
-# register this script in EDL
-print(">>>>>>>>>>Registering this preprocessing script in EDL<<<<<<<<<<")
-edl.register_code(
+# register this script in e-SparX
+print(">>>>>>>>>>Registering this preprocessing script in e-SparX<<<<<<<<<<")
+esparx.register_code(
     name="Preprocess Raw Data",
     description="Extract relevant variables from raw SCADA data from Penmanshiel wind farm and save it to one CSV file.",
     file_type="PY",
@@ -119,14 +119,14 @@ edl.register_code(
     source_name="Penmanshiel SCADA 2022 WT01-10",
 )
 
-# set remaining pipeline connections in EDL
-print(">>>>>>>>>>Setting additional pipeline connections in EDL<<<<<<<<<<")
-edl.connect(
+# set remaining pipeline connections in e-SparX
+print(">>>>>>>>>>Setting additional pipeline connections in e-SparX<<<<<<<<<<")
+esparx.connect(
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
     source_name="Penmanshiel SCADA 2022 WT11-15",
     target_name="Preprocess Raw Data",
 )
-edl.connect(
+esparx.connect(
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
     source_name="Preprocess Raw Data",
     target_name="Penmanshiel SCADA 2022",

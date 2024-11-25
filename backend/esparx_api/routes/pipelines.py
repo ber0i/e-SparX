@@ -2,10 +2,10 @@ import urllib.parse
 
 from fastapi import APIRouter, HTTPException, status
 
-from edl_api.dagdb import Session
-from edl_api.dependencies.auth import IdentifiedUser
-from edl_api.documentdb import DocumentDBClient
-from edl_api.schemas import Artifact, Pipeline
+from esparx_api.dagdb import Session
+from esparx_api.dependencies.auth import IdentifiedUser
+from esparx_api.documentdb import DocumentDBClient
+from esparx_api.schemas import Artifact, Pipeline
 
 PipelineRouter = APIRouter(tags=["Pipelines"])
 

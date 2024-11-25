@@ -12,7 +12,7 @@ api_token = <your token>
 
 import os
 
-import energydatalab as edl
+import esparx
 import pandas as pd
 from entsoe import EntsoePandasClient
 from toolbox import api_token
@@ -45,9 +45,9 @@ else:
     df.index.name = "timestamp"
     df[:-1].to_csv(os.path.join(data_path, "day_ahead_prices.csv"))
 
-# register this script in EDL
-print(">>>>>>>>>>Registering this data retrieval script in EDL<<<<<<<<<<")
-edl.register_code(
+# register this script in e-SparX
+print(">>>>>>>>>>Registering this data retrieval script in e-SparX<<<<<<<<<<")
+esparx.register_code(
     name="Retrieve Price Data",
     description="Retrieve Irish day-ahead electricity prices from the ENTSO-E Transparency Platform.",
     file_type="PY",
@@ -56,9 +56,9 @@ edl.register_code(
     pipeline_name="Wind Farm ESS Control",
 )
 
-# register data in EDL
-print(">>>>>>>>>>Registering data in EDL<<<<<<<<<<")
-edl.register_dataset_pandas(
+# register data in e-SparX
+print(">>>>>>>>>>Registering data in e-SparX<<<<<<<<<<")
+esparx.register_dataset_pandas(
     name="Day-Ahead Price Data",
     description="Hourly day-ahead electricity prices for the Irish SEM bidding zone.",
     file_type="CSV",

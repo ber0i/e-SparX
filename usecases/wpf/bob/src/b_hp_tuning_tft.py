@@ -2,7 +2,7 @@ import argparse
 import json
 import os
 
-import energydatalab as edl
+import esparx
 import optuna
 import pandas as pd
 import torch
@@ -27,7 +27,7 @@ def main():
     )
     args = parser.parse_args()
 
-    edl.register_code(
+    esparx.register_code(
         name="TFT Hyperparameter Tuning",
         description="Hyperparameter tuning for the TFT model using Optuna",
         file_type="PY",
@@ -46,7 +46,7 @@ def main():
 
         datapath = os.path.join(
             project_base_path,
-            "usecases/wpf/bob/edl_artifacts/datasets/Cleaned_Data.csv",
+            "usecases/wpf/bob/esparx_artifacts/datasets/Cleaned_Data.csv",
         )
         hppath = os.path.join(
             project_base_path, "usecases/wpf/bob/hyperparameters/tft_tuned.json"
@@ -177,7 +177,7 @@ def main():
         with open(hppath, "w") as json_file:
             json.dump(hp_dict, json_file)
 
-        edl.register_hyperparameters(
+        esparx.register_hyperparameters(
             name="TFT Tuned Hyperparameters",
             description="Hyperparameters for the TFT model after tuning.",
             hyperparameters=hp_dict,
@@ -208,7 +208,7 @@ def main():
             "batch_size": 64,
             "learning_rate": 0.000489035986513014,
         }
-        edl.register_hyperparameters(
+        esparx.register_hyperparameters(
             name="TFT Tuned Hyperparameters",
             description="Hyperparameters for the TFT model after tuning.",
             hyperparameters=mock_hp,
@@ -219,14 +219,14 @@ def main():
             source_name="TFT Hyperparameter Tuning",
         )
 
-        edl.register_model_free(
+        esparx.register_model_free(
             name="TFT",
             description="Transformer-based time series forecasting model for wind power forecasting.",
             file_type="none",
             flavor="Darts",
             pipeline_name="Wind Power Forecasting - TFT",
         )
-        edl.connect(
+        esparx.connect(
             pipeline_name="Wind Power Forecasting - TFT",
             source_name="TFT Model",
             target_name="TFT Hyperparameter Tuning",

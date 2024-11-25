@@ -1,4 +1,4 @@
-# EDL Registry MVP - Frontend
+#  e-SparX - Frontend
 
 ## Getting Started
 

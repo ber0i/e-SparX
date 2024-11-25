@@ -2,7 +2,7 @@ import argparse
 import json
 import os
 
-import energydatalab as edl
+import esparx
 import numpy as np
 import torch
 import wandb
@@ -13,8 +13,8 @@ from torch.utils.data import DataLoader, Subset
 
 def main():
 
-    print(">>>>>>>>>>Registering this script in EDL<<<<<<<<<<")
-    edl.register_code(
+    print(">>>>>>>>>>Registering this script in e-SparX<<<<<<<<<<")
+    esparx.register_code(
         name="Main",
         description="Script to train and evaluate a model for wind power forecasting.",
         file_type="PY",
@@ -91,8 +91,8 @@ def main():
     }
     model_name = model_name_dict[args.model]
 
-    print(">>>>>>>>>>Registering hyperparameters in EDL<<<<<<<<<<")
-    edl.register_hyperparameters(
+    print(">>>>>>>>>>Registering hyperparameters in e-SparX<<<<<<<<<<")
+    esparx.register_hyperparameters(
         name=f"{model_name} Hyperparameters",
         description=f"Hyperparameters for the {model_name} model.",
         hyperparameters=hp,
@@ -110,8 +110,8 @@ def main():
         forecast_timesteps=args.forecast_timesteps,
     )
 
-    print(">>>>>>>>>>Registering the dataset class code in EDL<<<<<<<<<<")
-    edl.register_code(
+    print(">>>>>>>>>>Registering the dataset class code in e-SparX<<<<<<<<<<")
+    esparx.register_code(
         name="Penmanshiel Torch Dataset Class",
         description="Code defining the PyTorch dataset class for the Penmanshiel dataset.",
         file_type="PY",
@@ -141,8 +141,8 @@ def main():
     }
     model = model_dict[args.model].Model(args)
 
-    print(">>>>>>>>>>Registering model in EDL<<<<<<<<<<")
-    edl.register_model_pytorch(
+    print(">>>>>>>>>>Registering model in e-SparX<<<<<<<<<<")
+    esparx.register_model_pytorch(
         name=f"{model_name}",
         description=f"PyTorch nn.Module class for a {model_name} wind power forecasting model.",
         file_type="PY",
@@ -252,8 +252,8 @@ def main():
             wandb.log({"test_rmse": np.sqrt(sum(loss_list) / len(loss_list))})
             wandb.finish()
 
-        print(">>>>>>>>>>Registering results in EDL<<<<<<<<<<")
-        edl.register_results(
+        print(">>>>>>>>>>Registering results in e-SparX<<<<<<<<<<")
+        esparx.register_results(
             name=f"{model_name} Results",
             description=f"Error metric values of the {model_name} model on the test dataset.",
             results={
@@ -263,7 +263,7 @@ def main():
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
             source_name="Main",
         )
-        edl.register_results(
+        esparx.register_results(
             name="Persistence Results",
             description="Error metric values of the persistence model on the test dataset.",
             results={
@@ -293,14 +293,14 @@ def main():
             "MSE": 0.1275,
             "RMSE": 0.3571,
         }
-        edl.register_results(
+        esparx.register_results(
             name=f"{model_name} Results",
             description=f"Error metric values of the {model_name} model on the test dataset.",
             results=mock_results,
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
             source_name="Main",
         )
-        edl.register_results(
+        esparx.register_results(
             name="Persistence Results",
             description="Error metric values of the persistence model on the test dataset.",
             results=mock_results_persistence,
@@ -308,18 +308,18 @@ def main():
             source_name="Main",
         )
 
-    print(">>>>>>>>>>Setting additional pipeline connections in EDL<<<<<<<<<<")
-    edl.connect(
+    print(">>>>>>>>>>Setting additional pipeline connections in e-SparX<<<<<<<<<<")
+    esparx.connect(
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
         source_name="Penmanshiel Torch Dataset Class",
         target_name="Main",
     )
-    edl.connect(
+    esparx.connect(
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
         source_name=f"{model_name}",
         target_name="Main",
     )
-    edl.connect(
+    esparx.connect(
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
         source_name=f"{model_name} Hyperparameters",
         target_name="Main",
@@ -334,8 +334,8 @@ def main():
         )
         print("Model parameters saved.")
 
-    print(">>>>>>>>>>Registering parameters in EDL<<<<<<<<<<")
-    edl.register_parameters(
+    print(">>>>>>>>>>Registering parameters in e-SparX<<<<<<<<<<")
+    esparx.register_parameters(
         name=f"{model_name} Parameters",
         description=f"Trained parameters of the {model_name} model.",
         file_type="PTH",

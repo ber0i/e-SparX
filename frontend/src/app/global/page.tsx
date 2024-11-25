@@ -307,7 +307,7 @@ export default function GlobalPage() {
     <div style={{ width: "100vw", height: "100vh" }}>
 
       {/* Legend Button */}
-      <div className="button-container" style={{ position: "absolute", top: "115px", left: "24px", zIndex: 10 }}>
+      <div className="button-container" style={{ position: "absolute", top: "125px", left: "24px", zIndex: 10 }}>
         <Button variant="secondary" onClick={toggleLegend}>
           {isVisible ? (
             legendVisible ? (
@@ -326,7 +326,7 @@ export default function GlobalPage() {
         className={`legend-container ${legendVisible ? 'fade-in' : 'fade-out'}`} 
         style={{ 
           position: "absolute", 
-          top: "110px", 
+          top: "120px", 
           left: "50px", // Adjust to prevent overlap with the button
           height: "100vh",
           overflow: "hidden", // Hide content while fading out

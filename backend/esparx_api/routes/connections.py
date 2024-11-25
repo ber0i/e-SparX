@@ -3,9 +3,14 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, status
 
-from edl_api.dagdb import Session
-from edl_api.dependencies import IdentifiedUser
-from edl_api.schemas import Artifact, Connection, ConnectionCreation, ConnectionResponse
+from esparx_api.dagdb import Session
+from esparx_api.dependencies import IdentifiedUser
+from esparx_api.schemas import (
+    Artifact,
+    Connection,
+    ConnectionCreation,
+    ConnectionResponse,
+)
 
 ConnectionRouter = APIRouter(tags=["Connections"])
 

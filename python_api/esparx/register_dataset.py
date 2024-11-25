@@ -22,7 +22,7 @@ def register_dataset_free(
     source_name: Optional[str] = None,
 ):
     """
-    Registers a free-form dataset artifact in the Energy Data Lab.
+    Registers a free-form dataset artifact in e-SparX.
     To add an existing artifact to a pipeline, use the existing artifact name in name and define the pipeline via the pipeline_name.
     If the pipeline does not exist yet, it will be created.
     Pipeline connections are specified via the source_name parameter.
@@ -79,7 +79,7 @@ def register_dataset_pandas(
     source_name: Optional[str] = None,
 ):
     """
-    Register a pandas DataFrame as a dataset artifact in the Energy Data Lab.
+    Register a pandas DataFrame as a dataset artifact in e-SparX.
 
     Parameters
     ----------

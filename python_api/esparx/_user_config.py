@@ -1,30 +1,36 @@
+import json
 from dataclasses import dataclass
 from pathlib import Path
-import json
-import platformdirs
 from uuid import uuid4
 
+import platformdirs
+
 user_config: "UserConfigModel" = None
+
 
 @dataclass
 class UserConfigModel:
     user_id: str
     api_base: str = "http://10.152.14.197:8080"
 
-def get_user_config_path():
-    """Resolve the path to the user config file depending on the OS
-    """
 
-    config_dir = platformdirs.user_config_dir("energy_data_lab", ensure_exists=True)
+def get_user_config_path():
+    """Resolve the path to the user config file depending on the OS"""
+
+    config_dir = platformdirs.user_config_dir("esparx", ensure_exists=True)
     return Path(config_dir) / "config.json"
+
 
 def write_default_user_config(path: Path):
     """Write the default user config into the config file"""
 
-    default_config = UserConfigModel(user_id=uuid4().hex) # Generate config with random UUID
+    default_config = UserConfigModel(
+        user_id=uuid4().hex
+    )  # Generate config with random UUID
 
     write_user_config(path, default_config)
     return default_config
+
 
 def write_user_config(path: Path, config: UserConfigModel):
     """Write new config to the config file"""
@@ -36,6 +42,7 @@ def write_user_config(path: Path, config: UserConfigModel):
         json.dump(config_dict, f, indent=2)
 
     user_config = config
+
 
 def load_user_config(path: Path):
     """Load user config file from the given path"""

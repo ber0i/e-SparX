@@ -17,7 +17,7 @@ GFS model cycle runtime: 00, 06, 12, 18 (see https://www.nco.ncep.noaa.gov/pmb/p
 
 import os
 
-import energydatalab as edl
+import esparx
 import openmeteo_requests
 import pandas as pd
 import requests_cache
@@ -169,9 +169,9 @@ else:
     print("Done.")
 
 
-# register this script in EDL
-print(">>>>>>>>>>Registering this data retrieval script in EDL<<<<<<<<<<")
-edl.register_code(
+# register this script in e-SparX
+print(">>>>>>>>>>Registering this data retrieval script in e-SparX<<<<<<<<<<")
+esparx.register_code(
     name="Retrieve Historical Weather Data",
     description="Retrieve historical weather data and historical weather forecast data from the Open-Meteo.com Weather API and save to CSV.",
     file_type="PY",
@@ -180,9 +180,9 @@ edl.register_code(
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
 )
 
-# register data in EDL
-print(">>>>>>>>>>Registering data in EDL<<<<<<<<<<")
-edl.register_dataset_pandas(
+# register data in e-SparX
+print(">>>>>>>>>>Registering data in e-SparX<<<<<<<<<<")
+esparx.register_dataset_pandas(
     name="Historical Weather Forecast Data",
     description="Historical weather forecasts (Model: GFS Global) at the Penmanshiel wind farm in 2022.",
     file_type="CSV",
@@ -191,7 +191,7 @@ edl.register_dataset_pandas(
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
     source_name="Retrieve Historical Weather Data",
 )
-edl.register_dataset_pandas(
+esparx.register_dataset_pandas(
     name="Historical Weather Data",
     description="Historical weather data at the Penmanshiel wind farm in 2022.",
     file_type="CSV",

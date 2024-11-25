@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, status
 
-from edl_api.dagdb import Session
-from edl_api.dependencies import IdentifiedUser
-from edl_api.documentdb import DocumentDBClient
-from edl_api.schemas import Artifact, ArtifactCreation, CodeArtifact
-from edl_api.schemas.artifacts import (
+from esparx_api.dagdb import Session
+from esparx_api.dependencies import IdentifiedUser
+from esparx_api.documentdb import DocumentDBClient
+from esparx_api.schemas import Artifact, ArtifactCreation, CodeArtifact
+from esparx_api.schemas.artifacts import (
     DatasetArtifact,
     HyperparametersArtifact,
     ModelArtifact,
