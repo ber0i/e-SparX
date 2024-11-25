@@ -17,7 +17,7 @@ from .tft_forecaster import TFTForecaster
 
 def setup_system(
     data_path: pathlib.Path,
-    edl_data_path: pathlib.Path,
+    esparx_data_path: pathlib.Path,
     model_weights_path: pathlib.Path,
     hp_file_path: pathlib.Path,
     forecast_frequency: timedelta,
@@ -33,7 +33,7 @@ def setup_system(
     max_power = 28856.585504080267
 
     wp_data = CSVDataSource(
-        edl_data_path / "Cleaned_Data.csv",
+        esparx_data_path / "Cleaned_Data.csv",
         delimiter=",",
         datetime_format="%Y-%m-%d %H:%M:%S",
         rename_dict={"timestamp": "t", "Power (kW)": "p"},

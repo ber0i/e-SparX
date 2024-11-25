@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session as SQLSession
 from sqlalchemy.orm import sessionmaker
 
-from edl_api import settings
+from esparx_api import settings
 
 
 def get_session():

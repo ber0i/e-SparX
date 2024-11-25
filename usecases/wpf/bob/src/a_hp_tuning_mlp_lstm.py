@@ -11,7 +11,7 @@ import tempfile
 from functools import partial
 from pathlib import Path
 
-import energydatalab as edl
+import esparx
 import ray.cloudpickle as pickle
 import torch
 from ray import train, tune
@@ -23,8 +23,8 @@ project_base_path = os.getcwd()
 sys.path.append(os.path.join(project_base_path, "usecases/wpf/bob"))
 os.environ["PYTHONPATH"] = os.path.join(project_base_path, "usecases/wpf/bob")
 
-from edl_artifacts import PenmanshielDataset  # noqa: E402
-from edl_artifacts import LSTM, MLP  # noqa: E402
+from esparx_artifacts import PenmanshielDataset  # noqa: E402
+from esparx_artifacts import LSTM, MLP  # noqa: E402
 
 
 def train_model(config, args):
@@ -157,14 +157,14 @@ def main():
     parser.add_argument(
         "--hp_file",
         type=str,
-        default="usecases/wpf/bob/edl_artifacts/hyperparameters/mlp.json",
-        help="Path to hyperparameters file. Default: usecases/wpf/bob/edl_artifacts/hyperparameters/mlp.json.",
+        default="usecases/wpf/bob/esparx_artifacts/hyperparameters/mlp.json",
+        help="Path to hyperparameters file. Default: usecases/wpf/bob/esparx_artifacts/hyperparameters/mlp.json.",
     )
     parser.add_argument(
         "--data_path",
         type=str,
-        default="usecases/wpf/bob/edl_artifacts/datasets/Cleaned_Data.csv",
-        help="Path to data file. Default: usecases/wpf/bob/edl_artifacts/datasets/Cleaned_Data.csv",
+        default="usecases/wpf/bob/esparx_artifacts/datasets/Cleaned_Data.csv",
+        help="Path to data file. Default: usecases/wpf/bob/esparx_artifacts/datasets/Cleaned_Data.csv",
     )
     parser.add_argument(
         "--model",
@@ -182,8 +182,8 @@ def main():
 
     model_name = "MLP" if args.model == "mlp" else "LSTM"
 
-    print(">>>>>>>>>>Registering this script in EDL<<<<<<<<<<")
-    edl.register_code(
+    print(">>>>>>>>>>Registering this script in e-SparX<<<<<<<<<<")
+    esparx.register_code(
         name="MLP/LSTM Hyperparameter Tuning",
         description="Script for tuning hyperparameters for MLP and LSTM models for wind power forecasting.",
         file_type="PY",
@@ -192,12 +192,12 @@ def main():
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="Cleaned Data",
     )
-    edl.connect(
+    esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="Penmanshiel Torch Dataset Class",
         target_name="MLP/LSTM Hyperparameter Tuning",
     )
-    edl.connect(
+    esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
         source_name=f"{model_name}",
         target_name="MLP/LSTM Hyperparameter Tuning",
@@ -310,8 +310,8 @@ def main():
                 "optimizer": "adam",
             }
 
-    print(">>>>>>>>>>Registering tuned hyperparameters in EDL<<<<<<<<<<")
-    edl.register_hyperparameters(
+    print(">>>>>>>>>>Registering tuned hyperparameters in e-SparX<<<<<<<<<<")
+    esparx.register_hyperparameters(
         name=f"{model_name} Tuned Hyperparameters",
         description=f"Hyperparameters for {model_name} after running a hyperparameter tuning.",
         hyperparameters=hyperparameters_tuned,

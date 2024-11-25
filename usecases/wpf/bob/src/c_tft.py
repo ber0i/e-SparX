@@ -2,7 +2,7 @@ import argparse
 import json
 import os
 
-import energydatalab as edl
+import esparx
 import pandas as pd
 import torch.nn as nn
 from darts import TimeSeries
@@ -26,7 +26,7 @@ def main():
     )
     args = parser.parse_args()
 
-    edl.register_code(
+    esparx.register_code(
         name="TFT Training and Testing",
         description="Training and testing the TFT model from the Darts library.",
         file_type="PY",
@@ -35,12 +35,12 @@ def main():
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="Cleaned Data",
     )
-    edl.connect(
+    esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="TFT Tuned Hyperparameters",
         target_name="TFT Training and Testing",
     )
-    edl.connect(
+    esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="TFT Model",
         target_name="TFT Training and Testing",
@@ -50,7 +50,7 @@ def main():
 
     datafile = os.path.join(
         project_base_path,
-        "usecases/wpf/bob/edl_artifacts/datasets/Cleaned_Data.csv",
+        "usecases/wpf/bob/esparx_artifacts/datasets/Cleaned_Data.csv",
     )
     hpfile = os.path.join(
         project_base_path, "usecases/wpf/bob/hyperparameters/tft_tuned.json"
@@ -164,7 +164,7 @@ def main():
         mse_overall = sum(mse_list) / num_windows
         print(f"test MSE: {mse_overall}")
 
-        edl.register_results(
+        esparx.register_results(
             name="TFT Results Tuned",
             description="Results of the TFT model with tuned hyperparameters.",
             results={"MSE": mse_overall, "RMSE": rmse_overall},
@@ -176,7 +176,7 @@ def main():
 
         print("Running in demo mode. Registering mock results.")
         mock_results = {"MSE": 0.012317246495134465, "RMSE": 0.11098309103}
-        edl.register_results(
+        esparx.register_results(
             name="TFT Results Tuned",
             description="Results of the TFT model with tuned hyperparameters.",
             results=mock_results,
@@ -184,7 +184,7 @@ def main():
             source_name="TFT Training and Testing",
         )
 
-    edl.register_parameters(
+    esparx.register_parameters(
         name="TFT Parameters Tuned",
         description="Trained parameters for the TFT model.",
         file_type="PKL",

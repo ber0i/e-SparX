@@ -1,5 +1,6 @@
 import Image from "next/image";
 import tumLogo from "../../public/tum-logo.png";
+import esparxLogo from "../../public/esparx-logo.png";
 
 const Header = () => {
   const pages = [
@@ -21,11 +22,20 @@ const Header = () => {
           <a href="/">
             <Image
               src={tumLogo}
-              alt="EDL Logo"
+              alt="e-SparX Logo"
+              width={80}
+              height={80}
+              style={{paddingTop: "5px"}}
             />
           </a>
-          <a href="/" className="text-4xl font-semibold text-brand-white">
-            EDL
+          <a href="/">
+            <Image
+              src={esparxLogo}
+              alt="e-SparX Logo"
+              width={140}
+              height={140}
+              style={{paddingTop: "5px"}}
+            />
           </a>
         </div>
 
