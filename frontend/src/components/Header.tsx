@@ -22,9 +22,9 @@ const Header = () => {
           <a href="/">
             <Image
               src={tumLogo}
-              alt="e-SparX Logo"
-              width={80}
-              height={80}
+              alt="TUM EMT Logo"
+              width={110}
+              height={110}
               style={{paddingTop: "5px"}}
             />
           </a>

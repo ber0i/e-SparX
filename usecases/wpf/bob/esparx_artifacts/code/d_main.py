@@ -16,11 +16,11 @@ def main():
 
     print(">>>>>>>>>>Registering this script in e-SparX<<<<<<<<<<")
     esparx.register_code(
-        name="Main",
+        name="Train and Test Forecasters",
         description="Script to train and evaluate a model for wind power forecasting.",
         file_type="PY",
         pipeline_name="Wind Power Forecasting - TFT",
-        source_name="Cleaned Data",
+        source_name="Cleaned SCADA and Weather Data",
     )
 
     parser = argparse.ArgumentParser(
@@ -194,14 +194,14 @@ def main():
 
         print(">>>>>>>>>>Registering results in e-SparX<<<<<<<<<<")
         esparx.register_results(
-            name=f"{model_name} Results Tuned",
+            name=f"{model_name} Test MSE and MAE Tuned",
             description=f"Error metric values of the {model_name} model on the test dataset after hyperparameter tuning.",
             results={
                 "MSE": sum(loss_list) / len(loss_list),
                 "RMSE": np.sqrt(sum(loss_list) / len(loss_list)),
             },
             pipeline_name="Wind Power Forecasting - TFT",
-            source_name="Main",
+            source_name="Train and Test Forecasters",
         )
 
     else:
@@ -219,33 +219,33 @@ def main():
                 "RMSE": 0.11662,
             }
         esparx.register_results(
-            name=f"{model_name} Results Tuned",
+            name=f"{model_name} Test MSE and MAE Tuned",
             description=f"Error metric values of the {model_name} model on the test dataset after hyperparameter tuning.",
             results=mock_results,
             pipeline_name="Wind Power Forecasting - TFT",
-            source_name="Main",
+            source_name="Train and Test Forecasters",
         )
 
     print(">>>>>>>>>>Setting additional pipeline connections in e-SparX<<<<<<<<<<")
     esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="Penmanshiel Torch Dataset Class",
-        target_name="Main",
+        target_name="Train and Test Forecasters",
     )
     esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
         source_name=f"{model_name}",
-        target_name="Main",
+        target_name="Train and Test Forecasters",
     )
     esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
         source_name=f"{model_name} Tuned Hyperparameters",
-        target_name="Main",
+        target_name="Train and Test Forecasters",
     )
     esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
-        source_name="Main",
-        target_name="Persistence Results",
+        source_name="Train and Test Forecasters",
+        target_name="Persistence Test MSE and MAE",
     )
 
     # Save model parameters
@@ -265,7 +265,7 @@ def main():
         source_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/models/{model_name}_tuned.pth",
         download_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/models/{model_name}_tuned.pth?inline=false",  # noqa: E501
         pipeline_name="Wind Power Forecasting - TFT",
-        source_name="Main",
+        source_name="Train and Test Forecasters",
     )
 
 

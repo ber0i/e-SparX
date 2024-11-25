@@ -83,7 +83,19 @@ export default function ArtifactDetailPage({
 
   return (
     <div className="p-5">
-      <h1>Artifact &quot;{artifact.name}&quot;</h1>
+      <p className="text-3xl font-semibold pb-10">Artifact &quot;{artifact.name}&quot;</p>
+
+      {/* Horizontal line */}
+      <div className="w-1/2"
+        style={{
+          position: "absolute",
+          top: "205px",
+          left: "0",
+          
+          height: "2px",
+          backgroundColor: "#072140",
+        }}
+      ></div>
 
       <div className="artifact-info">
         <p className="key text-brand-darkblue text-lg uppercase p-1">Description:</p>

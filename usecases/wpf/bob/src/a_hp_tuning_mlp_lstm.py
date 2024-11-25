@@ -190,7 +190,7 @@ def main():
         source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/src/a_hp_tuning.py",
         download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/src/a_hp_tuning.py?inline=false",
         pipeline_name="Wind Power Forecasting - TFT",
-        source_name="Cleaned Data",
+        source_name="Cleaned SCADA and Weather Data",
     )
     esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",

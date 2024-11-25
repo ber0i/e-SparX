@@ -27,23 +27,23 @@ def main():
     args = parser.parse_args()
 
     esparx.register_code(
-        name="TFT Training and Testing",
+        name="Train and Test TFT",
         description="Training and testing the TFT model from the Darts library.",
         file_type="PY",
         source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/src/c_tft.py",
         download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/src/c_tft.py?inline=false",
         pipeline_name="Wind Power Forecasting - TFT",
-        source_name="Cleaned Data",
+        source_name="Cleaned SCADA and Weather Data",
     )
     esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="TFT Tuned Hyperparameters",
-        target_name="TFT Training and Testing",
+        target_name="Train and Test TFT",
     )
     esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
-        source_name="TFT Model",
-        target_name="TFT Training and Testing",
+        source_name="TFT",
+        target_name="Train and Test TFT",
     )
 
     project_base_path = os.getcwd()
@@ -165,11 +165,11 @@ def main():
         print(f"test MSE: {mse_overall}")
 
         esparx.register_results(
-            name="TFT Results Tuned",
+            name="TFT Test MSE and MAE Tuned",
             description="Results of the TFT model with tuned hyperparameters.",
             results={"MSE": mse_overall, "RMSE": rmse_overall},
             pipeline_name="Wind Power Forecasting - TFT",
-            source_name="TFT Training and Testing",
+            source_name="Train and Test TFT",
         )
 
     else:
@@ -177,11 +177,11 @@ def main():
         print("Running in demo mode. Registering mock results.")
         mock_results = {"MSE": 0.012317246495134465, "RMSE": 0.11098309103}
         esparx.register_results(
-            name="TFT Results Tuned",
+            name="TFT Test MSE and MAE Tuned",
             description="Results of the TFT model with tuned hyperparameters.",
             results=mock_results,
             pipeline_name="Wind Power Forecasting - TFT",
-            source_name="TFT Training and Testing",
+            source_name="Train and Test TFT",
         )
 
     esparx.register_parameters(
@@ -190,7 +190,7 @@ def main():
         file_type="PKL",
         source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/models/tft/",
         pipeline_name="Wind Power Forecasting - TFT",
-        source_name="TFT Training and Testing",
+        source_name="Train and Test TFT",
     )
 
 

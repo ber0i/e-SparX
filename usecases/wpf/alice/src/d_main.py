@@ -15,13 +15,13 @@ def main():
 
     print(">>>>>>>>>>Registering this script in e-SparX<<<<<<<<<<")
     esparx.register_code(
-        name="Main",
+        name="Train and Test Forecasters",
         description="Script to train and evaluate a model for wind power forecasting.",
         file_type="PY",
         source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/src/d_main.py",
         download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/src/d_main.py?inline=false",
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
-        source_name="Cleaned Data",
+        source_name="Cleaned SCADA and Weather Data",
     )
 
     parser = argparse.ArgumentParser(
@@ -254,17 +254,17 @@ def main():
 
         print(">>>>>>>>>>Registering results in e-SparX<<<<<<<<<<")
         esparx.register_results(
-            name=f"{model_name} Results",
+            name=f"{model_name} Test MSE and MAE",
             description=f"Error metric values of the {model_name} model on the test dataset.",
             results={
                 "MSE": sum(loss_list) / len(loss_list),
                 "RMSE": np.sqrt(sum(loss_list) / len(loss_list)),
             },
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
-            source_name="Main",
+            source_name="Train and Test Forecasters",
         )
         esparx.register_results(
-            name="Persistence Results",
+            name="Persistence Test MSE and MAE",
             description="Error metric values of the persistence model on the test dataset.",
             results={
                 "MSE": sum(loss_list_persistence) / len(loss_list_persistence),
@@ -273,7 +273,7 @@ def main():
                 ),
             },
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
-            source_name="Main",
+            source_name="Train and Test Forecasters",
         )
 
     else:
@@ -294,35 +294,35 @@ def main():
             "RMSE": 0.3571,
         }
         esparx.register_results(
-            name=f"{model_name} Results",
+            name=f"{model_name} Test MSE and MAE",
             description=f"Error metric values of the {model_name} model on the test dataset.",
             results=mock_results,
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
-            source_name="Main",
+            source_name="Train and Test Forecasters",
         )
         esparx.register_results(
-            name="Persistence Results",
+            name="Persistence Test MSE and MAE",
             description="Error metric values of the persistence model on the test dataset.",
             results=mock_results_persistence,
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
-            source_name="Main",
+            source_name="Train and Test Forecasters",
         )
 
     print(">>>>>>>>>>Setting additional pipeline connections in e-SparX<<<<<<<<<<")
     esparx.connect(
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
         source_name="Penmanshiel Torch Dataset Class",
-        target_name="Main",
+        target_name="Train and Test Forecasters",
     )
     esparx.connect(
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
         source_name=f"{model_name}",
-        target_name="Main",
+        target_name="Train and Test Forecasters",
     )
     esparx.connect(
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
         source_name=f"{model_name} Hyperparameters",
-        target_name="Main",
+        target_name="Train and Test Forecasters",
     )
 
     # Save model parameters
@@ -336,13 +336,13 @@ def main():
 
     print(">>>>>>>>>>Registering parameters in e-SparX<<<<<<<<<<")
     esparx.register_parameters(
-        name=f"{model_name} Parameters",
+        name=f"{model_name} Trained Parameters",
         description=f"Trained parameters of the {model_name} model.",
         file_type="PTH",
         source_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/models/{model_name}.pth",
         download_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/models/{model_name}.pth?inline=false",  # noqa: E501
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
-        source_name="Main",
+        source_name="Train and Test Forecasters",
     )
 
 

@@ -110,7 +110,7 @@ esparx.register_dataset_pandas(
 # register this script in e-SparX
 print(">>>>>>>>>>Registering this preprocessing script in e-SparX<<<<<<<<<<")
 esparx.register_code(
-    name="Preprocess Raw Data",
+    name="Extract Penmanshiel Data",
     description="Extract relevant variables from raw SCADA data from Penmanshiel wind farm and save it to one CSV file.",
     file_type="PY",
     source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/src/b_preprocess_power_data.py",
@@ -124,11 +124,11 @@ print(">>>>>>>>>>Setting additional pipeline connections in e-SparX<<<<<<<<<<")
 esparx.connect(
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
     source_name="Penmanshiel SCADA 2022 WT11-15",
-    target_name="Preprocess Raw Data",
+    target_name="Extract Penmanshiel Data",
 )
 esparx.connect(
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
-    source_name="Preprocess Raw Data",
+    source_name="Extract Penmanshiel Data",
     target_name="Penmanshiel SCADA 2022",
 )
 print("Script finished.")
