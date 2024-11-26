@@ -35,12 +35,12 @@ const artifactStyles = {
     bgColor: 'bg-brand-tumbluelight',
     borderColor: 'border-brand-darkblue',
     icon: faDatabase,
-    iconColor: 'text-brand-darkblue',
-    textColor: 'text-brand-darkblue',
+    iconColor: 'text-brand-white',
+    textColor: 'text-brand-white', 
   },
   code: {
-    bgColor: 'bg-brand-tumdark',
-    borderColor: 'border-black',
+    bgColor: 'bg-brand-darkblue',
+    borderColor: 'border-brand-darkblue',
     icon: faFileCode,
     iconColor: 'text-brand-white',
     textColor: 'text-brand-white',
@@ -90,7 +90,7 @@ function CustomNode({ data }: { data: NodeData }) {
       style={{ width: '210px' }}
     >
       <div className="flex w-full items-center">
-        <div className={`flex-shrink-0 rounded-full w-12 h-12 flex justify-center items-center ${style.bgColor}`}>
+        <div className={`flex-shrink-0 rounded-full w-12 h-12 flex justify-center items-center bg-opacity-100`}>
           <FontAwesomeIcon icon={style.icon} className={style.iconColor} size="2x" />
         </div>
         <div className="flex-grow text-center">
