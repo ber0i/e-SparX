@@ -52,6 +52,7 @@ def setup_controller(
             n_steps=24 * 6,  # 24 hours before parameter update
             learning_rate=0.0008,
             batch_size=24,  # -> 6 batches per day
+            policy_kwargs=dict(log_std_init=-2),
         ),  # default hyperparameters for PPO
     )
 

@@ -100,6 +100,7 @@ class TFTForecaster(Forecaster):
         hist_forecast_cols = [2, 4]
 
         data_target = -data[: self.lookback_timesteps, target_col] / self.max_power
+        data_target = -data[: self.lookback_timesteps, target_col] / self.max_power
         data_hist_col0 = data_target.reshape(-1, 1)
         data_hist_col12 = data[: self.lookback_timesteps, hist_weather_cols]
         data_hist = np.concatenate([data_hist_col0, data_hist_col12], axis=1)
@@ -111,48 +112,15 @@ class TFTForecaster(Forecaster):
         p_cov = TimeSeries.from_values(data_hist)
         f_cov = TimeSeries.from_values(data_forecast)
 
-        # predict first window
-        pred_power = (
-            self.model.predict(
-                n=self.model_output_steps,
-                series=target,
-                past_covariates=p_cov,
-                future_covariates=f_cov,
-                verbose=False,
-                show_warnings=False,
-            )
-            .values()
-            .flatten()
-        )
+        if len(data) != self.lookback_timesteps + self.forecast_timesteps:
 
-        for step in range(1, self.iteration_steps):
-            data_target = np.concatenate(
-                [
-                    data_target[self.model_output_steps :],
-                    pred_power[-self.model_output_steps :],
-                ]
-            )
-            target = TimeSeries.from_values(data_target)
-            # for iterative forecasting, we do not have historical weather data
-            # we use the historical weather forecast data instead
-            # the first colum of data_hist is the target though, so here we can use the produced forecast
-            data_hist_col0 = data_target.reshape(-1, 1)
-            data_hist_col12 = data[
-                self.model_output_steps * step : self.model_output_steps * step
-                + self.lookback_timesteps,
-                hist_forecast_cols,
-            ]
-            data_hist = np.concatenate([data_hist_col0, data_hist_col12], axis=1)
-            p_cov = TimeSeries.from_values(data_hist)
-            data_forecast = data[
-                self.model_output_steps * step : self.model_output_steps * (step + 1)
-                + self.lookback_timesteps,
-                hist_forecast_cols,
-            ]
-            f_cov = TimeSeries.from_values(data_forecast)
+            print("Not sufficient future data points available. Using persistence forecast.")
+            pred_power = np.array([target.last_value()]*self.forecast_timesteps)
 
-            # predict next window
-            pred_power_tmp = (
+        else:
+
+            # predict first window
+            pred_power = (
                 self.model.predict(
                     n=self.model_output_steps,
                     series=target,
@@ -165,11 +133,52 @@ class TFTForecaster(Forecaster):
                 .flatten()
             )
 
-            # concatenate predictions
-            pred_power = np.concatenate([pred_power, pred_power_tmp])
+            for step in range(1, self.iteration_steps):
+                data_target = np.concatenate(
+                    [
+                        data_target[self.model_output_steps :],
+                        pred_power[-self.model_output_steps :],
+                    ]
+                )
+                target = TimeSeries.from_values(data_target)
+                # for iterative forecasting, we do not have historical weather data
+                # we use the historical weather forecast data instead
+                # the first colum of data_hist is the target though, so here we can use the produced forecast
+                data_hist_col0 = data_target.reshape(-1, 1)
+                data_hist_col12 = data[
+                    self.model_output_steps * step : self.model_output_steps * step
+                    + self.lookback_timesteps,
+                    hist_forecast_cols,
+                ]
+                data_hist = np.concatenate([data_hist_col0, data_hist_col12], axis=1)
+                p_cov = TimeSeries.from_values(data_hist)
+                data_forecast = data[
+                    self.model_output_steps * step : self.model_output_steps * (step + 1)
+                    + self.lookback_timesteps,
+                    hist_forecast_cols,
+                ]
+                f_cov = TimeSeries.from_values(data_forecast)
+
+                # predict next window
+                pred_power_tmp = (
+                    self.model.predict(
+                        n=self.model_output_steps,
+                        series=target,
+                        past_covariates=p_cov,
+                        future_covariates=f_cov,
+                        verbose=False,
+                        show_warnings=False,
+                    )
+                    .values()
+                    .flatten()
+                )
+
+                # concatenate predictions
+                pred_power = np.concatenate([pred_power, pred_power_tmp])
 
         # scale back to negative power values
         pred_power = -pred_power * self.max_power
+            
         # set positive values (negative power predictions) to zero
         pred_power[pred_power > 0] = 0
         pred_power = pred_power.reshape(-1, 1)
