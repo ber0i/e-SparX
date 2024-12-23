@@ -49,11 +49,11 @@ const DAGFlow = () => {
 
   // Function to handle node click
   const handleNodeClick = (
-    event: React.MouseEvent & { target: { nodeName: string } },
+    event: React.MouseEvent,
     node: any,
   ) => {
     // Ensure click on pipeline badge behaves consistently in different browsers
-    if (event.target.nodeName != "DIV") {
+    if (event.target instanceof HTMLElement && event.target.nodeName !== "DIV") {
       return;
     }
 
