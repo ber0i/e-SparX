@@ -6,9 +6,9 @@ import {
   useEdgesState,
   Handle,
   Position,
-  Node
+  Node,
 } from "@xyflow/react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDatabase,
   faFileCode,
@@ -16,113 +16,73 @@ import {
   faSliders,
   faSquarePollVertical,
   faAngleLeft,
-  faAngleRight } from '@fortawesome/free-solid-svg-icons';
+  faAngleRight,
+} from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
+import ArtifactNode from "@/components/ArtifactNode";
 import { topologicalSort } from "@/lib/manual/topological_sort";
 import {
   ArtifactResponse,
   ConnectionResponse,
   getArtifactsForGlobalViewArtifactsGlobalGet,
   getConnectionsConnectionsGet,
+  getPipelinesByArtifactPipelinesArtifactArtifactNameGet,
+  getPipelinesPipelinesGet,
 } from "@/lib/api";
 
-import '@xyflow/react/dist/base.css';
-import '../../../tailwind.config';
+import "@xyflow/react/dist/base.css";
+import "../../../tailwind.config";
 
-const artifactStyles = {
-  dataset: {
-    bgColor: 'bg-brand-tumbluelight',
-    borderColor: 'border-brand-darkblue',
-    icon: faDatabase,
-    iconColor: 'text-brand-white',
-    textColor: 'text-brand-white', 
-  },
-  code: {
-    bgColor: 'bg-brand-darkblue',
-    borderColor: 'border-brand-darkblue',
-    icon: faFileCode,
-    iconColor: 'text-brand-white',
-    textColor: 'text-brand-white',
-  },
-  model: {
-    bgColor: 'bg-brand-green',
-    borderColor: 'border-brand-darkblue',
-    icon: faCircleNodes,
-    iconColor: 'text-brand-darkblue',
-    textColor: 'text-brand-darkblue',
-  },
-  hyperparameters: {
-    bgColor: 'bg-brand-green',
-    borderColor: 'border-brand-darkblue',
-    icon: faSliders,
-    iconColor: 'text-brand-darkblue',
-    textColor: 'text-brand-darkblue',
-  },
-  parameters: {
-    bgColor: 'bg-brand-green',
-    borderColor: 'border-brand-darkblue',
-    icon: faSliders,
-    iconColor: 'text-brand-darkblue',
-    textColor: 'text-brand-darkblue',
-  },
-  results: {
-    bgColor: 'bg-brand-orange',
-    borderColor: 'border-brand-darkblue',
-    icon: faSquarePollVertical,
-    iconColor: 'text-brand-darkblue',
-    textColor: 'text-brand-darkblue',
-  },
-};
-
-// Define the expected data structure
-interface NodeData {
-  artifact_type: 'dataset' | 'code' | 'model' | 'hyperparameters' | 'parameters' | 'results';
-  name: string;
-}
- 
-function CustomNode({ data }: { data: NodeData }) {
-  const style = artifactStyles[data.artifact_type] || {};
-  
-  return (
-    <div
-      className={`flex items-center pl-1 pr-9 rounded-md ${style.bgColor} border-2 ${style.borderColor}`}
-      style={{ width: '210px' }}
-    >
-      <div className="flex w-full items-center">
-        <div className={`flex-shrink-0 rounded-full w-12 h-12 flex justify-center items-center bg-opacity-100`}>
-          <FontAwesomeIcon icon={style.icon} className={style.iconColor} size="2x" />
-        </div>
-        <div className="flex-grow text-center">
-          <div className={`text-ms ${style.textColor}`}>{data.name}</div>
-        </div>
-      </div>
-      <Handle type="target" position={Position.Left} className="invisible" />
-      <Handle type="source" position={Position.Right} className="invisible" />
-    </div>
-  );
-}
- 
 const nodeTypes = {
-  custom: memo(CustomNode),
+  custom: memo(ArtifactNode),
 };
 
 // Define the DAG component
 const DAGFlow = () => {
   const [artifacts, setArtifacts] = useState<ArtifactResponse[]>([]);
   const [connections, setConnections] = useState<ConnectionResponse[]>([]);
+  const [pipelines, setPipelines] = useState<{ [key: string]: number }>({});
   const router = useRouter();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   // Function to handle node click
-  const handleNodeClick = (event: React.MouseEvent, node: any) => {
+  const handleNodeClick = (
+    event: React.MouseEvent & { target: { nodeName: string } },
+    node: any,
+  ) => {
+    // Ensure click on pipeline badge behaves consistently in different browsers
+    if (event.target.nodeName != "DIV") {
+      return;
+    }
+
     const nodeId = node.id;
     router.push(`/artifacts/${nodeId}`); // Navigate to the artifact route
   };
 
   useEffect(() => {
     const fetchArtifacts = async () => {
+      // Fetch pipelines
+      const { error: fetchPipelineError, data: fetchedPipelines } =
+        await getPipelinesPipelinesGet();
+
+      if (fetchPipelineError) {
+        console.error("Unable to fetch Pipelines", fetchPipelineError);
+        return;
+      }
+
+      const pipelineMap = (
+        fetchedPipelines as { id: number; name: string }[]
+      ).reduce(
+        (map, cur, idx) => {
+          map[cur.name] = idx;
+          return map;
+        },
+        {} as { [key: string]: number },
+      );
+      setPipelines(pipelineMap);
+
       // Fetch all artifacts and connections
       const { error: fetchArtifactsError, data: fetchedArtifacts } =
         await getArtifactsForGlobalViewArtifactsGlobalGet();
@@ -132,13 +92,13 @@ const DAGFlow = () => {
         return;
       }
 
-      console.log(fetchedArtifacts);
       setArtifacts(fetchedArtifacts as ArtifactResponse[]);
 
       const { error: fetchConnectionsError, data: fetchedConnections } =
         await getConnectionsConnectionsGet();
       if (fetchConnectionsError) {
         console.error("Failed to fetch Connections", fetchConnectionsError);
+        return;
       }
       setConnections(fetchedConnections as ConnectionResponse[]);
 
@@ -164,34 +124,62 @@ const DAGFlow = () => {
       const levelNodeCounts: Map<number, number> = new Map(); // Initialize the map to track node counts at each level
 
       // Set node positions based on the topological sort
-      const updatedNodes = sortedNodes.map((nodeName) => {
-        const level = nodeLevels.get(nodeName) || 0;
+      const updatedNodes = await Promise.all(
+        sortedNodes.map(async (nodeName) => {
+          const artifact = fetchedArtifacts?.find(
+            (artifact) => artifact.name === nodeName,
+          );
 
-        const artifact_type =
-          fetchedArtifacts!.find((artifact) => artifact.name === nodeName)
-            ?.artifact_type || "unknown";
+          let pipeline_idx: { idx: number; name: string }[] = [];
+          if (artifact) {
+            const {
+              error: artifactPipelinesErr,
+              data: fetchArtifactPipelines,
+            } = await getPipelinesByArtifactPipelinesArtifactArtifactNameGet({
+              path: { artifact_name: artifact.name },
+            });
 
-        // Initialize the node count for this level if it doesn't exist
-        if (!levelNodeCounts.has(level)) {
-          levelNodeCounts.set(level, 0);
-        }
+            if (!artifactPipelinesErr) {
+              pipeline_idx = (
+                fetchArtifactPipelines as { id: number; name: string }[]
+              ).map((val) => ({
+                idx: pipelineMap[val.name],
+                name: val.name,
+              }));
+            }
+          }
+          const level = nodeLevels.get(nodeName) || 0;
 
-        // Calculate the vertical position based on how many nodes are already placed at this level
-        const yPos = levelNodeCounts.get(level)! * 100; // Vertical distance between nodes at the same level
+          const artifact_type =
+            fetchedArtifacts!.find((artifact) => artifact.name === nodeName)
+              ?.artifact_type || "unknown";
 
-        // Increment the count for this level
-        levelNodeCounts.set(level, levelNodeCounts.get(level)! + 1);
+          // Initialize the node count for this level if it doesn't exist
+          if (!levelNodeCounts.has(level)) {
+            levelNodeCounts.set(level, 0);
+          }
 
-        return {
-          id: nodeName,
-          type: 'custom',
-          data: { name: nodeName, artifact_type: artifact_type },
-          position: {
-            x: 100 + maxLevel * 250 - level * 250,
-            y: 100 + yPos
-          }, // Horizontal position by level, vertical by node count at the level
-        };
-      });
+          // Calculate the vertical position based on how many nodes are already placed at this level
+          const yPos = levelNodeCounts.get(level)! * 100; // Vertical distance between nodes at the same level
+
+          // Increment the count for this level
+          levelNodeCounts.set(level, levelNodeCounts.get(level)! + 1);
+
+          return {
+            id: nodeName,
+            type: "custom",
+            data: {
+              name: nodeName,
+              artifact_type: artifact_type,
+              pipelines: pipeline_idx,
+            },
+            position: {
+              x: 100 + maxLevel * 250 - level * 250,
+              y: 100 + yPos,
+            }, // Horizontal position by level, vertical by node count at the level
+          };
+        }),
+      );
 
       {
         /* @ts-ignore */
@@ -219,8 +207,6 @@ const DAGFlow = () => {
     fetchArtifacts();
   }, [setNodes, setEdges]);
 
-  console.log(nodes);
-
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
       <ReactFlow
@@ -238,8 +224,12 @@ const DAGFlow = () => {
 const initLegendNodes: Node[] = [
   {
     id: "1",
-    type: 'custom',
-    data: { name: 'Dataset', artifact_type: 'dataset', color: 'bg-brand-tumblue'},
+    type: "custom",
+    data: {
+      name: "Dataset",
+      artifact_type: "dataset",
+      color: "bg-brand-tumblue",
+    },
     position: { x: 100, y: 0 },
     draggable: false,
     selectable: false,
@@ -247,8 +237,8 @@ const initLegendNodes: Node[] = [
   },
   {
     id: "2",
-    type: 'custom',
-    data: { name: 'Code', artifact_type: 'code'},
+    type: "custom",
+    data: { name: "Code", artifact_type: "code" },
     position: { x: 100 + 1 * 225, y: 0 },
     draggable: false,
     selectable: false,
@@ -256,8 +246,8 @@ const initLegendNodes: Node[] = [
   },
   {
     id: "3",
-    type: 'custom',
-    data: { name: 'Model', artifact_type: 'model'},
+    type: "custom",
+    data: { name: "Model", artifact_type: "model" },
     position: { x: 100 + 2 * 225, y: 0 },
     draggable: false,
     selectable: false,
@@ -265,8 +255,8 @@ const initLegendNodes: Node[] = [
   },
   {
     id: "4",
-    type: 'custom',
-    data: { name: '(Hyper-)Parameters', artifact_type: 'parameters'},
+    type: "custom",
+    data: { name: "(Hyper-)Parameters", artifact_type: "parameters" },
     position: { x: 100 + 3 * 225, y: 0 },
     draggable: false,
     selectable: false,
@@ -274,8 +264,8 @@ const initLegendNodes: Node[] = [
   },
   {
     id: "5",
-    type: 'custom',
-    data: { name: 'Results', artifact_type: 'results'},
+    type: "custom",
+    data: { name: "Results", artifact_type: "results" },
     position: { x: 100 + 4 * 225, y: 0 },
     draggable: false,
     selectable: false,
@@ -284,11 +274,12 @@ const initLegendNodes: Node[] = [
 ];
 
 export default function GlobalPage() {
-  const [legendNodes, setLegendNodes, onLegendNodesChange] = useNodesState(initLegendNodes);
+  const [legendNodes, setLegendNodes, onLegendNodesChange] =
+    useNodesState(initLegendNodes);
   const [legendVisible, setLegendVisible] = useState(false);
 
   const toggleLegend = () => {
-    setLegendVisible(prev => !prev);
+    setLegendVisible((prev) => !prev);
   };
 
   // Making sure that legend button is only displayed once the icon is rendered correctly
@@ -305,39 +296,45 @@ export default function GlobalPage() {
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
-
       {/* Legend Button */}
-      <div className="button-container" style={{ position: "absolute", top: "125px", left: "24px", zIndex: 10 }}>
+      <div
+        className="button-container"
+        style={{ position: "absolute", top: "125px", left: "24px", zIndex: 10 }}
+      >
         <Button variant="secondary" onClick={toggleLegend}>
           {isVisible ? (
             legendVisible ? (
-              <>Legend <FontAwesomeIcon icon={faAngleLeft} size="lg" /></>
+              <>
+                Legend <FontAwesomeIcon icon={faAngleLeft} size="lg" />
+              </>
             ) : (
-              <>Legend <FontAwesomeIcon icon={faAngleRight} size="lg" /></>
+              <>
+                Legend <FontAwesomeIcon icon={faAngleRight} size="lg" />
+              </>
             )
           ) : (
             <span style={{ visibility: "hidden" }}>Legend</span> // Hide before icon is visible
           )}
         </Button>
       </div>
-      
+
       {/* Legend*/}
-      <div 
-        className={`legend-container ${legendVisible ? 'fade-in' : 'fade-out'}`} 
-        style={{ 
-          position: "absolute", 
-          top: "120px", 
+      <div
+        className={`legend-container ${legendVisible ? "fade-in" : "fade-out"}`}
+        style={{
+          position: "absolute",
+          top: "120px",
           left: "50px", // Adjust to prevent overlap with the button
           height: "100vh",
           overflow: "hidden", // Hide content while fading out
           transition: "width 0.5s ease, opacity 0.5s ease",
-          opacity: legendVisible ? '1' : '0'
+          opacity: legendVisible ? "1" : "0",
         }}
       >
         <ReactFlow
           nodes={legendNodes}
           edges={[]}
-          style={{ height: 'mincontent', width: 'mincontent' }}
+          style={{ height: "mincontent", width: "mincontent" }}
           zoomOnScroll={false}
           panOnDrag={false}
           zoomOnPinch={false}
@@ -360,7 +357,15 @@ export default function GlobalPage() {
       ></div>
 
       {/* DAG */}
-      <div style={{ position: "absolute", top: "180px", left: "50px", width: "100vw", height: "100vh" }}>
+      <div
+        style={{
+          position: "absolute",
+          top: "180px",
+          left: "50px",
+          width: "100vw",
+          height: "100vh",
+        }}
+      >
         <DAGFlow />
       </div>
     </div>

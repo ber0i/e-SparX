@@ -31,7 +31,7 @@ async def get_pipelines(session: Session = Session):
         return pipeline_dicts
 
 
-@PipelineRouter.get("/artifact/{artifact_name}")
+@PipelineRouter.get("/artifact/{artifact_name:path}")
 async def get_pipelines_by_artifact(artifact_name: str, session: Session = Session):
     """Get all pipelines in the DAG database that contain a specific artifact."""
 
@@ -41,7 +41,7 @@ async def get_pipelines_by_artifact(artifact_name: str, session: Session = Sessi
         return pipeline_dicts
 
 
-@PipelineRouter.get("/results/{pipeline_name}")
+@PipelineRouter.get("/results/{pipeline_name:path}")
 async def get_results_artifacts_by_pipeline(pipeline_name: str, session: Session = Session):
     """Get all results artifacts in a pipeline"""
 
@@ -93,7 +93,7 @@ async def get_results_artifacts_by_pipeline(pipeline_name: str, session: Session
     return response
 
 
-@PipelineRouter.delete("/name/{name}")
+@PipelineRouter.delete("/name/{name:path}")
 async def remove_pipeline_by_name(name: str, session: Session, user: IdentifiedUser):
     """Remove a pipeline by name. Only possible if pipeline is empty."""
 
