@@ -1,5 +1,5 @@
 "use client";
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import {
   ReactFlow,
@@ -9,7 +9,7 @@ import {
   Position,
   Node,
 } from "@xyflow/react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDatabase,
   faFileCode,
@@ -17,94 +17,25 @@ import {
   faSliders,
   faSquarePollVertical,
   faAngleLeft,
-  faAngleRight } from '@fortawesome/free-solid-svg-icons';
+  faAngleRight,
+} from "@fortawesome/free-solid-svg-icons";
 import { topologicalSort } from "@/lib/manual/topological_sort";
 import {
   ArtifactResponse,
   ConnectionResponse,
   getArtifactsByPipelineArtifactsPipelinePipelineNameGet,
   getConnectionsByPipelineConnectionsPipelinePipelineNameGet,
+  getPipelinesByArtifactPipelinesArtifactArtifactNameGet,
+  getPipelinesPipelinesGet,
 } from "@/lib/api";
 import Button from "@/components/Button";
- 
-import '@xyflow/react/dist/base.css';
-import '../../../../tailwind.config';
 
-const artifactStyles = {
-  dataset: {
-    bgColor: 'bg-brand-tumbluelight',
-    borderColor: 'border-brand-darkblue',
-    icon: faDatabase,
-    iconColor: 'text-brand-white',
-    textColor: 'text-brand-white',
-  },
-  code: {
-    bgColor: 'bg-brand-darkblue',
-    borderColor: 'border-brand-darkblue',
-    icon: faFileCode,
-    iconColor: 'text-brand-white',
-    textColor: 'text-brand-white',
-  },
-  model: {
-    bgColor: 'bg-brand-green',
-    borderColor: 'border-brand-darkblue',
-    icon: faCircleNodes,
-    iconColor: 'text-brand-darkblue',
-    textColor: 'text-brand-darkblue',
-  },
-  hyperparameters: {
-    bgColor: 'bg-brand-green',
-    borderColor: 'border-brand-darkblue',
-    icon: faSliders,
-    iconColor: 'text-brand-darkblue',
-    textColor: 'text-brand-darkblue',
-  },
-  parameters: {
-    bgColor: 'bg-brand-green',
-    borderColor: 'border-brand-darkblue',
-    icon: faSliders,
-    iconColor: 'text-brand-darkblue',
-    textColor: 'text-brand-darkblue',
-  },
-  results: {
-    bgColor: 'bg-brand-orange',
-    borderColor: 'border-brand-darkblue',
-    icon: faSquarePollVertical,
-    iconColor: 'text-brand-darkblue',
-    textColor: 'text-brand-darkblue',
-  },
-};
+import "@xyflow/react/dist/base.css";
+import "../../../../tailwind.config";
+import ArtifactNode from "@/components/ArtifactNode";
 
-// Define the expected data structure
-interface NodeData {
-  artifact_type: 'dataset' | 'code' | 'model' | 'hyperparameters' | 'parameters' | 'results';
-  name: string;
-}
- 
-function CustomNode({ data }: { data: NodeData }) {
-  const style = artifactStyles[data.artifact_type] || {};
-  
-  return (
-    <div
-      className={`flex items-center pl-1 pr-9 rounded-md ${style.bgColor} border-2 ${style.borderColor}`}
-      style={{ width: '210px' }}
-    >
-      <div className="flex w-full items-center">
-        <div className={`flex-shrink-0 rounded-full w-12 h-12 flex justify-center items-center bg-opacity-100`}>
-          <FontAwesomeIcon icon={style.icon} className={style.iconColor} size="2x" />
-        </div>
-        <div className="flex-grow text-center">
-          <div className={`text-ms ${style.textColor}`}>{data.name}</div>
-        </div>
-      </div>
-      <Handle type="target" position={Position.Left} className="invisible" />
-      <Handle type="source" position={Position.Right} className="invisible" />
-    </div>
-  );
-}
- 
 const nodeTypes = {
-  custom: memo(CustomNode),
+  custom: memo(ArtifactNode),
 };
 
 // Define the DAG component
@@ -141,7 +72,7 @@ const DAGFlow = ({ name }: { name: string }) => {
           const { error: fetchConnectionsError, data: fetchedConnections } =
             await getConnectionsByPipelineConnectionsPipelinePipelineNameGet({
               path: { pipeline_name: name },
-            });  
+            });
 
           if (fetchConnectionsError) {
             console.error("Unable to fetch Connections", fetchConnectionsError);
@@ -172,10 +103,12 @@ const DAGFlow = ({ name }: { name: string }) => {
 
           // Set node positions based on the topological sort
           const updatedNodes = sortedNodes.map((nodeName) => {
+            const artifact = fetchedArtifacts.find(
+              (artifact) => artifact.name === nodeName,
+            );
+
             const level = nodeLevels.get(nodeName) || 0;
-            const artifact_type =
-              fetchedArtifacts.find((artifact) => artifact.name === nodeName)
-                ?.artifact_type || "unknown";
+            const artifact_type = artifact?.artifact_type || "unknown";
 
             // Initialize the node count for this level if it doesn't exist
             if (!levelNodeCounts.has(level)) {
@@ -187,17 +120,21 @@ const DAGFlow = ({ name }: { name: string }) => {
 
             // Increment the count for this level
             levelNodeCounts.set(level, levelNodeCounts.get(level)! + 1);
-            
+
             return {
               id: nodeName,
-              type: 'custom',
-              data: { name: nodeName, artifact_type: artifact_type },
+              type: "custom",
+              data: {
+                name: nodeName,
+                artifact_type: artifact_type,
+              },
               position: {
                 x: 24 + maxLevel * 250 - level * 250,
                 y: 100 + yPos,
               }, // Horizontal position by level, vertical by node count at the level
             };
           });
+
           {
             /* @ts-ignore */
             setNodes(updatedNodes);
@@ -244,8 +181,12 @@ const DAGFlow = ({ name }: { name: string }) => {
 const initLegendNodes: Node[] = [
   {
     id: "1",
-    type: 'custom',
-    data: { name: 'Dataset', artifact_type: 'dataset', color: 'bg-brand-tumblue'},
+    type: "custom",
+    data: {
+      name: "Dataset",
+      artifact_type: "dataset",
+      color: "bg-brand-tumblue",
+    },
     position: { x: 100, y: 0 },
     draggable: false,
     selectable: false,
@@ -253,8 +194,11 @@ const initLegendNodes: Node[] = [
   },
   {
     id: "2",
-    type: 'custom',
-    data: { name: 'Code', artifact_type: 'code'},
+    type: "custom",
+    data: {
+      name: "Code",
+      artifact_type: "code",
+    },
     position: { x: 100 + 1 * 225, y: 0 },
     draggable: false,
     selectable: false,
@@ -262,8 +206,8 @@ const initLegendNodes: Node[] = [
   },
   {
     id: "3",
-    type: 'custom',
-    data: { name: 'Model', artifact_type: 'model'},
+    type: "custom",
+    data: { name: "Model", artifact_type: "model" },
     position: { x: 100 + 2 * 225, y: 0 },
     draggable: false,
     selectable: false,
@@ -271,8 +215,8 @@ const initLegendNodes: Node[] = [
   },
   {
     id: "4",
-    type: 'custom',
-    data: { name: '(Hyper-)Parameters', artifact_type: 'parameters'},
+    type: "custom",
+    data: { name: "(Hyper-)Parameters", artifact_type: "parameters" },
     position: { x: 100 + 3 * 225, y: 0 },
     draggable: false,
     selectable: false,
@@ -280,8 +224,8 @@ const initLegendNodes: Node[] = [
   },
   {
     id: "5",
-    type: 'custom',
-    data: { name: 'Results', artifact_type: 'results'},
+    type: "custom",
+    data: { name: "Results", artifact_type: "results" },
     position: { x: 100 + 4 * 225, y: 0 },
     draggable: false,
     selectable: false,
@@ -292,13 +236,14 @@ const initLegendNodes: Node[] = [
 export default function PipelinePage({ params }: { params: { name: string } }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [legendNodes, setLegendNodes, onLegendNodesChange] = useNodesState(initLegendNodes);
+  const [legendNodes, setLegendNodes, onLegendNodesChange] =
+    useNodesState(initLegendNodes);
   const [legendVisible, setLegendVisible] = useState(false);
 
   const name = params.name;
 
   const toggleLegend = () => {
-    setLegendVisible(prev => !prev);
+    setLegendVisible((prev) => !prev);
   };
 
   // Function to handle compare button click
@@ -317,42 +262,48 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
 
     return () => clearTimeout(timer);
   }, []);
- 
+
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
-
       {/* Legend Button */}
-      <div className="button-container" style={{ position: "absolute", top: "125px", left: "24px", zIndex: 10 }}>
+      <div
+        className="button-container"
+        style={{ position: "absolute", top: "125px", left: "24px", zIndex: 10 }}
+      >
         <Button variant="secondary" onClick={toggleLegend}>
           {isVisible ? (
             legendVisible ? (
-              <>Legend <FontAwesomeIcon icon={faAngleLeft} size="lg" /></>
+              <>
+                Legend <FontAwesomeIcon icon={faAngleLeft} size="lg" />
+              </>
             ) : (
-              <>Legend <FontAwesomeIcon icon={faAngleRight} size="lg" /></>
+              <>
+                Legend <FontAwesomeIcon icon={faAngleRight} size="lg" />
+              </>
             )
           ) : (
             <span style={{ visibility: "hidden" }}>Legend</span> // Hide before icon is visible
           )}
         </Button>
       </div>
-      
+
       {/* Legend*/}
-      <div 
-        className={`legend-container ${legendVisible ? 'fade-in' : 'fade-out'}`} 
-        style={{ 
-          position: "absolute", 
-          top: "120px", 
+      <div
+        className={`legend-container ${legendVisible ? "fade-in" : "fade-out"}`}
+        style={{
+          position: "absolute",
+          top: "120px",
           left: "50px", // Adjust to prevent overlap with the button
           height: "100vh",
           overflow: "hidden", // Hide content while fading out
           transition: "width 0.5s ease, opacity 0.5s ease",
-          opacity: legendVisible ? '1' : '0'
+          opacity: legendVisible ? "1" : "0",
         }}
       >
         <ReactFlow
           nodes={legendNodes}
           edges={[]}
-          style={{ height: 'mincontent', width: 'mincontent' }}
+          style={{ height: "mincontent", width: "mincontent" }}
           zoomOnScroll={false}
           panOnDrag={false}
           zoomOnPinch={false}
@@ -363,17 +314,18 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
       </div>
 
       {/* 'Compare Results' button */}
-      { !legendVisible ? (
-      <div className="button-container" style={{ position: "absolute", top: "123px", right: "24px" }}>
-        <Button
-          variant="action"
-          onClick={handleCompareClick}
+      {!legendVisible ? (
+        <div
+          className="button-container"
+          style={{ position: "absolute", top: "123px", right: "24px" }}
         >
-          Compare Results
-        </Button>
-      </div>
-      ) : (<></>)}
-      
+          <Button variant="action" onClick={handleCompareClick}>
+            Compare Results
+          </Button>
+        </div>
+      ) : (
+        <></>
+      )}
 
       {/* Horizontal line */}
       <div
@@ -388,10 +340,17 @@ export default function PipelinePage({ params }: { params: { name: string } }) {
       ></div>
 
       {/* DAG */}
-      <div style={{ position: "absolute", top: "180px", left: "50px", width: "100vw", height: "100vh" }}>
-        <DAGFlow name={name}/>
+      <div
+        style={{
+          position: "absolute",
+          top: "180px",
+          left: "50px",
+          width: "100vw",
+          height: "100vh",
+        }}
+      >
+        <DAGFlow name={name} />
       </div>
-      
     </div>
   );
-};
+}
