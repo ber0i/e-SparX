@@ -62,3 +62,7 @@ The current MVP has a minimalistic user management solution. Installing the `esp
 ## And Now: Use Cases!
 
 To see how the pipelines where created that you can see online, head over to the `usecases` folder! There are two use cases and each holds an entire ML project. The `usecases` folder has an own short README to explain the settings. All data is real, the models where actually trained and the results are real. This will give you an understanding of how you can use e-SparX in realistic ML projects! Have fun!
+
+## License
+
+This repository is licensed under [GNU Affero General Public License v3.0 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.en.html)
