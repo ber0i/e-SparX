@@ -15,3 +15,7 @@ This tool can be configured using a global `config.json` file. The location of t
 - MacOS: `$HOME/.config/esparx/config.json` (`$HOME` refers to your home directory: `Users/<username>`)
 - Linux: `$XDG_CONFIG_HOME/esparx/config.json` (Defaults to `$HOME/.config/esparx/config.json`, `$HOME` refers to your home directory: `home/<username>`)
 - Windows: `\Users\<username>\AppData\Local\esparx\esparx\config.json`
+
+## License
+
+This repository is licensed under [GNU Affero General Public License v3.0 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.en.html)
