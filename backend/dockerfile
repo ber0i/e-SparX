@@ -4,6 +4,7 @@ FROM python:3.11-alpine AS base
 
 ENV ARTIFACTDB_ENDPOINT=""
 ENV DAGDB_CONNECTSTRING=""
+ENV API_ROOT_PATH="/"
 
 WORKDIR /app
 RUN pip install --upgrade pip
@@ -28,5 +29,5 @@ COPY --from=install /app/.venv ./.venv
 COPY backend/ .
 RUN python -m pip install .
 
-CMD ["esparx-api", "--share", "--port", "80"]
+CMD esparx-api --share --port 80 --root-path "$API_ROOT_PATH"
 EXPOSE 80

@@ -11,7 +11,7 @@ user_config: "UserConfigModel" = None
 @dataclass
 class UserConfigModel:
     user_id: str
-    api_base: str = "http://10.152.14.197:8080"
+    api_base: str = "http://10.152.14.197:8443/api/"
 
 
 def get_user_config_path():
