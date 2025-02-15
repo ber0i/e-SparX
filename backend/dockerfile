@@ -1,0 +1,33 @@
+# IMPORTANT: Container must be build with the project root as build context
+# (e.g. the container must be build from the project root - `docker build -f backend/dockerfile .`)
+FROM python:3.11-alpine AS base
+
+ENV ARTIFACTDB_ENDPOINT=""
+ENV DAGDB_CONNECTSTRING=""
+ENV API_ROOT_PATH="/"
+
+WORKDIR /app
+RUN pip install --upgrade pip
+ENV PATH="/app/.venv/bin:$PATH"
+
+# ------ install Stage ------ #
+FROM base AS install
+
+# Create virtual environment
+RUN python -m venv .venv
+
+# Install dependencies
+COPY backend/pyproject.toml backend/README.md ./
+RUN python -m pip install .
+RUN python -m pip install alembic
+
+# ------ final Stage ------ #
+FROM base AS final
+
+# copy venv and dependencies from "install" stage
+COPY --from=install /app/.venv ./.venv
+COPY backend/ .
+RUN python -m pip install .
+
+CMD esparx-api --share --port 80 --root-path "$API_ROOT_PATH"
+EXPOSE 80

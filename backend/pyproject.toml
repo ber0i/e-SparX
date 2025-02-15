@@ -1,0 +1,53 @@
+# This is a configuration file that contains metadata about the project and its dependencies. It is used by build tools like Hatchling to manage the project's build process and dependencies."""
+
+[build-system] # A build system is a tool which enables building (compiling code, moving files, etc.) and installing Python packages. pip, on the other hand, focuses on managing and resolving dependencies.
+requires = ["hatchling"] 
+build-backend = "hatchling.build" # set build system to Hatchling
+
+[project]
+name = "esparx-api"
+version = "0.0.2"
+description = "e-SparX Backend"
+readme = "README.md"
+requires-python= ">=3.10"
+dependencies = [
+  "fastapi",
+  "uvicorn[standard]", # ASGI (asynchronous server gateway interface - standard API for Python web servers that run asynchronous code) web server
+  "SQLAlchemy==2.0.28", # Python ORM toolkit for relational databases
+  "psycopg==3.1.18", # postgresql database driver
+  "psycopg_binary==3.1.18",
+  "pydantic-settings", # data validation
+  "pymongo",
+  "httpx>=0.20.0,<0.28.0", # http client
+  "attrs>=21.3.0",  # makes defining classes easier via providing decorators
+  "python-dateutil~=2.8.0", # datetime extension
+  "python-multipart", # handles POST requests and required when handling POST requests with Starlette
+  "pytz"
+]
+
+[project.scripts]
+esparx-api = "esparx_api:main"
+
+[project.optional-dependencies]
+"dev" = [
+  "black",
+  "flake8",
+  "isort",
+  "colorama",
+  "httpx",
+  "alembic",
+  "pandas",
+]
+
+[tool.hatch.build]
+packages = [
+  "esparx_api"
+]
+
+[tool.black]
+line-length = 120
+include = '\.pyi?$' # regular expression to match files and directories that should be included in the formatting. "/." is an actual dot, the "?" means that the "i" is optional, "$" ensures that there are no characters after "py" or "pyi".
+
+[tool.isort]
+profile = 'black' # makes sorting match black formatting
+extend_skip = ['__init__.py'] # skip all __init__.py files when sorting imports

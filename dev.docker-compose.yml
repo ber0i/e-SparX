@@ -1,0 +1,70 @@
+# This files specifiec the services that will be run in the docker container.
+# The configs are specified in the .env file at the project root.
+
+services:
+  artifactdb:
+    container_name: artifactdb
+    image: mongo
+    restart: on-failure
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    ports:
+      - 27017:27017
+    volumes: # maps directories from the host machine (where you run Docker) to the container (ensures that data stored by MongoDB is not lost when stopping the container)
+      - ./infrastructure/artifactdb/data:/data/db # host_dir:container_dir
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017 --quiet # mongosh is the MongoDB shell to run the healthcheck command, --quiet flag suppresses the output
+      interval: 30s # time between healthchecks
+      timeout: 10s # time to wait for a response before considering the healthcheck failed
+      retries: 5 # number of retries before considering the container unhealthy
+      start_period: 20s # time to wait before starting the healthcheck
+
+  dagdb:
+    container_name: dagdb
+    image: postgres
+    restart: on-failure
+    environment:
+      PGDATA: var/lib/postgresql/data/pgdata
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-dagdb}
+    ports:
+      - 5432:5432
+    volumes:
+      - ./infrastructure/dagdb/data:/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', '${POSTGRES_USER}', '-d', '${POSTGRES_DB:-dagdb}']
+      interval: 30s
+      timeout: 10s
+      retries: 5 
+      start_period: 20s
+
+  artifactdbgui:
+    container_name: artifactdbgui
+    image: mongo-express
+    restart: on-failure
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME:  ${MONGO_USER}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_PASSWORD}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
+      ME_CONFIG_MONGODB_SERVER: artifactdb
+    ports:
+      - ${MONGO_EXPRESS_PORT:-9081}:8081
+    depends_on:
+      artifactdb:
+        condition: service_healthy
+
+  dagdbgui:
+    container_name: dagdbgui
+    image: dpage/pgadmin4
+    restart: on-failure
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - ${DAGDB_GUI_PORT:-9080}:80
+    depends_on:
+      dagdb:
+        condition: service_healthy

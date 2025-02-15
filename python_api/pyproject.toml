@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "esparx"
+version = "0.1"
+description = "An ML artifact registry for the energy transition."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"
+]
+
+# Dependencies for your package
+dependencies = [
+    "requests",
+    "pandas",
+    "mlflow",
+    "pydantic",
+    "platformdirs"
+]
+
+
+[project.scripts]
+esparx-pipeline-init = "esparx.init_pipeline:init_pipeline_cli"
+

@@ -1,0 +1,38 @@
+FROM node:18-alpine AS base
+
+ARG API_ENDPOINT="http://127.0.0.1:8080"
+ENV NEXT_PUBLIC_API_ENDPOINT=${API_ENDPOINT}
+WORKDIR /app
+
+# ------ install stage ------ #
+FROM base AS install
+
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# ------ build stage ------ #
+FROM base AS build
+
+COPY --from=install /app/node_modules ./node_modules
+COPY . .
+
+RUN npm run build
+
+# ------ final Stage ------ #
+FROM base AS final
+
+ENV NODE_ENV=production
+
+# Uncomment the line bellow if the `public/` folder is used
+# COPY --from=build /app/public ./public
+
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
+
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+CMD ["node", "server.js"]
+EXPOSE 3000

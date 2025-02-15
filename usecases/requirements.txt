@@ -1,0 +1,14 @@
+# esparx (not on PyPI yet)
+openmeteo_requests
+requests_cache
+retry_requests
+seaborn
+torch
+wandb
+ray
+optuna
+darts
+pandas
+torchrl
+commonpower
+entsoe-py

@@ -1,0 +1,15 @@
+__pycache__/
+.venvs/
+.vscode/
+
+.DS_Store
+
+infrastructure/*/data/
+infrastructure/proxy/certs
+*.env
+
+archive/
+
+.cache.sqlite
+
+trash/
