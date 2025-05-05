@@ -12,3 +12,5 @@ archive/
 .cache.sqlite
 
 trash/
+
+paper/
