@@ -10,8 +10,11 @@ class ApiClient(Session):
         self.headers = headers
 
     def request(self, method: str | bytes, url: str, json: dict | None = None, *args, **kwargs) -> Response:
+        url = url.lstrip("/")
         joined_url = urljoin(self.base_url, url)
-        return super().request(method, joined_url, json=json, *args, **kwargs)
+
+        # WARNING: Remove `verify=false` if official certificates are used
+        return super().request(method, joined_url, json=json, verify=False, *args, **kwargs)
 
 client = ApiClient(base_url=user_config.api_base)
 """Client for non identified API access"""

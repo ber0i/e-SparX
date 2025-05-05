@@ -2,7 +2,7 @@
 
 Welcome to e-SparX! This is your place to (1) accelerate your ML research and (2) boost the impact of your own work. In ML development, we all work through the following **ML pipeline** steps: find and acquire data; investigate, clean, and process the data, set up a training infrastructure, define models, train, and evaluate. While true innovation often happens in the modeling phase, the remaining workflow is time-consuming. In fact, as intermediate pipeline artifacts (e.g., datasets, code, or hyperparameters) are rarely shared, various researchers invest time in work done by others many times already.
 
-e-SparX changes just that. Here, you can view entire ML pipelines from other researchers, reuse their artifacts, and share your own pipelines. This will increase the impact of your work and help you get feedback from other researchers. And obviously, it will save you a ton of time and work. Go ahead and check out the first available pipelines on the [e-SparX Website](http://10.152.14.197:3030/)!
+e-SparX changes just that. Here, you can view entire ML pipelines from other researchers, reuse their artifacts, and share your own pipelines. This will increase the impact of your work and help you get feedback from other researchers. And obviously, it will save you a ton of time and work. Go ahead and check out the first available pipelines on the [e-SparX Website](https://10.152.14.197/)!
 
 > **Note**: You must be connected to the TUM network to access the website.
 
@@ -62,3 +62,7 @@ The current MVP has a minimalistic user management solution. Installing the `esp
 ## And Now: Use Cases!
 
 To see how the pipelines where created that you can see online, head over to the `usecases` folder! There are two use cases and each holds an entire ML project. The `usecases` folder has an own short README to explain the settings. All data is real, the models where actually trained and the results are real. This will give you an understanding of how you can use e-SparX in realistic ML projects! Have fun!
+
+## License
+
+This repository is licensed under [GNU Affero General Public License v3.0 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.en.html)

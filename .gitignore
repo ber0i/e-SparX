@@ -5,7 +5,8 @@ __pycache__/
 .DS_Store
 
 infrastructure/*/data/
-.env
+infrastructure/proxy/certs
+*.env
 
 archive/
 
