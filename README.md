@@ -4,7 +4,7 @@ Welcome to e-SparX! This is your place to (1) accelerate your ML research and (2
 
 e-SparX changes just that. Here, you can view entire ML pipelines from other researchers, reuse their artifacts, and share your own pipelines. This will increase the impact of your work and help you get feedback from other researchers. And obviously, it will save you a ton of time and work. Go ahead and check out the first available pipelines on the [e-SparX Website](https://10.152.14.197/)!
 
-> **Note**: You must be connected to the TUM network to access the website.
+> **Note**: You must be connected to the TUM network to access the website. We are currently setting up the public website and will provide the link here soon.
 
 Eager to start sharing your own ML projects? So let's get started and look at how we can register our first pipeline!
 
@@ -65,4 +65,4 @@ To see how the pipelines where created that you can see online, head over to the
 
 ## License
 
-This repository is licensed under [GNU Affero General Public License v3.0 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.en.html)
+This repository is licensed under [GNU Affero General Public License v3.0 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.en.html).
