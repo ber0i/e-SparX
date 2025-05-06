@@ -6,10 +6,10 @@ from commonpower.core import System
 from commonpower.data_forecasting.base import DataProvider
 from commonpower.data_forecasting.data_sources import CSVDataSource
 from commonpower.data_forecasting.forecasters import PerfectKnowledgeForecaster
-from commonpower.models.busses import ExternalGrid, RTPricedBusLinear
+from commonpower.models.buses import ExternalGrid, RTPricedBusLinear
 from commonpower.models.components import ESS, RenewableGen
 from commonpower.models.powerflow import PowerBalanceModel
-from commonpower.utils.param_initialization import RangeInitializer
+from commonpower.modeling.param_initialization import RangeInitializer
 
 # Local imports
 from .tft_forecaster import TFTForecaster
