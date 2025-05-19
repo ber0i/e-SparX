@@ -1,14 +1,15 @@
-# e-SparX: The Space for Artifact Exchange in ML Research for the Energy Domain
+# <p style="display: flex; align-items: center; gap: 12px;">
+#  <img src="https://github.com/user-attachments/assets/8646b2ab-0ef4-46f4-ab5d-f935d11ccf4c" alt="e-SparX logo" height="60"> <span style="font-size: 24px; font-weight: bold;"> e-SparX: The Space for Artifact Exchange in ML Research for the Energy Domain </span> </p>
 
 Welcome to e-SparX! This is your place to (1) accelerate your ML research and (2) boost the impact of your own work. In ML development, we all work through the following **ML pipeline** steps: find and acquire data; investigate, clean, and process the data, set up a training infrastructure, define models, train, and evaluate. While true innovation often happens in the modeling phase, the remaining workflow is time-consuming. In fact, as intermediate pipeline artifacts (e.g., datasets, code, or hyperparameters) are rarely shared, various researchers invest time in work done by others many times already.
 
-e-SparX changes just that. Here, you can view entire ML pipelines from other researchers, reuse their artifacts, and share your own pipelines. This will increase the impact of your work and help you get feedback from other researchers. And obviously, it will save you a ton of time and work. Go ahead and check out the first available pipelines on the [e-SparX Website](https://10.152.14.197/)!
+e-SparX changes just that. Here, you can view entire ML pipelines from other researchers, reuse their artifacts, and share your own pipelines. This will increase the impact of your work and help you get feedback from other researchers. And obviously, it will save you a ton of time and work. Go ahead and check out the first available pipelines on the [e-SparX Website](https://e-sparx.emt.ed.tum.de/)!
 
 > **Note**: You must be connected to the TUM network to access the website. We are currently setting up the public website and will provide the link here soon.
 
 Eager to start sharing your own ML projects? So let's get started and look at how we can register our first pipeline!
 
-> **Note**: If you are an e-SparX developer, you'll find all information you need in the [Developers README](Dev_README.md). 
+> **Note**: If you are an e-SparX developer, you'll find all information you need in the [Developers README](Dev_README.md). Please also note that the e-SparX repository is currently actively maintained on the [Professorship of Energy Management Technologies' GitLab](https://gitlab.lrz.de/energy-management-technologies-public/e-sparx).
 
 ## Getting Started
 
