@@ -1,5 +1,4 @@
-# <p style="display: flex; align-items: center; gap: 12px;">
-#  <img src="https://github.com/user-attachments/assets/8646b2ab-0ef4-46f4-ab5d-f935d11ccf4c" alt="e-SparX logo" height="60"> <span style="font-size: 24px; font-weight: bold;"> e-SparX: The Space for Artifact Exchange in ML Research for the Energy Domain </span> </p>
+# <img src="https://github.com/user-attachments/assets/8646b2ab-0ef4-46f4-ab5d-f935d11ccf4c" alt="e-SparX logo" height="60"> e-SparX: The Space for Artifact Exchange in ML Research for the Energy Domain
 
 Welcome to e-SparX! This is your place to (1) accelerate your ML research and (2) boost the impact of your own work. In ML development, we all work through the following **ML pipeline** steps: find and acquire data; investigate, clean, and process the data, set up a training infrastructure, define models, train, and evaluate. While true innovation often happens in the modeling phase, the remaining workflow is time-consuming. In fact, as intermediate pipeline artifacts (e.g., datasets, code, or hyperparameters) are rarely shared, various researchers invest time in work done by others many times already.
 
