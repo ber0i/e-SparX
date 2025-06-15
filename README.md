@@ -2,17 +2,15 @@
 
 Welcome to e-SparX! This is your place to (1) accelerate your ML research and (2) boost the impact of your own work. In ML development, we all work through the following **ML pipeline** steps: find and acquire data; investigate, clean, and process the data, set up a training infrastructure, define models, train, and evaluate. While true innovation often happens in the modeling phase, the remaining workflow is time-consuming. In fact, as intermediate pipeline artifacts (e.g., datasets, code, or hyperparameters) are rarely shared, various researchers invest time in work done by others many times already.
 
-e-SparX changes just that. Here, you can view entire ML pipelines from other researchers, reuse their artifacts, and share your own pipelines. This will increase the impact of your work and help you get feedback from other researchers. And obviously, it will save you a ton of time and work. Go ahead and check out the first available pipelines on the [e-SparX Website](https://e-sparx.emt.ed.tum.de/)!
-
-> **Note**: You must be connected to the TUM network to access the website. We are currently setting up the public website and will provide the link here soon.
+e-SparX changes just that. Here, you can view entire ML pipelines from other researchers, reuse their artifacts, and share your own pipelines. This will increase the impact of your work and help you get feedback from other researchers. And obviously, it will save you a ton of time and work. Go ahead and check out the first available pipelines on the [e-SparX Website](https://e-sparx-public.emt.ed.tum.de/)!
 
 Eager to start sharing your own ML projects? So let's get started and look at how we can register our first pipeline!
 
-> **Note**: If you are an e-SparX developer, you'll find all information you need in the [Developers README](Dev_README.md). Please also note that the e-SparX repository is currently actively maintained on the [Professorship of Energy Management Technologies' GitLab](https://gitlab.lrz.de/energy-management-technologies-public/e-sparx).
+> **Note**: If you are an e-SparX developer or want to deploy your own e-SparX version, you'll find all information you need in the [Developers README](Dev_README.md). 
 
 ## Getting Started
 
-Clone this repository and create a virtual Python environment (with Python version < 3.13). Next, navigate inside the folder `python_api` within this repository and run the following in your command prompt
+Clone this repository and create a virtual Python environment (Python version 3.12). Next, navigate inside the folder `python_api` within this repository and run the following in your command prompt
 
 ```bash
 pip install .
@@ -52,8 +50,6 @@ There are two ways to define pipeline connections: Specifying the source artifac
 ### Reusing a Pipeline Fast
 
 You can download all artifacts from a pipeline to your files directly, using the Python method `init_pipeline` or the CLI command `esparx-pipeline-init`. Check their docstring for more details.
-
-> **NOTE**: The current links to artifacts on GitLab will not work in the download process, as a Login is required to see the code on GitLab. You will be informed about this when executing the method. This will not break the function and you will safely download the remaining artifacts.
 
 ### User Management and "Safety"
 

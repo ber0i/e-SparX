@@ -28,7 +28,7 @@ ARTIFACTDB_GUI_PORT=9081
 DAGDB_GUI_PORT=9080
 ```
 
-For development the main application (e.g. backend, frontend) have to be setup and launched manually. Refer to the `README.md` file in the corresponding directory. After the setup you can start the docker services.
+For development, the main application (e.g. backend, frontend) have to be setup and launched manually. Refer to the `README.md` file in the corresponding directory. After the setup you can start the docker services.
 
 ### Starting the Services
 
@@ -92,14 +92,9 @@ SECURE_DAGDB_GUI_PORT=10443
 
 ### SSL Certificates
 
-For security reasons the services can only be accessed over HTTPS. This requires you to provide a valid SSL certificate. Make sure you have OpenSSL installed. Afterward you can create a self-signed certificate and key with the following command:
-
-```bash
-openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out infrastructure/proxy/certs/server.crt -keyout infrastructure/proxy/certs/server.key
-```
-
-You will be asked further questions to populate the certificate. All answers except for *Country Name*, *State or Province Name* and *Organization Name* are optional.
-
+For security reasons the services can only be accessed over HTTPS.
+Make sure to enable HTTPS encrypption, for example, using [Let's Encrypt](https://letsencrypt.org); especially if you're not only experimenting locally for yourself, 
+Then set the `ssl_certificate` and `ssl_certificate_key` fields in the proxy config and the proxy container's `volumes` in the docker-compose accordingly.
 
 ### Starting the Services
 
@@ -128,5 +123,3 @@ and then again migrated via
 ```bash
 docker exec -it api alembic upgrade head
 ```
-
-Also note that the Python package currently expects the API to run on host `10.152.14.197`. You must change this to `localhost` if you want to develop locally.

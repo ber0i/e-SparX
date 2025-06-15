@@ -13,7 +13,7 @@ DAGDB_CONNECTSTRING="postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@localhost:
 
 Replace `MONGO/POSTGRES_USER` and `MONGO/POSTGRES_PASSWORD` with your credentials of choice you used in the `.env` file in the project's root directory.
 
-Next, install all dependencies. For this, create a new virtual environment, activate the environment and then run:
+Next, install all dependencies. For this, create a new virtual environment (use Python version 3.12), activate the environment and then run:
 
 ```bash
 pip install -e ".[dev]"
