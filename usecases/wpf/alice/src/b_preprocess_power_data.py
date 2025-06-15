@@ -113,8 +113,8 @@ esparx.register_code(
     name="Extract Penmanshiel Data",
     description="Extract relevant variables from raw SCADA data from Penmanshiel wind farm and save it to one CSV file.",
     file_type="PY",
-    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/src/b_preprocess_power_data.py",
-    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/src/b_preprocess_power_data.py?inline=false",
+    source_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/alice/src/b_preprocess_power_data.py",
+    download_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/raw/main/usecases/wpf/alice/src/b_preprocess_power_data.py?inline=false",
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
     source_name="Penmanshiel SCADA 2022 WT01-10",
 )

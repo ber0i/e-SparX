@@ -31,8 +31,8 @@ def main():
         name="TFT Hyperparameter Tuning",
         description="Hyperparameter tuning for the TFT model using Optuna",
         file_type="PY",
-        source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/src/b_hp_tuning_tft.py",
-        download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/src/b_hp_tuning_tft.py?inline=false",
+        source_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/bob/src/b_hp_tuning_tft.py",
+        download_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/raw/main/usecases/wpf/bob/src/b_hp_tuning_tft.py?inline=false",
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="Cleaned SCADA and Weather Data",
     )
@@ -182,8 +182,8 @@ def main():
             description="Hyperparameters for the TFT model after tuning.",
             hyperparameters=hp_dict,
             file_type="JSON",
-            source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/hyperparameters/tft_tuned.json",
-            download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/hyperparameters/tft_tuned.json?inline=false",
+            source_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/bob/hyperparameters/tft_tuned.json",
+            download_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/raw/main/usecases/wpf/bob/hyperparameters/tft_tuned.json?inline=false",
             pipeline_name="Wind Power Forecasting - TFT",
             source_name="TFT Hyperparameter Tuning",
         )
@@ -213,8 +213,8 @@ def main():
             description="Hyperparameters for the TFT model after tuning.",
             hyperparameters=mock_hp,
             file_type="JSON",
-            source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/hyperparameters/tft_tuned.json",
-            download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/hyperparameters/tft_tuned.json?inline=false",
+            source_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/bob/hyperparameters/tft_tuned.json",
+            download_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/raw/main/usecases/wpf/bob/hyperparameters/tft_tuned.json?inline=false",
             pipeline_name="Wind Power Forecasting - TFT",
             source_name="TFT Hyperparameter Tuning",
         )

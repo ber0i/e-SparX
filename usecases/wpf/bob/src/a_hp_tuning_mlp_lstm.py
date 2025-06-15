@@ -187,8 +187,8 @@ def main():
         name="MLP/LSTM Hyperparameter Tuning",
         description="Script for tuning hyperparameters for MLP and LSTM models for wind power forecasting.",
         file_type="PY",
-        source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/src/a_hp_tuning.py",
-        download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/src/a_hp_tuning.py?inline=false",
+        source_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/bob/src/a_hp_tuning.py",
+        download_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/bob/src/a_hp_tuning.py?inline=false",
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="Cleaned SCADA and Weather Data",
     )
@@ -316,8 +316,8 @@ def main():
         description=f"Hyperparameters for {model_name} after running a hyperparameter tuning.",
         hyperparameters=hyperparameters_tuned,
         file_type="JSON",
-        source_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/hyperparameters/{args.model}_tuned.py",
-        download_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/hyperparameters/{args.model}_tuned.py?inline=false",  # noqa: E501
+        source_url=f"https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/bob/hyperparameters/{args.model}_tuned.py",
+        download_url=f"https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/bob/hyperparameters/{args.model}_tuned.py?inline=false",  # noqa: E501
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="MLP/LSTM Hyperparameter Tuning",
     )

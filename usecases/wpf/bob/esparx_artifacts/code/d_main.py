@@ -194,7 +194,7 @@ def main():
 
         print(">>>>>>>>>>Registering results in e-SparX<<<<<<<<<<")
         esparx.register_results(
-            name=f"{model_name} Test MSE and MAE Tuned",
+            name=f"{model_name} Test MSE and RMSE Tuned",
             description=f"Error metric values of the {model_name} model on the test dataset after hyperparameter tuning.",
             results={
                 "MSE": sum(loss_list) / len(loss_list),
@@ -219,7 +219,7 @@ def main():
                 "RMSE": 0.11662,
             }
         esparx.register_results(
-            name=f"{model_name} Test MSE and MAE Tuned",
+            name=f"{model_name} Test MSE and RMSE Tuned",
             description=f"Error metric values of the {model_name} model on the test dataset after hyperparameter tuning.",
             results=mock_results,
             pipeline_name="Wind Power Forecasting - TFT",
@@ -245,7 +245,7 @@ def main():
     esparx.connect(
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="Train and Test Forecasters",
-        target_name="Persistence Test MSE and MAE",
+        target_name="Persistence Test MSE and RMSE",
     )
 
     # Save model parameters
@@ -262,8 +262,8 @@ def main():
         name=f"{model_name} Parameters Tuned",
         description=f"Trained parameters of the {model_name} model with tuned hyperparameters.",
         file_type="PTH",
-        source_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/models/{model_name}_tuned.pth",
-        download_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/models/{model_name}_tuned.pth?inline=false",  # noqa: E501
+        source_url=f"https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/bob/models/{model_name}_tuned.pth",
+        download_url=f"https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/raw/main/usecases/wpf/bob/models/{model_name}_tuned.pth?inline=false",  # noqa: E501
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="Train and Test Forecasters",
     )

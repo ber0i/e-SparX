@@ -51,8 +51,8 @@ esparx.register_code(
     name="Retrieve ENTSO-E Price Data",
     description="Retrieve Irish day-ahead electricity prices from the ENTSO-E Transparency Platform.",
     file_type="PY",
-    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/ess_control/src/a_retrieve_price_data.py",
-    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/ess_control/src/a_retrieve_price_data.py?inline=false",
+    source_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/ess_control/src/a_retrieve_price_data.py",
+    download_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/raw/main/usecases/ess_control/src/a_retrieve_price_data.py?ref_type=heads&inline=false",
     pipeline_name="Wind Farm ESS Control",
 )
 

@@ -30,8 +30,8 @@ def main():
         name="Train and Test TFT",
         description="Training and testing the TFT model from the Darts library.",
         file_type="PY",
-        source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/src/c_tft.py",
-        download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/bob/src/c_tft.py?inline=false",
+        source_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/bob/src/c_tft.py",
+        download_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/raw/main/usecases/wpf/bob/src/c_tft.py?inline=false",
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="Cleaned SCADA and Weather Data",
     )
@@ -165,7 +165,7 @@ def main():
         print(f"test MSE: {mse_overall}")
 
         esparx.register_results(
-            name="TFT Test MSE and MAE Tuned",
+            name="TFT Test MSE and RMSE Tuned",
             description="Results of the TFT model with tuned hyperparameters.",
             results={"MSE": mse_overall, "RMSE": rmse_overall},
             pipeline_name="Wind Power Forecasting - TFT",
@@ -177,7 +177,7 @@ def main():
         print("Running in demo mode. Registering mock results.")
         mock_results = {"MSE": 0.012317246495134465, "RMSE": 0.11098309103}
         esparx.register_results(
-            name="TFT Test MSE and MAE Tuned",
+            name="TFT Test MSE and RMSE Tuned",
             description="Results of the TFT model with tuned hyperparameters.",
             results=mock_results,
             pipeline_name="Wind Power Forecasting - TFT",
@@ -188,7 +188,7 @@ def main():
         name="TFT Parameters Tuned",
         description="Trained parameters for the TFT model.",
         file_type="PKL",
-        source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/bob/models/tft/",
+        source_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/bob/models/tft/",
         pipeline_name="Wind Power Forecasting - TFT",
         source_name="Train and Test TFT",
     )

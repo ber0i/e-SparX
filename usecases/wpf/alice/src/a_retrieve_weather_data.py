@@ -175,8 +175,8 @@ esparx.register_code(
     name="Retrieve Open-Meteo Weather Data",
     description="Retrieve historical weather data and historical weather forecast data from the Open-Meteo.com Weather API and save to CSV.",
     file_type="PY",
-    source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/src/a_retrieve_weather_data.py",
-    download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/src/a_retrieve_weather_data.py?inline=false",
+    source_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/alice/src/a_retrieve_weather_data.py",
+    download_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/raw/main/usecases/wpf/alice/src/a_retrieve_weather_data.py?inline=false",
     pipeline_name="Wind Power Forecasting - MLP and LSTM",
 )
 

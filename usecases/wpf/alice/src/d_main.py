@@ -18,8 +18,8 @@ def main():
         name="Train and Test Forecasters",
         description="Script to train and evaluate a model for wind power forecasting.",
         file_type="PY",
-        source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/src/d_main.py",
-        download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/src/d_main.py?inline=false",
+        source_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/alice/src/d_main.py",
+        download_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/raw/main/usecases/wpf/alice/src/d_main.py?inline=false",
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
         source_name="Cleaned SCADA and Weather Data",
     )
@@ -97,8 +97,8 @@ def main():
         description=f"Hyperparameters for the {model_name} model.",
         hyperparameters=hp,
         file_type="JSON",
-        source_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/hyperparameters/{args.model}.json",
-        download_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/hyperparameters/{args.model}.json?inline=false",  # noqa: E501
+        source_url=f"https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/alice/hyperparameters/{args.model}.json",
+        download_url=f"https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/raw/main/usecases/wpf/alice/hyperparameters/{args.model}.json?inline=false",  # noqa: E501
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
     )
 
@@ -115,8 +115,8 @@ def main():
         name="Penmanshiel Torch Dataset Class",
         description="Code defining the PyTorch dataset class for the Penmanshiel dataset.",
         file_type="PY",
-        source_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/src/datasets/penmanshiel.py",
-        download_url="https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/src/datasets/penmanshiel.py?inline=false",
+        source_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/alice/src/datasets/penmanshiel.py",
+        download_url="https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/raw/main/usecases/wpf/alice/src/datasets/penmanshiel.py?inline=false",
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
     )
 
@@ -148,8 +148,8 @@ def main():
         file_type="PY",
         model=model,
         input_example=next(iter(loader_train))[0],
-        source_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/src/models/{args.model}.py",
-        download_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/src/models/{args.model}.py?inline=false",
+        source_url=f"https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/alice/src/models/{args.model}.py",
+        download_url=f"https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/raw/main/usecases/wpf/alice/src/models/{args.model}.py?inline=false",
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
     )
 
@@ -254,7 +254,7 @@ def main():
 
         print(">>>>>>>>>>Registering results in e-SparX<<<<<<<<<<")
         esparx.register_results(
-            name=f"{model_name} Test MSE and MAE",
+            name=f"{model_name} Test MSE and RMSE",
             description=f"Error metric values of the {model_name} model on the test dataset.",
             results={
                 "MSE": sum(loss_list) / len(loss_list),
@@ -264,7 +264,7 @@ def main():
             source_name="Train and Test Forecasters",
         )
         esparx.register_results(
-            name="Persistence Test MSE and MAE",
+            name="Persistence Test MSE and RMSE",
             description="Error metric values of the persistence model on the test dataset.",
             results={
                 "MSE": sum(loss_list_persistence) / len(loss_list_persistence),
@@ -294,14 +294,14 @@ def main():
             "RMSE": 0.3571,
         }
         esparx.register_results(
-            name=f"{model_name} Test MSE and MAE",
+            name=f"{model_name} Test MSE and RMSE",
             description=f"Error metric values of the {model_name} model on the test dataset.",
             results=mock_results,
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
             source_name="Train and Test Forecasters",
         )
         esparx.register_results(
-            name="Persistence Test MSE and MAE",
+            name="Persistence Test MSE and RMSE",
             description="Error metric values of the persistence model on the test dataset.",
             results=mock_results_persistence,
             pipeline_name="Wind Power Forecasting - MLP and LSTM",
@@ -339,8 +339,8 @@ def main():
         name=f"{model_name} Trained Parameters",
         description=f"Trained parameters of the {model_name} model.",
         file_type="PTH",
-        source_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/blob/main/usecases/wpf/alice/models/{model_name}.pth",
-        download_url=f"https://gitlab.lrz.de/EMT/projects/edl-projects/registry-mvp/-/raw/main/usecases/wpf/alice/models/{model_name}.pth?inline=false",  # noqa: E501
+        source_url=f"https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/blob/main/usecases/wpf/alice/models/{model_name}.pth",
+        download_url=f"https://gitlab.lrz.de/energy-management-technologies-public/e-sparx/-/raw/main/usecases/wpf/alice/models/{model_name}.pth?inline=false",  # noqa: E501
         pipeline_name="Wind Power Forecasting - MLP and LSTM",
         source_name="Train and Test Forecasters",
     )
