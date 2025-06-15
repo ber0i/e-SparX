@@ -11,7 +11,7 @@ user_config: "UserConfigModel" = None
 @dataclass
 class UserConfigModel:
     user_id: str
-    api_base: str = "https://10.152.14.197/api/"
+    api_base: str = "https://e-sparx-public.emt.ed.tum.de/api/"
 
 
 def get_user_config_path():

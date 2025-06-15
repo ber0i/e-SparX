@@ -61,8 +61,6 @@ cd backend
 alembic upgrade head
 ```
 
-Also note that the Python package currently expects the API to run on host `10.152.14.197`. You must change this to `localhost` if you want to develop locally.
-
 ## Production
 
 The production environment launches all services as containers behind a reverse proxy using the `docker-compose.yml`.
