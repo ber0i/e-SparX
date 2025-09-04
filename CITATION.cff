@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the following paper."
+title: "e-SparX: A Graph-Based Artifact Exchange Platform to Accelerate Machine Learning Research in the Energy Systems Community"
+authors:
+  - family-names: "Schneider"
+    given-names: "Annika"
+  - family-names: "Schüttler"
+    given-names: "Lukas"
+  - family-names: "Ruiz de Vargas"
+    given-names: "Jan Marco"
+  - family-names: "Eichelbeck"
+    given-names: "Michael"
+  - family-names: "Goebel"
+    given-names: "Christoph"
+year: 2025
+doi: "10.1145/3679240.3734617"
+url: "https://doi.org/10.1145/3679240.3734617"
+isbn: "9798400711251"
+publisher:
+  name: "Association for Computing Machinery"
+  address: "New York, NY, USA"
+conference:
+  name: "Proceedings of the 16th ACM International Conference on Future and Sustainable Energy Systems"
+  series: "E-Energy '25"
+  pages: "436–445"
