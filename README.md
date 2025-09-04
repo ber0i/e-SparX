@@ -1,8 +1,9 @@
-# <img src="https://github.com/user-attachments/assets/8646b2ab-0ef4-46f4-ab5d-f935d11ccf4c" alt="e-SparX logo" height="60"> e-SparX: The Space for Artifact Exchange in ML Research for the Energy Domain
+# <img src="https://github.com/user-attachments/assets/8646b2ab-0ef4-46f4-ab5d-f935d11ccf4c" alt="e-SparX logo" height="50" valign="bottom"> e-SparX
+
 
 Welcome to e-SparX! This is your place to (1) accelerate your ML research and (2) boost the impact of your own work. In ML development, we all work through the following **ML pipeline** steps: find and acquire data; investigate, clean, and process the data, set up a training infrastructure, define models, train, and evaluate. While true innovation often happens in the modeling phase, the remaining workflow is time-consuming. In fact, as intermediate pipeline artifacts (e.g., datasets, code, or hyperparameters) are rarely shared, various researchers invest time in work done by others many times already.
 
-e-SparX changes just that. Here, you can view entire ML pipelines from other researchers, reuse their artifacts, and share your own pipelines. This will increase the impact of your work and help you get feedback from other researchers. And obviously, it will save you a ton of time and work. Go ahead and check out the first available pipelines on the [e-SparX Website](https://e-sparx-public.emt.ed.tum.de/)!
+e-SparX changes just that. Here, you can view entire ML pipelines from other researchers, reuse their artifacts, and share your own pipelines. This will increase the impact of your work and help you get feedback from other researchers. And obviously, it will save you a ton of time and work. Go ahead and check out the first available pipelines on the [e-SparX Website](https://e-sparx-public.emt.ed.tum.de/) and the [e-SparX paper](https://doi.org/10.1145/3679240.3734617).
 
 Eager to start sharing your own ML projects? So let's get started and look at how we can register our first pipeline!
 
