@@ -1,5 +1,4 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite the following paper."
 title: "e-SparX: A Graph-Based Artifact Exchange Platform to Accelerate Machine Learning Research in the Energy Systems Community"
 authors:
   - family-names: "Schneider"
